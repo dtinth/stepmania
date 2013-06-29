@@ -14,8 +14,8 @@ test -z "$CFLAGS"    && DEFAULT_CFLAGS=yes
 test -z "$CXXFLAGS"  && DEFAULT_CXXFLAGS=yes
 test -z "$LDFLAGS"   && DEFAULT_LDFLAGS=yes
 
-AC_PROG_CC
-AC_PROG_CXX
+AC_PROG_CC([clang gcc cc cl])
+AC_PROG_CXX([clang++ g++ c++ gcc cl KCC CC cxx cc++ xlC aCC])
 AC_PROG_RANLIB
 AM_PROG_CC_C_O
 
@@ -47,7 +47,6 @@ case $compile in
 	test "$DEFAULT_CXXFLAGS" = "yes" && CXXFLAGS="$CXXFLAGS -O2 -fno-inline"
 	;;
 esac
-
 
 # Some (broken?) versions of gcc treat char as unsigned, check for that.
 AC_LANG_PUSH([C])
@@ -208,8 +207,12 @@ SM_BZIP
 SM_AUDIO
 SM_VIDEO
 SM_TLS
-
+SM_CPP11
 SM_CHECK_CRASH_HANDLER
+
+AM_CONDITIONAL(USING_GPP, [test "$CXX" = "g++"])
+
+AM_CONDITIONAL(SUPPORTS_CPP11_NATIVE, [test "$SM_cv_CPP11_NATIVE" = "yes"])
 
 AM_PATH_ALSA(0.9.0,AC_DEFINE([HAVE_ALSA],1,[Define presence of ALSA]),alsa=false)
 

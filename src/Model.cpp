@@ -1,5 +1,6 @@
 #include "global.h"
 #include "Model.h"
+#include <algorithm>
 #include "ModelTypes.h"
 #include "RageMath.h"
 #include "RageDisplay.h"
@@ -760,12 +761,8 @@ void Model::SetSecondsIntoAnimation( float fSeconds )
 
 bool Model::MaterialsNeedNormals() const
 {
-	FOREACH_CONST( msMaterial, m_Materials, m )
-	{
-		if( m->NeedsNormals() )
-			return true;
-	}
-	return false;
+	return std::any_of(m_Materials.begin(), m_Materials.end(),
+		[&](msMaterial const m) { return m.NeedsNormals(); });
 }
 
 // lua start

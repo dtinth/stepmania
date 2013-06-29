@@ -8,6 +8,7 @@
 #  endif
 #elif defined(MACOSX)
 #  include "archutils/Darwin/Crash.h"
+#include <unistd.h>
 using CrashHandler::IsDebuggerPresent;
 using CrashHandler::DebugBreak;
 #else

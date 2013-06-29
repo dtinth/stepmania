@@ -1,0 +1,56 @@
+# Temporary files.
+*~
+
+# Windows Visual Studio Files
+*.opensdf
+*.sdf
+*.tlog
+*.lastbuildstate
+*.idb
+*.map
+*.vdi
+
+
+src/version.bin
+src/verstub.cpp
+
+# Linux Build Files
+Makefile
+Makefile.in
+aclocal.m4
+autoconf/compile
+autoconf/config.guess
+autoconf/config.sub
+autoconf/depcomp
+autoconf/install-sh
+autoconf/missing
+autoconf/test-driver
+autom4te.cache/
+config.log
+config.status
+configure
+src/.deps/
+src/Makefile
+src/Makefile.in
+src/config.h
+src/config.h.in
+src/stamp-h1
+src/GtkModule.so
+src/stepmania
+
+# Mac OS X/Linux Files
+*.a
+StepMania (Debug).app
+*.LinkFileList
+*.o
+*.d
+*.dia
+*.hmap
+*.dep
+*.dat
+*.xcscheme
+Xcode/stepmania_xcode.xcodeproj/project.xcworkspace/xcuserdata
+Xcode/build/stepmania_xcode.build
+*.xcworkspacedata
+Xcode/stepmania_xcode.xcodeproj/xcuserdata
+ver.cpp
