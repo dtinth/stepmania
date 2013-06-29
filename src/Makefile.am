@@ -7,7 +7,11 @@ noinst_PROGRAMS += $(TESTS)
 endif
 
 AM_LDFLAGS =
-AM_CXXFLAGS = 
+if SUPPORTS_CPP11_NATIVE
+AM_CXXFLAGS =
+else
+AM_CXXFLAGS=--std=c++11
+endif
 AM_CFLAGS = 
 noinst_LIBRARIES =
 EXTRA_DIST =
@@ -15,9 +19,14 @@ EXTRA_DIST =
 
 AM_CXXFLAGS += -fno-exceptions
 
+if USING_GPP
 # Relax inlining; the default of 600 takes way too long to compile and
 # generates enormous output.
 AM_CXXFLAGS += -finline-limit=300
+endif
+
+# Temp plan until all compilers can utilize this.
+AM_CXXFLAGS += -DLTC_NO_ASM
 
 AM_CXXFLAGS += $(XCFLAGS)
 
