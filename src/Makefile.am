@@ -12,7 +12,7 @@ AM_CXXFLAGS =
 else
 AM_CXXFLAGS=--std=c++11
 endif
-AM_CFLAGS = 
+AM_CFLAGS = -DLTC_NO_ASM
 noinst_LIBRARIES =
 EXTRA_DIST =
 
