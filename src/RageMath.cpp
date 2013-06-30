@@ -25,7 +25,7 @@ void RageVec3AddToBounds( const RageVector3 &p, RageVector3 &mins, RageVector3 &
 	maxs.z = max( maxs.z, p.z );
 }
 
-void RageVec2Normalize( RageVector2* pOut, const RageVector2* pV )
+void RageVec2Normalize( Rage::Vector2* pOut, const Rage::Vector2* pV )
 {
 	float scale = 1.0f / sqrtf( pV->x*pV->x + pV->y*pV->y );
 	pOut->x = pV->x * scale;

@@ -641,7 +641,7 @@ protected:
 	RageColor m_internalDiffuse;
 	RageColor m_internalGlow;
 
-	RageVector2	m_size;
+	Rage::Vector2	m_size;
 	TweenState	m_current;
 	TweenState	m_start;
 	struct TweenStateAndInfo

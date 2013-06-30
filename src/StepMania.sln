@@ -2,10 +2,15 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "StepMania", "StepMania.vcxproj", "{AF209DBD-24BD-4356-8DFE-41751B221195}"
+	ProjectSection(ProjectDependencies) = postProject
+		{CAC3F375-5315-434A-88BC-DBA5A408B2B9} = {CAC3F375-5315-434A-88BC-DBA5A408B2B9}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libtommath", "libtommath\libtommath-net2011.vcxproj", "{FEDE5283-1518-4B1D-8124-5C54DB17EA57}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libtomcrypt", "libtomcrypt\libtomcrypt-net2011.vcxproj", "{F70DD0FE-A74A-42E7-B81F-E35C49FC9EB9}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Rage", "Rage\Rage.vcxproj", "{CAC3F375-5315-434A-88BC-DBA5A408B2B9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +44,14 @@ Global
 		{F70DD0FE-A74A-42E7-B81F-E35C49FC9EB9}.Release|Win32.Build.0 = Release|Win32
 		{F70DD0FE-A74A-42E7-B81F-E35C49FC9EB9}.Release-SSE2|Win32.ActiveCfg = Release-SSE2|Win32
 		{F70DD0FE-A74A-42E7-B81F-E35C49FC9EB9}.Release-SSE2|Win32.Build.0 = Release-SSE2|Win32
+		{CAC3F375-5315-434A-88BC-DBA5A408B2B9}.Debug|Win32.ActiveCfg = Debug|Win32
+		{CAC3F375-5315-434A-88BC-DBA5A408B2B9}.Debug|Win32.Build.0 = Debug|Win32
+		{CAC3F375-5315-434A-88BC-DBA5A408B2B9}.FastDebug|Win32.ActiveCfg = Debug|Win32
+		{CAC3F375-5315-434A-88BC-DBA5A408B2B9}.FastDebug|Win32.Build.0 = Debug|Win32
+		{CAC3F375-5315-434A-88BC-DBA5A408B2B9}.Release|Win32.ActiveCfg = Release|Win32
+		{CAC3F375-5315-434A-88BC-DBA5A408B2B9}.Release|Win32.Build.0 = Release|Win32
+		{CAC3F375-5315-434A-88BC-DBA5A408B2B9}.Release-SSE2|Win32.ActiveCfg = Release|Win32
+		{CAC3F375-5315-434A-88BC-DBA5A408B2B9}.Release-SSE2|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -888,8 +888,8 @@ static void SetupVertices( const RageSpriteVertex v[], int iNumVerts )
 		Color[i*4+1]   = v[i].c.g;
 		Color[i*4+2]   = v[i].c.b;
 		Color[i*4+3]   = v[i].c.a;
-		Texture[i*2+0] = v[i].t[0];
-		Texture[i*2+1] = v[i].t[1];
+		Texture[i*2+0] = v[i].t.x;
+		Texture[i*2+1] = v[i].t.y;
 		Normal[i*3+0] = v[i].n[0];
 		Normal[i*3+1] = v[i].n[1];
 		Normal[i*3+2] = v[i].n[2];
@@ -1028,10 +1028,10 @@ public:
 
 protected:
 	vector<RageVector3> m_vPosition;
-	vector<RageVector2> m_vTexture;
+	vector<Rage::Vector2> m_vTexture;
 	vector<RageVector3> m_vNormal;
 	vector<msTriangle>	m_vTriangles;
-	vector<RageVector2>	m_vTexMatrixScale;
+	vector<Rage::Vector2>	m_vTexMatrixScale;
 };
 
 class InvalidateObject;
@@ -1154,7 +1154,7 @@ void RageCompiledGeometryHWOGL::UploadData()
 	DebugAssertNoGLError();
 	glBufferDataARB(
 		GL_ARRAY_BUFFER_ARB,
-		GetTotalVertices()*sizeof(RageVector2),
+		GetTotalVertices()*sizeof(Rage::Vector2),
 		&m_vTexture[0],
 		GL_STATIC_DRAW_ARB);
 	DebugAssertNoGLError();
@@ -1184,7 +1184,7 @@ void RageCompiledGeometryHWOGL::UploadData()
 		DebugAssertNoGLError();
 		glBufferDataARB(
 			GL_ARRAY_BUFFER_ARB,
-			GetTotalVertices()*sizeof(RageVector2),
+			GetTotalVertices()*sizeof(Rage::Vector2),
 			&m_vTexMatrixScale[0],
 			GL_STATIC_DRAW_ARB);
 		DebugAssertNoGLError();
@@ -1221,7 +1221,7 @@ void RageCompiledGeometryHWOGL::Allocate( const vector<msMesh> &vMeshes )
 	DebugAssertNoGLError();
 	glBufferDataARB( 
 		GL_ARRAY_BUFFER_ARB, 
-		GetTotalVertices()*sizeof(RageVector2), 
+		GetTotalVertices()*sizeof(Rage::Vector2), 
 		NULL, 
 		GL_STATIC_DRAW_ARB );
 	DebugAssertNoGLError();
@@ -1248,7 +1248,7 @@ void RageCompiledGeometryHWOGL::Allocate( const vector<msMesh> &vMeshes )
 	DebugAssertNoGLError();
 	glBufferDataARB( 
 		GL_ARRAY_BUFFER_ARB, 
-		GetTotalVertices()*sizeof(RageVector2), 
+		GetTotalVertices()*sizeof(Rage::Vector2), 
 		NULL,
 		GL_STATIC_DRAW_ARB );
 }

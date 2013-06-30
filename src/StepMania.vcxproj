@@ -2392,6 +2392,9 @@ cl /Zl /nologo /c verstub.cpp /Fo"$(IntDir)"</Command>
       <Project>{fede5283-1518-4b1d-8124-5c54db17ea57}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
+    <ProjectReference Include="Rage\Rage.vcxproj">
+      <Project>{cac3f375-5315-434a-88bc-dba5a408b2b9}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
