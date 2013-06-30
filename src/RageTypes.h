@@ -4,6 +4,7 @@
 #define RAGETYPES_H
 
 #include "EnumHelper.h"
+#include "Rage/Vector2.hpp"
 
 enum BlendMode
 {
@@ -97,34 +98,7 @@ LuaDeclareType( TextGlowMode );
 
 struct lua_State;
 
-struct RageVector2
-{
-public:
-	RageVector2(): x(0), y(0) {}
-	RageVector2( const float * f ): x(f[0]), y(f[1]) {}
-	RageVector2( float x1, float y1 ): x(x1), y(y1) {}
 	
-	// casting
-	operator float* ()			{ return &x; };
-	operator const float* () const		{ return &x; };
-	
-	// assignment operators
-	RageVector2& operator += ( const RageVector2& other )	{ x+=other.x; y+=other.y; return *this; }
-	RageVector2& operator -= ( const RageVector2& other )	{ x-=other.x; y-=other.y; return *this; }
-	RageVector2& operator *= ( float f )			{ x*=f; y*=f; return *this; }
-	RageVector2& operator /= ( float f )			{ x/=f; y/=f; return *this; }
-	
-	// binary operators
-	RageVector2 operator + ( const RageVector2& other ) const	{ return RageVector2( x+other.x, y+other.y ); }
-	RageVector2 operator - ( const RageVector2& other ) const	{ return RageVector2( x-other.x, y-other.y ); }
-	RageVector2 operator * ( float f ) const			{ return RageVector2( x*f, y*f ); }
-	RageVector2 operator / ( float f ) const			{ return RageVector2( x/f, y/f ); }
-	
-	friend RageVector2 operator * ( float f, const RageVector2& other )	{ return other*f; }
-	
-	float x, y;
-};
-
 
 struct RageVector3
 {
@@ -339,7 +313,7 @@ struct RageSpriteVertex	// has color
 	RageVector3 p; // position
 	RageVector3 n; // normal
 	RageVColor  c; // diffuse color
-	RageVector2 t; // texture coordinates
+	Rage::Vector2 t; // texture coordinates
 };
 
 
@@ -355,9 +329,9 @@ struct RageModelVertex	// doesn't have color.  Relies on material color
 		{ }
 	RageVector3 p;	// position
 	RageVector3 n;	// normal
-	RageVector2 t;	// texture coordinates
+	Rage::Vector2 t;	// texture coordinates
 	int8_t      bone;
-	RageVector2 TextureMatrixScale; // usually 1,1
+	Rage::Vector2 TextureMatrixScale; // usually 1,1
 };
 
 

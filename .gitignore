@@ -9,7 +9,8 @@
 *.idb
 *.map
 *.vdi
-
+*.unsuccessfulbuild
+*.ipch
 
 src/version.bin
 src/verstub.cpp

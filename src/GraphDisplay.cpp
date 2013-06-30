@@ -120,7 +120,7 @@ public:
 		for( int i = 0; i < 2*VALUE_RESOLUTION; ++i )
 		{
 			m_Slices[i].c = RageColor(1,1,1,1);
-			m_Slices[i].t = RageVector2( 0,0 );
+			m_Slices[i].t = Rage::Vector2( 0,0 );
 		}
 	}
 	~GraphBody()
@@ -261,12 +261,12 @@ void GraphDisplay::UpdateVerts()
 
 		const float fU = SCALE( fX, m_quadVertices.left, m_quadVertices.right, pRect->left, pRect->right );
 		const float fV = SCALE( fY, m_quadVertices.top, m_quadVertices.bottom, pRect->top, pRect->bottom );
-		m_pGraphBody->m_Slices[i*2+0].t = RageVector2( fU, fV );
-		m_pGraphBody->m_Slices[i*2+1].t = RageVector2( fU, pRect->bottom );
+		m_pGraphBody->m_Slices[i*2+0].t = Rage::Vector2( fU, fV );
+		m_pGraphBody->m_Slices[i*2+1].t = Rage::Vector2( fU, pRect->bottom );
 
 		LineStrip[i].p = RageVector3( fX, fY, 0 );
 		LineStrip[i].c = RageColor( 1,1,1,1 );
-		LineStrip[i].t = RageVector2( 0,0 );
+		LineStrip[i].t = Rage::Vector2( 0,0 );
 	}
 
 	m_pGraphLine->Set( LineStrip, VALUE_RESOLUTION );

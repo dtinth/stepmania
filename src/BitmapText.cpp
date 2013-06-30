@@ -240,10 +240,10 @@ void BitmapText::BuildChars()
 			iX += g.m_iHadvance;
 
 			// set texture coordinates
-			v[0].t = RageVector2( g.m_TexRect.left,	g.m_TexRect.top );
-			v[1].t = RageVector2( g.m_TexRect.left,	g.m_TexRect.bottom );
-			v[2].t = RageVector2( g.m_TexRect.right,	g.m_TexRect.bottom );
-			v[3].t = RageVector2( g.m_TexRect.right,	g.m_TexRect.top );
+			v[0].t = Rage::Vector2( g.m_TexRect.left,	g.m_TexRect.top );
+			v[1].t = Rage::Vector2( g.m_TexRect.left,	g.m_TexRect.bottom );
+			v[2].t = Rage::Vector2( g.m_TexRect.right,	g.m_TexRect.bottom );
+			v[3].t = Rage::Vector2( g.m_TexRect.right,	g.m_TexRect.top );
 
 			m_aVertices.insert( m_aVertices.end(), &v[0], &v[4] );
 			m_vpFontPageTextures.push_back( g.GetFontPageTextures() );

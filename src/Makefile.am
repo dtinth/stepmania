@@ -12,7 +12,7 @@ AM_CXXFLAGS =
 else
 AM_CXXFLAGS=--std=c++11
 endif
-AM_CFLAGS = 
+AM_CFLAGS = -DLTC_NO_ASM
 noinst_LIBRARIES =
 EXTRA_DIST =
 
@@ -50,6 +50,9 @@ increment_version:
 
 ver.cpp:
 	$(MAKE) increment_version
+
+RAGENS = \
+Rage/Vector2.hpp Rage/Vector2.cpp
 
 PNG = \
 ../extern/libpng/include/png.c ../extern/libpng/include/.png.h \
@@ -620,7 +623,9 @@ main_CPPFLAGS = \
 	-I$(top_srcdir)/extern/jsoncpp/include
 #-I$(top_srcdir)/extern/glew-1.5.8/include
 
-main_SOURCES = $(PNG) \
+main_SOURCES = \
+		$(PNG) \
+		$(RAGENS) \
 		$(Screens) \
 		$(DataStructures) \
 		$(FileTypes) \

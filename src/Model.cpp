@@ -341,7 +341,7 @@ void Model::DrawPrimitives()
 
 				DISPLAY->SetMaterial( Emissive, Ambient, Diffuse, mat.Specular, mat.fShininess );
 
-				RageVector2 vTexTranslate = mat.diffuse.GetTextureTranslate();
+				Rage::Vector2 vTexTranslate = mat.diffuse.GetTextureTranslate();
 				if( vTexTranslate.x != 0  ||  vTexTranslate.y != 0 )
 				{
 					DISPLAY->TexturePushMatrix();

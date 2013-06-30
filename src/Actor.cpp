@@ -161,7 +161,7 @@ Actor::Actor()
 		lua_pop( L, 1 );
 	LUA->Release( L );
 	
-	m_size = RageVector2( 1, 1 );
+	m_size = Rage::Vector2( 1, 1 );
 	InitState();
 	m_pParent = NULL;
 	m_bFirstUpdate = true;

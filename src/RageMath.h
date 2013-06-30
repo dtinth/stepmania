@@ -3,12 +3,12 @@
 #ifndef RAGE_MATH_H
 #define RAGE_MATH_H
 
+#include "Rage/Vector2.hpp"
+
 #define PI		(3.141592653589793f)
 #define DegreeToRadian( degree ) ((degree) * (PI / 180.0f))
 #define RadianToDegree( radian ) ((radian) * (180.0f / PI))
 
-
-struct RageVector2;
 struct RageVector3;
 struct RageVector4;
 struct RageMatrix;
@@ -16,7 +16,7 @@ struct RageMatrix;
 void RageVec3ClearBounds( RageVector3 &mins, RageVector3 &maxs );
 void RageVec3AddToBounds( const RageVector3 &p, RageVector3 &mins, RageVector3 &maxs );
 
-void RageVec2Normalize( RageVector2* pOut, const RageVector2* pV );
+void RageVec2Normalize( Rage::Vector2* pOut, const Rage::Vector2* pV );
 void RageVec3Normalize( RageVector3* pOut, const RageVector3* pV );
 void RageVec3TransformCoord( RageVector3* pOut, const RageVector3* pV, const RageMatrix* pM );
 void RageVec3TransformNormal( RageVector3* pOut, const RageVector3* pV, const RageMatrix* pM );
