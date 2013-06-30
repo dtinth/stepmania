@@ -12,6 +12,13 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libtomcrypt", "libtomcrypt\
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Rage", "Rage\Rage.vcxproj", "{CAC3F375-5315-434A-88BC-DBA5A408B2B9}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Rage.Test", "..\tests\Rage.Test.vcxproj", "{E4AEED15-B736-4B8B-8E78-57F75C3C5B37}"
+	ProjectSection(ProjectDependencies) = postProject
+		{CAC3F375-5315-434A-88BC-DBA5A408B2B9} = {CAC3F375-5315-434A-88BC-DBA5A408B2B9}
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{8F78FFED-3DB0-4951-9C48-E1E23629BB6E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -52,8 +59,19 @@ Global
 		{CAC3F375-5315-434A-88BC-DBA5A408B2B9}.Release|Win32.Build.0 = Release|Win32
 		{CAC3F375-5315-434A-88BC-DBA5A408B2B9}.Release-SSE2|Win32.ActiveCfg = Release|Win32
 		{CAC3F375-5315-434A-88BC-DBA5A408B2B9}.Release-SSE2|Win32.Build.0 = Release|Win32
+		{E4AEED15-B736-4B8B-8E78-57F75C3C5B37}.Debug|Win32.ActiveCfg = Debug|Win32
+		{E4AEED15-B736-4B8B-8E78-57F75C3C5B37}.Debug|Win32.Build.0 = Debug|Win32
+		{E4AEED15-B736-4B8B-8E78-57F75C3C5B37}.FastDebug|Win32.ActiveCfg = Debug|Win32
+		{E4AEED15-B736-4B8B-8E78-57F75C3C5B37}.FastDebug|Win32.Build.0 = Debug|Win32
+		{E4AEED15-B736-4B8B-8E78-57F75C3C5B37}.Release|Win32.ActiveCfg = Release|Win32
+		{E4AEED15-B736-4B8B-8E78-57F75C3C5B37}.Release|Win32.Build.0 = Release|Win32
+		{E4AEED15-B736-4B8B-8E78-57F75C3C5B37}.Release-SSE2|Win32.ActiveCfg = Release|Win32
+		{E4AEED15-B736-4B8B-8E78-57F75C3C5B37}.Release-SSE2|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{E4AEED15-B736-4B8B-8E78-57F75C3C5B37} = {8F78FFED-3DB0-4951-9C48-E1E23629BB6E}
 	EndGlobalSection
 EndGlobal

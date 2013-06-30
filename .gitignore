@@ -1,6 +1,7 @@
 # Temporary files.
 *~
 *.swp
+*.tmp
 
 # Windows Visual Studio Files
 *.opensdf
