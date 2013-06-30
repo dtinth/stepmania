@@ -9,8 +9,6 @@
 #define DegreeToRadian( degree ) ((degree) * (PI / 180.0f))
 #define RadianToDegree( radian ) ((radian) * (180.0f / PI))
 
-
-struct Rage::Vector2;
 struct RageVector3;
 struct RageVector4;
 struct RageMatrix;

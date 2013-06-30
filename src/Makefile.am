@@ -51,6 +51,9 @@ increment_version:
 ver.cpp:
 	$(MAKE) increment_version
 
+RAGENS = \
+Rage/Vector2.hpp Rage/Vector2.cpp
+
 PNG = \
 ../extern/libpng/include/png.c ../extern/libpng/include/.png.h \
 ../extern/libpng/include/pngconf.h ../extern/libpng/include/pngdebug.h \
@@ -620,7 +623,9 @@ main_CPPFLAGS = \
 	-I$(top_srcdir)/extern/jsoncpp/include
 #-I$(top_srcdir)/extern/glew-1.5.8/include
 
-main_SOURCES = $(PNG) \
+main_SOURCES = \
+		$(PNG) \
+		$(RAGENS) \
 		$(Screens) \
 		$(DataStructures) \
 		$(FileTypes) \
