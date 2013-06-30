@@ -6,10 +6,6 @@ namespace Rage
 
 	Vector2::Vector2(float a, float b) : x(a), y(b) {}
 
-	Vector2::Vector2(float const *f) : x(f[0]), y(f[1]) {}
-
-	Vector2::Vector2(std::array<float, 2> const &f) : x(f[0]), y(f[1]) {}
-
 	Vector2::operator float * ()
 	{
 		return &x;

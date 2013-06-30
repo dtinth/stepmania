@@ -1,16 +1,12 @@
 #ifndef RAGE_VECTOR2_HPP_
 #define RAGE_VECTOR2_HPP_
 
-#include <array>
-
 namespace Rage
 {
 	struct Vector2
 	{
 		Vector2();
 		Vector2(float, float);
-		Vector2(float const *);
-		Vector2(std::array<float, 2> const &);
 
 		// casting
 		operator float* ();
