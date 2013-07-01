@@ -258,24 +258,6 @@ struct RageSpriteVertex	// has color
 	Rage::Vector2 t; // texture coordinates
 };
 
-
-struct RageModelVertex	// doesn't have color.  Relies on material color
-{
-	/* Zero out by default. */
-	RageModelVertex():
-		p(0,0,0),
-		n(0,0,0),
-		t(0,0),
-		bone(0),
-		TextureMatrixScale(1,1)
-		{ }
-	Rage::Vector3 p;	// position
-	Rage::Vector3 n;	// normal
-	Rage::Vector2 t;	// texture coordinates
-	int8_t      bone;
-	Rage::Vector2 TextureMatrixScale; // usually 1,1
-};
-
 RageColor scale( float x, float l1, float h1, const RageColor &a, const RageColor &b );
 
 #endif

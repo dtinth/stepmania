@@ -4,6 +4,7 @@
 #define MODEL_TYPES_H
 
 #include "RageTypes.h"
+#include "Rage/ModelVertex.hpp"
 #include "Rage/Vector4.hpp"
 #include "Rage/Matrix.hpp"
 
@@ -18,7 +19,7 @@ struct msMesh
 	RString			sName;
 	char			nMaterialIndex;
 
-	vector<RageModelVertex>	Vertices;
+	vector<Rage::ModelVertex>	Vertices;
 
 	// OPTIMIZATION: If all verts in a mesh are transformed by the same bone, 
 	// then send the transform to the graphics card for the whole mesh instead

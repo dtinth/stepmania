@@ -534,7 +534,7 @@ void Model::PlayAnimation( const RString &sAniName, float fPlayRate )
 	for( unsigned i = 0; i < m_pGeometry->m_Meshes.size(); ++i )
 	{
 		msMesh *pMesh = &m_pGeometry->m_Meshes[i];
-		vector<RageModelVertex> &Vertices = pMesh->Vertices;
+		vector<Rage::ModelVertex> &Vertices = pMesh->Vertices;
 		for( unsigned j = 0; j < Vertices.size(); j++ )
 		{
 			// int iBoneIndex = (pMesh->m_iBoneIndex!=-1) ? pMesh->m_iBoneIndex : bone;
@@ -688,8 +688,8 @@ void Model::UpdateTempGeometry()
 	{
 		const msMesh &origMesh = m_pGeometry->m_Meshes[i];
 		msMesh &tempMesh = m_vTempMeshes[i];
-		const vector<RageModelVertex> &origVertices = origMesh.Vertices;
-		vector<RageModelVertex> &tempVertices = tempMesh.Vertices;
+		const vector<Rage::ModelVertex> &origVertices = origMesh.Vertices;
+		vector<Rage::ModelVertex> &tempVertices = tempMesh.Vertices;
 		for( unsigned j = 0; j < origVertices.size(); j++ )
 		{
 			Rage::Vector3 &tempPos =			tempVertices[j].p;
