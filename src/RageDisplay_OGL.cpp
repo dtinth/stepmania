@@ -881,18 +881,18 @@ static void SetupVertices( const RageSpriteVertex v[], int iNumVerts )
 
 	for( unsigned i = 0; i < unsigned(iNumVerts); ++i )
 	{
-		Vertex[i*3+0]  = v[i].p[0];
-		Vertex[i*3+1]  = v[i].p[1];
-		Vertex[i*3+2]  = v[i].p[2];
+		Vertex[i*3+0]  = v[i].p.x;
+		Vertex[i*3+1]  = v[i].p.y;
+		Vertex[i*3+2]  = v[i].p.z;
 		Color[i*4+0]   = v[i].c.r;
 		Color[i*4+1]   = v[i].c.g;
 		Color[i*4+2]   = v[i].c.b;
 		Color[i*4+3]   = v[i].c.a;
 		Texture[i*2+0] = v[i].t.x;
 		Texture[i*2+1] = v[i].t.y;
-		Normal[i*3+0] = v[i].n[0];
-		Normal[i*3+1] = v[i].n[1];
-		Normal[i*3+2] = v[i].n[2];
+		Normal[i*3+0] = v[i].n.x;
+		Normal[i*3+1] = v[i].n.y;
+		Normal[i*3+2] = v[i].n.z;
 	}
 	glEnableClientState( GL_VERTEX_ARRAY );
 	glVertexPointer( 3, GL_FLOAT, 0, Vertex );
@@ -1027,9 +1027,9 @@ public:
 	}
 
 protected:
-	vector<RageVector3> m_vPosition;
+	vector<Rage::Vector3> m_vPosition;
 	vector<Rage::Vector2> m_vTexture;
-	vector<RageVector3> m_vNormal;
+	vector<Rage::Vector3> m_vNormal;
 	vector<msTriangle>	m_vTriangles;
 	vector<Rage::Vector2>	m_vTexMatrixScale;
 };
@@ -1145,7 +1145,7 @@ void RageCompiledGeometryHWOGL::UploadData()
 	DebugAssertNoGLError();
 	glBufferDataARB(
 		GL_ARRAY_BUFFER_ARB,
-		GetTotalVertices()*sizeof(RageVector3),
+		GetTotalVertices()*sizeof(Rage::Vector3),
 		&m_vPosition[0],
 		GL_STATIC_DRAW_ARB);
 	DebugAssertNoGLError();
@@ -1163,7 +1163,7 @@ void RageCompiledGeometryHWOGL::UploadData()
 	DebugAssertNoGLError();
 	glBufferDataARB(
 		GL_ARRAY_BUFFER_ARB,
-		GetTotalVertices()*sizeof(RageVector3),
+		GetTotalVertices()*sizeof(Rage::Vector3),
 		&m_vNormal[0],
 		GL_STATIC_DRAW_ARB);
 	DebugAssertNoGLError();
@@ -1212,7 +1212,7 @@ void RageCompiledGeometryHWOGL::Allocate( const vector<msMesh> &vMeshes )
 	DebugAssertNoGLError();
 	glBufferDataARB( 
 		GL_ARRAY_BUFFER_ARB, 
-		GetTotalVertices()*sizeof(RageVector3), 
+		GetTotalVertices()*sizeof(Rage::Vector3), 
 		NULL, 
 		GL_STATIC_DRAW_ARB );
 	DebugAssertNoGLError();
@@ -1230,7 +1230,7 @@ void RageCompiledGeometryHWOGL::Allocate( const vector<msMesh> &vMeshes )
 	DebugAssertNoGLError();
 	glBufferDataARB( 
 		GL_ARRAY_BUFFER_ARB, 
-		GetTotalVertices()*sizeof(RageVector3), 
+		GetTotalVertices()*sizeof(Rage::Vector3), 
 		NULL, 
 		GL_STATIC_DRAW_ARB );
 	DebugAssertNoGLError();
@@ -1910,7 +1910,7 @@ void RageDisplay_Legacy::SetLightDirectional(
 	const RageColor &ambient, 
 	const RageColor &diffuse, 
 	const RageColor &specular, 
-	const RageVector3 &dir )
+	const Rage::Vector3 &dir )
 {
 	// Light coordinates are transformed by the modelview matrix, but
 	// we are being passed in world-space coords.

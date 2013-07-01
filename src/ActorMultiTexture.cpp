@@ -101,10 +101,10 @@ void ActorMultiTexture::DrawPrimitives()
 	DISPLAY->SetEffectMode( m_EffectMode );
 
 	static RageSpriteVertex v[4];
-	v[0].p = RageVector3( quadVerticies.left,	quadVerticies.top,	0 );	// top left
-	v[1].p = RageVector3( quadVerticies.left,	quadVerticies.bottom,	0 );	// bottom left
-	v[2].p = RageVector3( quadVerticies.right,	quadVerticies.bottom,	0 );	// bottom right
-	v[3].p = RageVector3( quadVerticies.right,	quadVerticies.top,	0 );	// top right
+	v[0].p = Rage::Vector3( quadVerticies.left,	quadVerticies.top,	0 );	// top left
+	v[1].p = Rage::Vector3( quadVerticies.left,	quadVerticies.bottom,	0 );	// bottom left
+	v[2].p = Rage::Vector3( quadVerticies.right,	quadVerticies.bottom,	0 );	// bottom right
+	v[3].p = Rage::Vector3( quadVerticies.right,	quadVerticies.top,	0 );	// top right
 
 	const RectF *pTexCoordRect = &m_Rect;
 	v[0].t = Rage::Vector2( pTexCoordRect->left, pTexCoordRect->top );	// top left

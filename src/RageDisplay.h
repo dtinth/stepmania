@@ -278,7 +278,7 @@ public:
 		const RageColor &ambient, 
 		const RageColor &diffuse, 
 		const RageColor &specular, 
-		const RageVector3 &dir ) = 0;
+		const Rage::Vector3 &dir ) = 0;
 
 	virtual void SetSphereEnvironmentMapping( TextureUnit tu, bool b ) = 0;
 	virtual void SetCelShaded( int stage ) = 0;
@@ -372,7 +372,7 @@ public:
 	void CameraPushMatrix();
 	void CameraPopMatrix();
 	void LoadMenuPerspective( float fFOVDegrees, float fWidth, float fHeight, float fVanishPointX, float fVanishPointY );
-	void LoadLookAt( float fov, const RageVector3 &Eye, const RageVector3 &At, const RageVector3 &Up );
+	void LoadLookAt( float fov, const Rage::Vector3 &Eye, const Rage::Vector3 &At, const Rage::Vector3 &Up );
 
 	// Centering matrix
 	void CenteringPushMatrix();

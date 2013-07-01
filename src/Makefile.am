@@ -52,7 +52,8 @@ ver.cpp:
 	$(MAKE) increment_version
 
 RAGENS = \
-Rage/Vector2.hpp Rage/Vector2.cpp
+Rage/Vector2.hpp Rage/Vector2.cpp \
+Rage/Vector3.hpp Rage/Vector3.cpp
 
 PNG = \
 ../extern/libpng/include/png.c ../extern/libpng/include/.png.h \

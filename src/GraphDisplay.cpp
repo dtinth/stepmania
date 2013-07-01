@@ -254,8 +254,8 @@ void GraphDisplay::UpdateVerts()
 		const float fX = SCALE( float(i), 0.0f, float(VALUE_RESOLUTION-1), m_quadVertices.left, m_quadVertices.right );
 		const float fY = SCALE( m_Values[i], 0.0f, 1.0f, m_quadVertices.bottom, m_quadVertices.top );
 
-		m_pGraphBody->m_Slices[i*2+0].p = RageVector3( fX, fY, 0 );
-		m_pGraphBody->m_Slices[i*2+1].p = RageVector3( fX, m_quadVertices.bottom, 0 );
+		m_pGraphBody->m_Slices[i*2+0].p = Rage::Vector3( fX, fY, 0 );
+		m_pGraphBody->m_Slices[i*2+1].p = Rage::Vector3( fX, m_quadVertices.bottom, 0 );
 
 		const RectF *pRect = m_pGraphBody->m_pTexture->GetTextureCoordRect( 0 );
 
@@ -264,7 +264,7 @@ void GraphDisplay::UpdateVerts()
 		m_pGraphBody->m_Slices[i*2+0].t = Rage::Vector2( fU, fV );
 		m_pGraphBody->m_Slices[i*2+1].t = Rage::Vector2( fU, pRect->bottom );
 
-		LineStrip[i].p = RageVector3( fX, fY, 0 );
+		LineStrip[i].p = Rage::Vector3( fX, fY, 0 );
 		LineStrip[i].c = RageColor( 1,1,1,1 );
 		LineStrip[i].t = Rage::Vector2( 0,0 );
 	}

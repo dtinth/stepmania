@@ -508,13 +508,13 @@ void Model::PlayAnimation( const RString &sAniName, float fPlayRate )
 	for( unsigned i = 0; i < m_pCurAnimation->Bones.size(); i++ )
 	{
 		const msBone *pBone = &m_pCurAnimation->Bones[i];
-		const RageVector3 &vRot = pBone->Rotation;
+		const Rage::Vector3 &vRot = pBone->Rotation;
 
 		RageMatrixAngles( &m_vpBones[i].m_Relative, vRot );
 
-		m_vpBones[i].m_Relative.m[3][0] = pBone->Position[0];
-		m_vpBones[i].m_Relative.m[3][1] = pBone->Position[1];
-		m_vpBones[i].m_Relative.m[3][2] = pBone->Position[2];
+		m_vpBones[i].m_Relative.m[3][0] = pBone->Position.x;
+		m_vpBones[i].m_Relative.m[3][1] = pBone->Position.y;
+		m_vpBones[i].m_Relative.m[3][2] = pBone->Position.z;
 
 		int nParentBone = m_pCurAnimation->FindBoneByName( pBone->sParentName );
 		if( nParentBone != -1 )
@@ -536,15 +536,15 @@ void Model::PlayAnimation( const RString &sAniName, float fPlayRate )
 		for( unsigned j = 0; j < Vertices.size(); j++ )
 		{
 			// int iBoneIndex = (pMesh->m_iBoneIndex!=-1) ? pMesh->m_iBoneIndex : bone;
-			RageVector3 &pos = Vertices[j].p;
+			Rage::Vector3 &pos = Vertices[j].p;
 			int8_t bone = Vertices[j].bone;
 			if( bone != -1 )
 			{
-				pos[0] -= m_vpBones[bone].m_Absolute.m[3][0];
-				pos[1] -= m_vpBones[bone].m_Absolute.m[3][1];
-				pos[2] -= m_vpBones[bone].m_Absolute.m[3][2];
+				pos.x -= m_vpBones[bone].m_Absolute.m[3][0];
+				pos.y -= m_vpBones[bone].m_Absolute.m[3][1];
+				pos.z -= m_vpBones[bone].m_Absolute.m[3][2];
 
-				RageVector3 vTmp;
+				Rage::Vector3 vTmp;
 
 				RageMatrix inverse;
 				RageMatrixTranspose( &inverse, &m_vpBones[bone].m_Absolute );	// transpose = inverse for rotation matrices
@@ -620,7 +620,7 @@ void Model::SetBones( const msAnimation* pAnimation, float fFrame, vector<myBone
 			pLastPositionKey = pPositionKey;
 		}
 
-		RageVector3 vPos;
+		Rage::Vector3 vPos;
 		if( pLastPositionKey != NULL && pThisPositionKey != NULL )
 		{
 			const float s = SCALE( fFrame, pLastPositionKey->fTime, pThisPositionKey->fTime, 0, 1 );
@@ -662,9 +662,9 @@ void Model::SetBones( const msAnimation* pAnimation, float fFrame, vector<myBone
 		RageMatrix m;
 		RageMatrixIdentity( &m );
 		RageMatrixFromQuat( &m, vRot );
-		m.m[3][0] = vPos[0];
-		m.m[3][1] = vPos[1];
-		m.m[3][2] = vPos[2];
+		m.m[3][0] = vPos.x;
+		m.m[3][1] = vPos.y;
+		m.m[3][2] = vPos.z;
 
 		RageMatrix RelativeFinal;
 		RageMatrixMultiply( &RelativeFinal, &vpBones[i].m_Relative, &m );
@@ -690,10 +690,10 @@ void Model::UpdateTempGeometry()
 		vector<RageModelVertex> &tempVertices = tempMesh.Vertices;
 		for( unsigned j = 0; j < origVertices.size(); j++ )
 		{
-			RageVector3 &tempPos =			tempVertices[j].p;
-			RageVector3 &tempNormal =		tempVertices[j].n;
-			const RageVector3 &originalPos =	origVertices[j].p;
-			const RageVector3 &originalNormal =	origVertices[j].n;
+			Rage::Vector3 &tempPos =			tempVertices[j].p;
+			Rage::Vector3 &tempNormal =		tempVertices[j].n;
+			const Rage::Vector3 &originalPos =	origVertices[j].p;
+			const Rage::Vector3 &originalNormal =	origVertices[j].n;
 			int8_t bone =				origVertices[j].bone;
 
 			if( bone == -1 )

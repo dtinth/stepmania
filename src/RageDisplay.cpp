@@ -604,7 +604,7 @@ void RageDisplay::CameraPopMatrix()
 
 /* gluLookAt. The result is pre-multiplied to the matrix (M = L * M) instead of
  * post-multiplied. */
-void RageDisplay::LoadLookAt( float fFOV, const RageVector3 &Eye, const RageVector3 &At, const RageVector3 &Up )
+void RageDisplay::LoadLookAt( float fFOV, const Rage::Vector3 &Eye, const Rage::Vector3 &At, const Rage::Vector3 &Up )
 {
 	float fAspect = GetActualVideoModeParams().fDisplayAspectRatio;
 	g_ProjectionStack.LoadMatrix( GetPerspectiveMatrix(fFOV, fAspect, 1, 1000) );

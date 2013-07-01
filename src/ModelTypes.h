@@ -97,7 +97,7 @@ struct msMaterial
 struct msPositionKey
 {
 	float fTime;
-	RageVector3 Position;
+	Rage::Vector3 Position;
 };
 
 struct msRotationKey
@@ -111,8 +111,8 @@ struct msBone
 	int			nFlags;
 	RString			sName;
 	RString			sParentName;
-	RageVector3		Position;
-	RageVector3		Rotation;
+	Rage::Vector3		Position;
+	Rage::Vector3		Rotation;
 
 	vector<msPositionKey>	PositionKeys;
 	vector<msRotationKey>	RotationKeys;

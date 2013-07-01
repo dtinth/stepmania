@@ -320,17 +320,17 @@ void DancingCharacters::DrawPrimitives()
 	float fCameraPanY = SCALE( fPercentIntoSweep, 0.f, 1.f, m_CameraPanYStart, m_CameraPanYEnd );
 	float fCameraHeight = SCALE( fPercentIntoSweep, 0.f, 1.f, m_fCameraHeightStart, m_fCameraHeightEnd );
 
-	RageVector3 m_CameraPoint( 0, fCameraHeight, -m_CameraDistance );
+	Rage::Vector3 m_CameraPoint( 0, fCameraHeight, -m_CameraDistance );
 	RageMatrix CameraRot;
 	RageMatrixRotationY( &CameraRot, fCameraPanY );
 	RageVec3TransformCoord( &m_CameraPoint, &m_CameraPoint, &CameraRot );
 
-	RageVector3 m_LookAt( 0, m_fLookAtHeight, 0 );
+	Rage::Vector3 m_LookAt( 0, m_fLookAtHeight, 0 );
 
 	DISPLAY->LoadLookAt( 45,
 		m_CameraPoint,
 		m_LookAt,
-		RageVector3(0,1,0) );
+		Rage::Vector3(0,1,0) );
 
 	FOREACH_EnabledPlayer( p )
 	{
@@ -347,7 +347,7 @@ void DancingCharacters::DrawPrimitives()
 			ambient, 
 			diffuse,
 			specular,
-			RageVector3(-3, -7.5f, +9) );
+			Rage::Vector3(-3, -7.5f, +9) );
 
 		if( PREFSMAN->m_bCelShadeModels )
 		{
