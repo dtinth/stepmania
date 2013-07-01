@@ -261,7 +261,7 @@ void RageDisplay::SetDefaultRenderStates()
 // Matrix stuff
 class MatrixStack
 {
-	vector<RageMatrix> stack;
+	vector<Rage::Matrix> stack;
 public:
 
 	MatrixStack(): stack()
@@ -291,21 +291,21 @@ public:
 	}
 
 	// Loads the given matrix into the current matrix
-	void LoadMatrix( const RageMatrix& m )
+	void LoadMatrix( const Rage::Matrix& m )
 	{
 		stack.back() = m;
 	}
 
 	// Right-Multiplies the given matrix to the current matrix.
 	// (transformation is about the current world origin)
-	void MultMatrix( const RageMatrix& m )
+	void MultMatrix( const Rage::Matrix& m )
 	{
 		RageMatrixMultiply( &stack.back(), &m, &stack.back() );
 	}
 
 	// Left-Multiplies the given matrix to the current matrix
 	// (transformation is about the local origin of the object)
-	void MultMatrixLocal( const RageMatrix& m )
+	void MultMatrixLocal( const Rage::Matrix& m )
 	{
 		RageMatrixMultiply( &stack.back(), &stack.back(), &m );
 	}
@@ -315,19 +315,19 @@ public:
 	// (rotation is about the current world origin)
 	void RotateX( float degrees )
 	{
-		RageMatrix m;
+		Rage::Matrix m;
 		RageMatrixRotationX( &m, degrees );
 		MultMatrix( m );
 	}
 	void RotateY( float degrees )
 	{
-		RageMatrix m;
+		Rage::Matrix m;
 		RageMatrixRotationY( &m, degrees );
 		MultMatrix( m );
 	}
 	void RotateZ( float degrees )
 	{
-		RageMatrix m;
+		Rage::Matrix m;
 		RageMatrixRotationZ( &m, degrees );
 		MultMatrix( m );
 	}
@@ -337,19 +337,19 @@ public:
 	// local origin of the object)
 	void RotateXLocal( float degrees )
 	{
-		RageMatrix m;
+		Rage::Matrix m;
 		RageMatrixRotationX( &m, degrees );
 		MultMatrixLocal( m );
 	}
 	void RotateYLocal( float degrees )
  	{
-		RageMatrix m;
+		Rage::Matrix m;
 		RageMatrixRotationY( &m, degrees );
 		MultMatrixLocal( m );
 	}
 	void RotateZLocal( float degrees )
 	{
-		RageMatrix m;
+		Rage::Matrix m;
 		RageMatrixRotationZ( &m, degrees );
 		MultMatrixLocal( m );
 	}
@@ -358,7 +358,7 @@ public:
 	// matrix. (transformation is about the current world origin)
 	void Scale( float x, float y, float z )
  	{
-		RageMatrix m;
+		Rage::Matrix m;
 		RageMatrixScaling( &m, x, y, z );
 		MultMatrix( m );
 	}
@@ -367,7 +367,7 @@ public:
 	// matrix. (transformation is about the local origin of the object)
 	void ScaleLocal( float x, float y, float z )
  	{
-		RageMatrix m;
+		Rage::Matrix m;
 		RageMatrixScaling( &m, x, y, z );
 		MultMatrixLocal( m );
 	}
@@ -376,7 +376,7 @@ public:
 	// matrix. (transformation is about the current world origin)
 	void Translate( float x, float y, float z )
  	{
-		RageMatrix m;
+		Rage::Matrix m;
 		RageMatrixTranslation( &m, x, y, z );
 		MultMatrix( m );
 	}
@@ -385,32 +385,32 @@ public:
 	// matrix. (transformation is about the local origin of the object)
 	void TranslateLocal( float x, float y, float z )
  	{
-		RageMatrix m;
+		Rage::Matrix m;
 		RageMatrixTranslation( &m, x, y, z );
 		MultMatrixLocal( m );
 	}
 
 	void SkewX( float fAmount )
 	{
-		RageMatrix m;
+		Rage::Matrix m;
 		RageMatrixSkewX( &m, fAmount );
 		MultMatrixLocal( m );
 	}
 	
 	void SkewY( float fAmount )
 	{
-		RageMatrix m;
+		Rage::Matrix m;
 		RageMatrixSkewY( &m, fAmount );
 		MultMatrixLocal( m );
 	}
 
 	// Obtain the current matrix at the top of the stack
-	const RageMatrix* GetTop() const { return &stack.back(); }
-	void SetTop( const RageMatrix &m ) { stack.back() = m; }
+	const Rage::Matrix* GetTop() const { return &stack.back(); }
+	void SetTop( const Rage::Matrix &m ) { stack.back() = m; }
 };
 
 
-static RageMatrix g_CenteringMatrix;
+static Rage::Matrix g_CenteringMatrix;
 static MatrixStack g_ProjectionStack;
 static MatrixStack g_ViewStack;
 static MatrixStack g_WorldStack;
@@ -441,27 +441,27 @@ RageDisplay::~RageDisplay()
 	LUA->UnsetGlobal( "DISPLAY" );
 }
 
-const RageMatrix* RageDisplay::GetCentering() const
+const Rage::Matrix* RageDisplay::GetCentering() const
 {
 	return &g_CenteringMatrix;
 }
 
-const RageMatrix* RageDisplay::GetProjectionTop() const
+const Rage::Matrix* RageDisplay::GetProjectionTop() const
 {
 	return g_ProjectionStack.GetTop();
 }
 
-const RageMatrix* RageDisplay::GetViewTop() const
+const Rage::Matrix* RageDisplay::GetViewTop() const
 {
 	return g_ViewStack.GetTop();
 }
 
-const RageMatrix* RageDisplay::GetWorldTop() const
+const Rage::Matrix* RageDisplay::GetWorldTop() const
 {
 	return g_WorldStack.GetTop();
 }
 
-const RageMatrix* RageDisplay::GetTextureTop() const
+const Rage::Matrix* RageDisplay::GetTextureTop() const
 {
 	return g_TextureStack.GetTop();
 }
@@ -516,12 +516,12 @@ void RageDisplay::SkewY( float fAmount )
 	g_WorldStack.SkewY( fAmount );
 }
 
-void RageDisplay::PostMultMatrix( const RageMatrix &m )
+void RageDisplay::PostMultMatrix( const Rage::Matrix &m )
 {
 	g_WorldStack.MultMatrix( m );
 }
 
-void RageDisplay::PreMultMatrix( const RageMatrix &m )
+void RageDisplay::PreMultMatrix( const Rage::Matrix &m )
 {
 	g_WorldStack.MultMatrixLocal( m );
 }
@@ -604,7 +604,7 @@ void RageDisplay::CameraPopMatrix()
 
 /* gluLookAt. The result is pre-multiplied to the matrix (M = L * M) instead of
  * post-multiplied. */
-void RageDisplay::LoadLookAt( float fFOV, const RageVector3 &Eye, const RageVector3 &At, const RageVector3 &Up )
+void RageDisplay::LoadLookAt( float fFOV, const Rage::Vector3 &Eye, const Rage::Vector3 &At, const Rage::Vector3 &Up )
 {
 	float fAspect = GetActualVideoModeParams().fDisplayAspectRatio;
 	g_ProjectionStack.LoadMatrix( GetPerspectiveMatrix(fFOV, fAspect, 1, 1000) );
@@ -616,7 +616,7 @@ void RageDisplay::LoadLookAt( float fFOV, const RageVector3 &Eye, const RageVect
 }
 
 
-RageMatrix RageDisplay::GetPerspectiveMatrix(float fovy, float aspect, float zNear, float zFar)
+Rage::Matrix RageDisplay::GetPerspectiveMatrix(float fovy, float aspect, float zNear, float zFar)
 {
 	float ymax = zNear * tanf(fovy * PI / 360.0f);
 	float ymin = -ymax;
@@ -660,9 +660,9 @@ RagePixelFormat RageDisplay::FindPixelFormat( int iBPP, unsigned iRmask, unsigne
 /* These convert to OpenGL's coordinate system: -1,-1 is the bottom-left,
  * +1,+1 is the top-right, and Z goes from -1 (viewer) to +1 (distance).
  * It's a little odd, but very well-defined. */
-RageMatrix RageDisplay::GetOrthoMatrix( float l, float r, float b, float t, float zn, float zf )
+Rage::Matrix RageDisplay::GetOrthoMatrix( float l, float r, float b, float t, float zn, float zf )
 {
-	RageMatrix m(
+	Rage::Matrix m(
 		2/(r-l),      0,            0,           0,
 		0,            2/(t-b),      0,           0,
 		0,            0,            -2/(zf-zn),   0,
@@ -670,14 +670,14 @@ RageMatrix RageDisplay::GetOrthoMatrix( float l, float r, float b, float t, floa
 	return m;
 }
 
-RageMatrix RageDisplay::GetFrustumMatrix( float l, float r, float b, float t, float zn, float zf )
+Rage::Matrix RageDisplay::GetFrustumMatrix( float l, float r, float b, float t, float zn, float zf )
 {
 	// glFrustum
 	float A = (r+l) / (r-l);
 	float B = (t+b) / (t-b);
 	float C = -1 * (zf+zn) / (zf-zn);
 	float D = -1 * (2*zf*zn) / (zf-zn);
-	RageMatrix m(
+	Rage::Matrix m(
 		2*zn/(r-l), 0,          0,  0,
 		0,          2*zn/(t-b), 0,  0,
 		A,          B,          C,  -1,
@@ -711,7 +711,7 @@ void RageDisplay::ChangeCentering( int iTranslateX, int iTranslateY, int iAddWid
 	UpdateCentering();
 }
 
-RageMatrix RageDisplay::GetCenteringMatrix( float fTranslateX, float fTranslateY, float fAddWidth, float fAddHeight ) const
+Rage::Matrix RageDisplay::GetCenteringMatrix( float fTranslateX, float fTranslateY, float fAddWidth, float fAddHeight ) const
 {
 	// in screen space, left edge = -1, right edge = 1, bottom edge = -1. top edge = 1
 	float fWidth = (float) GetActualVideoModeParams().width;
@@ -721,19 +721,19 @@ RageMatrix RageDisplay::GetCenteringMatrix( float fTranslateX, float fTranslateY
 	float fPercentScaleX = SCALE( fAddWidth, 0, fWidth, 1.0f, 2.0f );
 	float fPercentScaleY = SCALE( fAddHeight, 0, fHeight, 1.0f, 2.0f );
 
-	RageMatrix m1;
-	RageMatrix m2;
-	RageMatrixTranslation( 
+	Rage::Matrix m1;
+	Rage::Matrix m2;
+	RageMatrixTranslation(
 		&m1, 
 		fPercentShiftX, 
 		fPercentShiftY, 
 		0 );
-	RageMatrixScaling( 
+	RageMatrixScaling(
 		&m2, 
 		fPercentScaleX, 
 		fPercentScaleY, 
 		1 );
-	RageMatrix mOut;
+	Rage::Matrix mOut;
 	RageMatrixMultiply( &mOut, &m1, &m2 );
 	return mOut;
 }
@@ -963,7 +963,7 @@ void RageCompiledGeometry::Set( const vector<msMesh> &vMeshes, bool bNeedsNormal
 	for( unsigned i=0; i<vMeshes.size(); i++ )
 	{
 		const msMesh& mesh = vMeshes[i];
-		const vector<RageModelVertex> &Vertices = mesh.Vertices;
+		const vector<Rage::ModelVertex> &Vertices = mesh.Vertices;
 		const vector<msTriangle> &Triangles = mesh.Triangles;
 
 		MeshInfo& meshInfo = m_vMeshInfo[i];

@@ -1,39 +1,44 @@
-/* RageModelGeometry - Stores mesh data. */
+#ifndef RAGE_MATRIX_HPP_
+#define RAGE_MATRIX_HPP_
 
-#ifndef RAGE_MODEL_GEOMETRY_H
-#define RAGE_MODEL_GEOMETRY_H
+#include <array>
 
-#include "RageTypes.h"
-#include "ModelTypes.h"
-#include <vector>
-
-class RageCompiledGeometry;
-
-class RageModelGeometry
+// Rage::Matrix elements are specified in row-major order.  This
+// means that the translate terms are located in the fourth row and the
+// projection terms in the fourth column.  This is consistent with the way
+// MAX, Direct3D, and OpenGL all handle matrices.  Even though the OpenGL
+// documentation is in column-major form, the OpenGL code is designed to
+// handle matrix operations in row-major form.
+namespace Rage
 {
-public:
-	RageModelGeometry ();
-	virtual ~RageModelGeometry ();
-
-	void LoadMilkshapeAscii( const RString& sMilkshapeAsciiFile, bool bNeedsNormals );
-	void OptimizeBones();
-	void MergeMeshes( int iFromIndex, int iToIndex );
-	bool HasAnyPerVertexBones() const;
-
-	int m_iRefCount;
-
-	vector<msMesh> m_Meshes;
-	RageCompiledGeometry* m_pCompiledGeometry;	// video memory copy of geometry shared by all meshes
-
-	Rage::Vector3 m_vMins, m_vMaxs;
-};
-
-
+    struct Matrix
+    {
+    public:
+        Matrix();
+        
+        Matrix( Matrix const&);
+        Matrix( float, float, float, float,
+               float, float, float, float,
+               float, float, float, float,
+               float, float, float, float);
+        
+        // access grants
+        float& operator () ( int iRow, int iCol );
+        float  operator () ( int iRow, int iCol ) const;
+        
+        // casting operators
+        operator std::array<float, 4> ();
+        operator std::array<float, 4> const () const;
+        Matrix GetTranspose() const;
+        
+        std::array<std::array<float, 4>, 4> m;
+    };
+}
 
 #endif
 
 /*
- * Copyright (c) 2001-2002 Chris Danford
+ * Copyright (c) 2006-2013 Glenn Maynard
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a

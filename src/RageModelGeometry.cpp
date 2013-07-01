@@ -135,7 +135,7 @@ void RageModelGeometry::LoadMilkshapeAscii( const RString& _sPath, bool bNeedsNo
 			for( int i = 0; i < nNumMeshes; i++ )
 			{
 				msMesh &mesh = m_Meshes[i];
-				vector<RageModelVertex> &Vertices = mesh.Vertices;
+				vector<Rage::ModelVertex> &Vertices = mesh.Vertices;
 				vector<msTriangle> &Triangles = mesh.Triangles;
 
 				if( f.GetLine( sLine ) <= 0 )
@@ -165,7 +165,7 @@ void RageModelGeometry::LoadMilkshapeAscii( const RString& _sPath, bool bNeedsNo
 
 				for( int j = 0; j < nNumVertices; j++ )
 				{
-					RageModelVertex &v = Vertices[j];
+					Rage::ModelVertex &v = Vertices[j];
 
 					if( f.GetLine( sLine ) <= 0 )
 						THROW;
@@ -205,18 +205,18 @@ void RageModelGeometry::LoadMilkshapeAscii( const RString& _sPath, bool bNeedsNo
 				if( sscanf(sLine, "%d", &nNumNormals) != 1 )
 					THROW;
 
-				vector<RageVector3> Normals;
+				vector<Rage::Vector3> Normals;
 				Normals.resize( nNumNormals );
 				for( int j = 0; j < nNumNormals; j++ )
 				{
 					if( f.GetLine( sLine ) <= 0 )
 						THROW;
 
-					RageVector3 Normal;
-					if( sscanf(sLine, "%f %f %f", &Normal[0], &Normal[1], &Normal[2]) != 3 )
+					Rage::Vector3 Normal;
+					if( sscanf(sLine, "%f %f %f", &Normal.x, &Normal.y, &Normal.z) != 3 )
 						THROW;
 
-					RageVec3Normalize( (RageVector3*)&Normal, (RageVector3*)&Normal );
+					RageVec3Normalize( (Rage::Vector3*)&Normal, (Rage::Vector3*)&Normal );
 					Normals[j] = Normal;
 				}
 
@@ -256,8 +256,8 @@ void RageModelGeometry::LoadMilkshapeAscii( const RString& _sPath, bool bNeedsNo
 							szName, j, nIndices[k], int(Vertices.size())) );
 						ASSERT_M( nNormalIndices[k] < Normals.size(), ssprintf("mesh \"%s\" tri #%i accesses normal %i, but we only have %i",
 							szName, j, nNormalIndices[k], int(Normals.size())) );
-						RageModelVertex& vertex = Vertices[ nIndices[k] ];
-						RageVector3& normal = Normals[ nNormalIndices[k] ];
+						Rage::ModelVertex& vertex = Vertices[ nIndices[k] ];
+						Rage::Vector3& normal = Normals[ nNormalIndices[k] ];
 						vertex.n = normal;
 						//mesh.Vertices[nIndices[k]].n = Normals[ nNormalIndices[k] ];
 					}

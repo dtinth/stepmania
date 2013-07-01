@@ -22,7 +22,7 @@ public:
 	float GetMaxTweenTimeLeft() const;
 
 protected:
-	vector<RageVector3> m_vParticleVelocity;
+	vector<Rage::Vector3> m_vParticleVelocity;
 
 	enum Type
 	{

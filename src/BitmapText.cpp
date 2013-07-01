@@ -231,10 +231,10 @@ void BitmapText::BuildChars()
 				iX -= g.m_iHadvance;
 
 			// set vertex positions
-			v[0].p = RageVector3( iX+g.m_fHshift,			iY+g.m_pPage->m_fVshift,		0 );	// top left
-			v[1].p = RageVector3( iX+g.m_fHshift,			iY+g.m_pPage->m_fVshift+g.m_fHeight,	0 );	// bottom left
-			v[2].p = RageVector3( iX+g.m_fHshift+g.m_fWidth,	iY+g.m_pPage->m_fVshift+g.m_fHeight,	0 );	// bottom right
-			v[3].p = RageVector3( iX+g.m_fHshift+g.m_fWidth,	iY+g.m_pPage->m_fVshift,		0 );	// top right
+			v[0].p = Rage::Vector3( iX+g.m_fHshift,			iY+g.m_pPage->m_fVshift,		0 );	// top left
+			v[1].p = Rage::Vector3( iX+g.m_fHshift,			iY+g.m_pPage->m_fVshift+g.m_fHeight,	0 );	// bottom left
+			v[2].p = Rage::Vector3( iX+g.m_fHshift+g.m_fWidth,	iY+g.m_pPage->m_fVshift+g.m_fHeight,	0 );	// bottom right
+			v[3].p = Rage::Vector3( iX+g.m_fHshift+g.m_fWidth,	iY+g.m_pPage->m_fVshift,		0 );	// top right
 
 			// Advance the cursor.
 			iX += g.m_iHadvance;
@@ -627,7 +627,7 @@ void BitmapText::DrawPrimitives()
 		}
 
 		// apply jitter to verts
-		vector<RageVector3> vGlyphJitter;
+		vector<Rage::Vector3> vGlyphJitter;
 		if( m_bJitter )
 		{
 			int iSeed = lrintf( RageTimer::GetTimeSinceStartFast()*8 );
@@ -635,7 +635,7 @@ void BitmapText::DrawPrimitives()
 
 			for( unsigned i=0; i<m_aVertices.size(); i+=4 )
 			{
-				RageVector3 jitter( rnd()%2, rnd()%3, 0 );
+				Rage::Vector3 jitter( rnd()%2, rnd()%3, 0 );
 				vGlyphJitter.push_back( jitter );
 
 				m_aVertices[i+0].p += jitter;	// top left
@@ -653,7 +653,7 @@ void BitmapText::DrawPrimitives()
 			ASSERT( vGlyphJitter.size() == m_aVertices.size()/4 );
 			for( unsigned i=0; i<m_aVertices.size(); i+=4 )
 			{
-				const RageVector3 &jitter = vGlyphJitter[i/4];;
+				const Rage::Vector3 &jitter = vGlyphJitter[i/4];;
 
 				m_aVertices[i+0].p -= jitter;	// top left
 				m_aVertices[i+1].p -= jitter;	// bottom left

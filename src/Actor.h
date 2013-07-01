@@ -3,6 +3,8 @@
 
 #include "PlayerNumber.h"
 #include "RageTypes.h"
+#include "Rage/Vector3.hpp"
+#include "Rage/Vector4.hpp"
 #include "RageUtil_AutoPtr.h"
 #include "LuaReference.h"
 #include "EnumHelper.h"
@@ -166,7 +168,7 @@ public:
 		Effect() : m_Action(EffectAction_None), m_Type(EffectType_Invalid), m_fSecsIntoEffect(0),
 				m_fEffectDelta(0), m_fEffectRampUp(0.5f), m_fEffectHoldAtHalf(0),
 				m_fEffectRampDown(0.5f), m_fEffectHoldAtZero(0), m_fEffectOffset(0),
-				m_EffectClock(CLOCK_TIMER), m_vEffectMagnitude(RageVector3(0,0,10)),
+				m_EffectClock(CLOCK_TIMER), m_vEffectMagnitude(Rage::Vector3(0,0,10)),
 				m_effectColor1(RageColor(1,1,1,1)), m_effectColor2(RageColor(1,1,1,1))
 		{ }
 
@@ -177,7 +179,7 @@ public:
 		float			m_fEffectDelta;
 		RageColor		m_EffectColor1;
 		RageColor		m_EffectColor2;
-		RageVector3		m_vEffectMagnitude;
+		Rage::Vector3		m_vEffectMagnitude;
 		EffectClock		m_EffectClock;
 		// units depend on m_EffectClock
 		float			m_fEffectRampUp;
@@ -199,10 +201,10 @@ public:
 		bool operator!=( const TweenState &other ) const { return !operator==(other); }
 
 		// start and end position for tweening
-		RageVector3	pos;
-		RageVector3	rotation;
-		RageVector4	quat;
-		RageVector3	scale;
+		Rage::Vector3	pos;
+		Rage::Vector3	rotation;
+		Rage::Vector4	quat;
+		Rage::Vector3	scale;
 		float		fSkewX, fSkewY;
 		/**
 		 * @brief The amount of cropping involved.
@@ -337,11 +339,11 @@ public:
 	void  SetBaseZoomY( float zoom )		{ m_baseScale.y = zoom; }
 	float GetBaseZoomZ() const			{ return m_baseScale.z;	}
 	void  SetBaseZoomZ( float zoom )		{ m_baseScale.z = zoom; }
-	void  SetBaseZoom( float zoom )			{ m_baseScale = RageVector3(zoom,zoom,zoom); }
+	void  SetBaseZoom( float zoom )			{ m_baseScale = Rage::Vector3(zoom,zoom,zoom); }
 	void  SetBaseRotationX( float rot )		{ m_baseRotation.x = rot; }
 	void  SetBaseRotationY( float rot )		{ m_baseRotation.y = rot; }
 	void  SetBaseRotationZ( float rot )		{ m_baseRotation.z = rot; }
-	void  SetBaseRotation( const RageVector3 &rot )	{ m_baseRotation = rot; }
+	void  SetBaseRotation( const Rage::Vector3 &rot )	{ m_baseRotation = rot; }
 	virtual void  SetBaseAlpha( float fAlpha )	{ m_fBaseAlpha = fAlpha; }
 	void  SetInternalDiffuse( const RageColor &c )	{ m_internalDiffuse = c; }
 	void  SetInternalGlow( const RageColor &c )	{ m_internalGlow = c; }
@@ -508,8 +510,8 @@ public:
 	void SetEffectClock( EffectClock c )		{ m_EffectClock = c; }
 	void SetEffectClockString( const RString &s );	// convenience
 
-	void SetEffectMagnitude( RageVector3 vec )	{ m_vEffectMagnitude = vec; }
-	RageVector3 GetEffectMagnitude() const		{ return m_vEffectMagnitude; }
+	void SetEffectMagnitude( Rage::Vector3 vec )	{ m_vEffectMagnitude = vec; }
+	Rage::Vector3 GetEffectMagnitude() const		{ return m_vEffectMagnitude; }
 
 	void SetEffectDiffuseBlink( 
 		float fEffectPeriodSeconds = 1.0f,
@@ -536,19 +538,19 @@ public:
 		float fEffectPeriodSeconds = 2.0f );
 	void SetEffectWag( 
 		float fPeriod = 2.f, 
-		RageVector3 vect = RageVector3(0,0,20) );
+		Rage::Vector3 vect = Rage::Vector3(0,0,20) );
 	void SetEffectBounce( 
 		float fPeriod = 2.f, 
-		RageVector3 vect = RageVector3(0,20,0) );
+		Rage::Vector3 vect = Rage::Vector3(0,20,0) );
 	void SetEffectBob( 
 		float fPeriod = 2.f, 
-		RageVector3 vect = RageVector3(0,20,0) );
+		Rage::Vector3 vect = Rage::Vector3(0,20,0) );
 	void SetEffectPulse( 
 		float fPeriod = 2.f,
 		float fMinZoom = 0.5f,
 		float fMaxZoom = 1.f );
-	void SetEffectSpin( RageVector3 vect = RageVector3(0,0,180) );
-	void SetEffectVibrate( RageVector3 vect = RageVector3(10,10,10) );
+	void SetEffectSpin( Rage::Vector3 vect = Rage::Vector3(0,0,180) );
+	void SetEffectVibrate( Rage::Vector3 vect = Rage::Vector3(10,10,10) );
 
 
 	// other properties
@@ -635,8 +637,8 @@ protected:
 		RString		m_sCommandName;
 	};
 
-	RageVector3	m_baseRotation;
-	RageVector3	m_baseScale;
+	Rage::Vector3	m_baseRotation;
+	Rage::Vector3	m_baseScale;
 	float m_fBaseAlpha;
 	RageColor m_internalDiffuse;
 	RageColor m_internalGlow;
@@ -690,7 +692,7 @@ protected:
 	// todo: account for SSC_FUTURES by having these be vectors too -aj
 	RageColor	m_effectColor1;
 	RageColor	m_effectColor2;
-	RageVector3	m_vEffectMagnitude;
+	Rage::Vector3	m_vEffectMagnitude;
 
 	// other properties
 	bool		m_bVisible;

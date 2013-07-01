@@ -4,6 +4,7 @@
 #define RAGEDISPLAY_H
 
 #include "RageTypes.h"
+#include "Rage/Matrix.hpp"
 #include "ModelTypes.h"
 #include <set>
 
@@ -278,7 +279,7 @@ public:
 		const RageColor &ambient, 
 		const RageColor &diffuse, 
 		const RageColor &specular, 
-		const RageVector3 &dir ) = 0;
+		const Rage::Vector3 &dir ) = 0;
 
 	virtual void SetSphereEnvironmentMapping( TextureUnit tu, bool b ) = 0;
 	virtual void SetCelShaded( int stage ) = 0;
@@ -357,9 +358,9 @@ public:
 	void RotateZ( float deg );
 	void SkewX( float fAmount );
 	void SkewY( float fAmount );
-	void MultMatrix( const RageMatrix &f ) { this->PostMultMatrix(f); } /* alias */
-	void PostMultMatrix( const RageMatrix &f );
-	void PreMultMatrix( const RageMatrix &f );
+	void MultMatrix( const Rage::Matrix &f ) { this->PostMultMatrix(f); } /* alias */
+	void PostMultMatrix( const Rage::Matrix &f );
+	void PreMultMatrix( const Rage::Matrix &f );
 	void LoadIdentity();
 
 	// Texture matrix functions
@@ -372,7 +373,7 @@ public:
 	void CameraPushMatrix();
 	void CameraPopMatrix();
 	void LoadMenuPerspective( float fFOVDegrees, float fWidth, float fHeight, float fVanishPointX, float fVanishPointY );
-	void LoadLookAt( float fov, const RageVector3 &Eye, const RageVector3 &At, const RageVector3 &Up );
+	void LoadLookAt( float fov, const Rage::Vector3 &Eye, const Rage::Vector3 &At, const Rage::Vector3 &Up );
 
 	// Centering matrix
 	void CenteringPushMatrix();
@@ -386,22 +387,22 @@ public:
 	void PushSelf( lua_State *L );
 
 protected:
-	RageMatrix GetPerspectiveMatrix( float fovy, float aspect, float zNear, float zFar );
+	Rage::Matrix GetPerspectiveMatrix( float fovy, float aspect, float zNear, float zFar );
 
 	// Different for D3D and OpenGL. Not sure why they're not compatible. -Chris
-	virtual RageMatrix GetOrthoMatrix( float l, float r, float b, float t, float zn, float zf ); 
-	virtual RageMatrix GetFrustumMatrix( float l, float r, float b, float t, float zn, float zf ); 
+	virtual Rage::Matrix GetOrthoMatrix( float l, float r, float b, float t, float zn, float zf ); 
+	virtual Rage::Matrix GetFrustumMatrix( float l, float r, float b, float t, float zn, float zf ); 
 
 	// Matrix that adjusts position and scale of image on the screen
-	RageMatrix GetCenteringMatrix( float fTranslateX, float fTranslateY, float fAddWidth, float fAddHeight ) const;
+	Rage::Matrix GetCenteringMatrix( float fTranslateX, float fTranslateY, float fAddWidth, float fAddHeight ) const;
 	void UpdateCentering();
 
 	// Called by the RageDisplay derivitives
-	const RageMatrix* GetCentering() const;
-	const RageMatrix* GetProjectionTop() const;
-	const RageMatrix* GetViewTop() const;
-	const RageMatrix* GetWorldTop() const;
-	const RageMatrix* GetTextureTop() const;
+	const Rage::Matrix* GetCentering() const;
+	const Rage::Matrix* GetProjectionTop() const;
+	const Rage::Matrix* GetViewTop() const;
+	const Rage::Matrix* GetWorldTop() const;
+	const Rage::Matrix* GetTextureTop() const;
 
 	// To limit the framerate, call FrameLimitBeforeVsync before waiting
 	// for vsync and FrameLimitAfterVsync after.

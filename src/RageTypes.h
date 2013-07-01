@@ -5,6 +5,7 @@
 
 #include "EnumHelper.h"
 #include "Rage/Vector2.hpp"
+#include "Rage/Vector3.hpp"
 
 enum BlendMode
 {
@@ -97,65 +98,6 @@ enum TextGlowMode
 LuaDeclareType( TextGlowMode );
 
 struct lua_State;
-
-	
-
-struct RageVector3
-{
-public:
-	RageVector3(): x(0), y(0), z(0) {}
-	RageVector3( const float * f ):	x(f[0]), y(f[1]), z(f[2]) {}
-	RageVector3( float x1, float y1, float z1 ): x(x1), y(y1), z(z1) {}
-	
-	// casting
-	operator float* ()				{ return &x; };
-	operator const float* () const			{ return &x; };
-	
-	// assignment operators
-	RageVector3& operator += ( const RageVector3& other )	{ x+=other.x; y+=other.y; z+=other.z; return *this; }
-	RageVector3& operator -= ( const RageVector3& other )	{ x-=other.x; y-=other.y; z-=other.z; return *this; }
-	RageVector3& operator *= ( float f )			{ x*=f; y*=f; z*=f; return *this; }
-	RageVector3& operator /= ( float f )			{ x/=f; y/=f; z/=f; return *this; }
-	
-	// binary operators
-	RageVector3 operator + ( const RageVector3& other ) const	{ return RageVector3( x+other.x, y+other.y, z+other.z ); }
-	RageVector3 operator - ( const RageVector3& other ) const	{ return RageVector3( x-other.x, y-other.y, z-other.z ); }
-	RageVector3 operator * ( float f ) const			{ return RageVector3( x*f, y*f, z*f ); }
-	RageVector3 operator / ( float f ) const			{ return RageVector3( x/f, y/f, z/f ); }
-	
-	friend RageVector3 operator * ( float f, const RageVector3& other )	{ return other*f; }
-	
-	float x, y, z;
-};
-
-
-struct RageVector4
-{
-public:
-	RageVector4(): x(0), y(0), z(0), w(0) {}
-	RageVector4( const float * f ): x(f[0]), y(f[1]), z(f[2]), w(f[3]) {}
-	RageVector4( float x1, float y1, float z1, float w1 ): x(x1), y(y1), z(z1), w(w1) {}
-	
-	// casting
-	operator float* ()					{ return &x; };
-	operator const float* () const				{ return &x; };
-	
-	// assignment operators
-	RageVector4& operator += ( const RageVector4& other )	{ x+=other.x; y+=other.y; z+=other.z; w+=other.w; return *this; }
-	RageVector4& operator -= ( const RageVector4& other )	{ x-=other.x; y-=other.y; z-=other.z; w-=other.w; return *this; }
-	RageVector4& operator *= ( float f )			{ x*=f; y*=f; z*=f; w*=f; return *this; }
-	RageVector4& operator /= ( float f )			{ x/=f; y/=f; z/=f; w/=f; return *this; }
-	
-	// binary operators
-	RageVector4 operator + ( const RageVector4& other ) const	{ return RageVector4( x+other.x, y+other.y, z+other.z, w+other.w ); }
-	RageVector4 operator - ( const RageVector4& other ) const	{ return RageVector4( x-other.x, y-other.y, z-other.z, w-other.w ); }
-	RageVector4 operator * ( float f ) const			{ return RageVector4( x*f, y*f, z*f, w*f ); }
-	RageVector4 operator / ( float f ) const			{ return RageVector4( x/f, y/f, z/f, w/f ); }
-	
-	friend RageVector4 operator * ( float f, const RageVector4& other )	{ return other*f; }
-	
-	float x, y, z, w;
-} SM_ALIGN(16);
 
 struct RageColor
 {
@@ -310,60 +252,11 @@ typedef StepMania::Rect<float> RectF;
 struct RageSpriteVertex	// has color
 {
 	RageSpriteVertex(): p(), n(), c(), t() {}
-	RageVector3 p; // position
-	RageVector3 n; // normal
+	Rage::Vector3 p; // position
+	Rage::Vector3 n; // normal
 	RageVColor  c; // diffuse color
 	Rage::Vector2 t; // texture coordinates
 };
-
-
-struct RageModelVertex	// doesn't have color.  Relies on material color
-{
-	/* Zero out by default. */
-	RageModelVertex():
-		p(0,0,0),
-		n(0,0,0),
-		t(0,0),
-		bone(0),
-		TextureMatrixScale(1,1)
-		{ }
-	RageVector3 p;	// position
-	RageVector3 n;	// normal
-	Rage::Vector2 t;	// texture coordinates
-	int8_t      bone;
-	Rage::Vector2 TextureMatrixScale; // usually 1,1
-};
-
-
-// RageMatrix elements are specified in row-major order.  This
-// means that the translate terms are located in the fourth row and the
-// projection terms in the fourth column.  This is consistent with the way
-// MAX, Direct3D, and OpenGL all handle matrices.  Even though the OpenGL
-// documentation is in column-major form, the OpenGL code is designed to
-// handle matrix operations in row-major form.
-struct RageMatrix
-{
-public:
-	RageMatrix() {};
-	RageMatrix( const float *f )	{ for(int i=0; i<4; i++) for(int j=0; j<4; j++) m[j][i]=f[j*4+i]; }
-	RageMatrix( const RageMatrix& other )	{ for(int i=0; i<4; i++) for(int j=0; j<4; j++) m[j][i]=other.m[j][i]; }
-	RageMatrix( float v00, float v01, float v02, float v03,
-                float v10, float v11, float v12, float v13,
-                float v20, float v21, float v22, float v23,
-                float v30, float v31, float v32, float v33 );
-
-	// access grants
-	float& operator () ( int iRow, int iCol )	{ return m[iCol][iRow]; }
-	float  operator () ( int iRow, int iCol ) const { return m[iCol][iRow]; }
-
-	// casting operators
-	operator float* ()				{ return m[0]; }
-	operator const float* () const			{ return m[0]; }
-
-	RageMatrix GetTranspose() const;
-
-	float m[4][4];
-} SM_ALIGN(16);
 
 RageColor scale( float x, float l1, float h1, const RageColor &a, const RageColor &b );
 

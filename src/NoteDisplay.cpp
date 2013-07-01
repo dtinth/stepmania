@@ -487,9 +487,9 @@ void NoteDisplay::DrawHoldPart( vector<Sprite*> &vpSpr, int iCol, int fYStep, fl
 		if( fAlpha > 0 )
 			bAllAreTransparent = false;
 
-		queue.v[0].p = RageVector3(fXLeft,  fY, fZLeft);  queue.v[0].c = color; queue.v[0].t = Rage::Vector2(fTexCoordLeft,  fTexCoordTop);
-		queue.v[1].p = RageVector3(fXCenter, fY, fZCenter); queue.v[1].c = color; queue.v[1].t = Rage::Vector2(fTexCoordCenter, fTexCoordTop);
-		queue.v[2].p = RageVector3(fXRight, fY, fZRight);  queue.v[2].c = color; queue.v[2].t = Rage::Vector2(fTexCoordRight, fTexCoordTop);
+		queue.v[0].p = Rage::Vector3(fXLeft,  fY, fZLeft);  queue.v[0].c = color; queue.v[0].t = Rage::Vector2(fTexCoordLeft,  fTexCoordTop);
+		queue.v[1].p = Rage::Vector3(fXCenter, fY, fZCenter); queue.v[1].c = color; queue.v[1].t = Rage::Vector2(fTexCoordCenter, fTexCoordTop);
+		queue.v[2].p = Rage::Vector3(fXRight, fY, fZRight);  queue.v[2].c = color; queue.v[2].t = Rage::Vector2(fTexCoordRight, fTexCoordTop);
 		queue.v+=3;
 
 		if( queue.Free() < 3 || bLast )

@@ -1,39 +1,69 @@
-/* RageModelGeometry - Stores mesh data. */
+#ifndef RAGE_VECTOR3_HPP_
+#define RAGE_VECTOR3_HPP_
 
-#ifndef RAGE_MODEL_GEOMETRY_H
-#define RAGE_MODEL_GEOMETRY_H
-
-#include "RageTypes.h"
-#include "ModelTypes.h"
-#include <vector>
-
-class RageCompiledGeometry;
-
-class RageModelGeometry
+namespace Rage
 {
-public:
-	RageModelGeometry ();
-	virtual ~RageModelGeometry ();
-
-	void LoadMilkshapeAscii( const RString& sMilkshapeAsciiFile, bool bNeedsNormals );
-	void OptimizeBones();
-	void MergeMeshes( int iFromIndex, int iToIndex );
-	bool HasAnyPerVertexBones() const;
-
-	int m_iRefCount;
-
-	vector<msMesh> m_Meshes;
-	RageCompiledGeometry* m_pCompiledGeometry;	// video memory copy of geometry shared by all meshes
-
-	Rage::Vector3 m_vMins, m_vMaxs;
-};
+	struct Vector3
+	{
+		Vector3();
+		Vector3(float, float, float);
+        
+		// casting
+		operator float* ();
+		operator float const * ();
+        
+		// member math
+		Vector3& operator +=(Vector3 const &);
+		Vector3& operator -=(Vector3 const &);
+		Vector3& operator *=(float);
+		Vector3& operator /=(float);
+        
+		float x;
+		float y;
+        float z;
+	};
+    
+	inline bool operator == (Vector3 const &lhs, Vector3 const &rhs)
+	{
+		return lhs.x == rhs.x && lhs.y == rhs.y && lhs.z == rhs.z;
+	}
+    
+	inline bool operator != (Vector3 const &lhs, Vector3 const &rhs)
+	{
+		return !operator==(lhs, rhs);
+	}
+    
+	inline Vector3 operator + (Vector3 lhs, Vector3 const &rhs)
+	{
+		lhs += rhs;
+		return lhs;
+	}
+    
+	inline Vector3 operator - (Vector3 lhs, Vector3 const &rhs)
+	{
+		lhs -= rhs;
+		return lhs;
+	}
+    
+	inline Vector3 operator * (Vector3 lhs, float rhs)
+	{
+		lhs *= rhs;
+		return lhs;
+	}
+    
+	inline Vector3 operator / (Vector3 lhs, float rhs)
+	{
+		lhs /= rhs;
+		return lhs;
+	}
+}
 
 
 
 #endif
 
 /*
- * Copyright (c) 2001-2002 Chris Danford
+ * Copyright (c) 2006-2013 Glenn Maynard
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a

@@ -46,7 +46,7 @@ inline unsigned long max( unsigned long a, unsigned int b ) { return a > b? a:b;
 template<typename T, typename U>
 inline U lerp( T x, U l, U h )
 {
-	return U(x * (h - l) + l);
+	return U((h - l) * x + l);
 }
 
 inline bool CLAMP( int &x, int l, int h )

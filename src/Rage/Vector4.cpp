@@ -1,39 +1,61 @@
-/* RageModelGeometry - Stores mesh data. */
+#include "Vector4.hpp"
 
-#ifndef RAGE_MODEL_GEOMETRY_H
-#define RAGE_MODEL_GEOMETRY_H
-
-#include "RageTypes.h"
-#include "ModelTypes.h"
-#include <vector>
-
-class RageCompiledGeometry;
-
-class RageModelGeometry
+namespace Rage
 {
-public:
-	RageModelGeometry ();
-	virtual ~RageModelGeometry ();
-
-	void LoadMilkshapeAscii( const RString& sMilkshapeAsciiFile, bool bNeedsNormals );
-	void OptimizeBones();
-	void MergeMeshes( int iFromIndex, int iToIndex );
-	bool HasAnyPerVertexBones() const;
-
-	int m_iRefCount;
-
-	vector<msMesh> m_Meshes;
-	RageCompiledGeometry* m_pCompiledGeometry;	// video memory copy of geometry shared by all meshes
-
-	Rage::Vector3 m_vMins, m_vMaxs;
-};
-
-
-
-#endif
+	Vector4::Vector4() : x(0), y(0), z(0), w(0) {}
+    
+	Vector4::Vector4(float a, float b, float c, float d) : x(a), y(b), z(c), w(d) {}
+    
+	Vector4::operator float * ()
+	{
+		return &x;
+	}
+    
+	Vector4::operator float const * ()
+	{
+		return &x;
+	}
+    
+	Vector4& Vector4::operator+=(Vector4 const &rhs)
+	{
+		this->x += rhs.x;
+		this->y += rhs.y;
+        this->z += rhs.z;
+        this->w += rhs.w;
+		return *this;
+	}
+    
+	Vector4& Vector4::operator-=(Vector4 const &rhs)
+	{
+		this->x -= rhs.x;
+		this->y -= rhs.y;
+        this->z -= rhs.z;
+        this->w -= rhs.w;
+		return *this;
+	}
+    
+	Vector4& Vector4::operator*=(float rhs)
+	{
+		this->x *= rhs;
+		this->y *= rhs;
+        this->z *= rhs;
+        this->w *= rhs;
+		return *this;
+	}
+    
+	Vector4& Vector4::operator/=(float rhs)
+	{
+		this->x /= rhs;
+		this->y /= rhs;
+        this->z /= rhs;
+        this->w /= rhs;
+		return *this;
+	}
+    
+}
 
 /*
- * Copyright (c) 2001-2002 Chris Danford
+ * Copyright (c) 2006-2013 Glenn Maynard
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a

@@ -73,6 +73,14 @@
 		2B75ED6C1780A013007CC664 /* libRage.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2B75ED5E17809D6E007CC664 /* libRage.a */; };
 		2B75ED6F1780A0F6007CC664 /* Vector2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2B75ED6D1780A0F6007CC664 /* Vector2.cpp */; };
 		2B75ED701780A0F6007CC664 /* Vector2.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 2B75ED6E1780A0F6007CC664 /* Vector2.hpp */; };
+		2B75ED721781128F007CC664 /* Vector3.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 2B75ED711781128F007CC664 /* Vector3.hpp */; };
+		2B75ED74178112A7007CC664 /* Vector3.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2B75ED73178112A6007CC664 /* Vector3.cpp */; };
+		2B75ED7617811C8E007CC664 /* Vector4.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 2B75ED7517811C8E007CC664 /* Vector4.hpp */; };
+		2B75ED7817811CD3007CC664 /* Vector4.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2B75ED7717811CD3007CC664 /* Vector4.cpp */; };
+		2B75ED7A178122AB007CC664 /* Matrix.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 2B75ED79178122AB007CC664 /* Matrix.hpp */; };
+		2B75ED7C1781232C007CC664 /* Matrix.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2B75ED7B1781232C007CC664 /* Matrix.cpp */; };
+		2B75ED7E17812EEA007CC664 /* ModelVertex.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 2B75ED7D17812EEA007CC664 /* ModelVertex.hpp */; };
+		2B75ED8017812F06007CC664 /* ModelVertex.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2B75ED7F17812F06007CC664 /* ModelVertex.cpp */; };
 		2B76698B132FF71500586512 /* NotesLoaderSMA.h in Headers */ = {isa = PBXBuildFile; fileRef = 2B766989132FF71500586512 /* NotesLoaderSMA.h */; };
 		2B76698C132FF71500586512 /* NotesLoaderSMA.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2B76698A132FF71500586512 /* NotesLoaderSMA.cpp */; };
 		2B9C2E8D137A138B004C92F3 /* NotesLoaderJson.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2B9C2E89137A138B004C92F3 /* NotesLoaderJson.cpp */; };
@@ -1947,6 +1955,14 @@
 		2B75ED5E17809D6E007CC664 /* libRage.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libRage.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		2B75ED6D1780A0F6007CC664 /* Vector2.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Vector2.cpp; path = ../src/Rage/Vector2.cpp; sourceTree = "<group>"; };
 		2B75ED6E1780A0F6007CC664 /* Vector2.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Vector2.hpp; path = ../src/Rage/Vector2.hpp; sourceTree = "<group>"; };
+		2B75ED711781128F007CC664 /* Vector3.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Vector3.hpp; path = ../src/Rage/Vector3.hpp; sourceTree = "<group>"; };
+		2B75ED73178112A6007CC664 /* Vector3.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Vector3.cpp; path = ../src/Rage/Vector3.cpp; sourceTree = "<group>"; };
+		2B75ED7517811C8E007CC664 /* Vector4.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Vector4.hpp; path = ../src/Rage/Vector4.hpp; sourceTree = "<group>"; };
+		2B75ED7717811CD3007CC664 /* Vector4.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Vector4.cpp; path = ../src/Rage/Vector4.cpp; sourceTree = "<group>"; };
+		2B75ED79178122AB007CC664 /* Matrix.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Matrix.hpp; path = ../src/Rage/Matrix.hpp; sourceTree = "<group>"; };
+		2B75ED7B1781232C007CC664 /* Matrix.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Matrix.cpp; path = ../src/Rage/Matrix.cpp; sourceTree = "<group>"; };
+		2B75ED7D17812EEA007CC664 /* ModelVertex.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = ModelVertex.hpp; path = ../src/Rage/ModelVertex.hpp; sourceTree = "<group>"; };
+		2B75ED7F17812F06007CC664 /* ModelVertex.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ModelVertex.cpp; path = ../src/Rage/ModelVertex.cpp; sourceTree = "<group>"; };
 		2B766989132FF71500586512 /* NotesLoaderSMA.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NotesLoaderSMA.h; path = ../src/NotesLoaderSMA.h; sourceTree = SOURCE_ROOT; };
 		2B76698A132FF71500586512 /* NotesLoaderSMA.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = NotesLoaderSMA.cpp; path = ../src/NotesLoaderSMA.cpp; sourceTree = SOURCE_ROOT; };
 		2B85696213DFAE2F005037D2 /* StepMania (Debug).app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "StepMania (Debug).app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -3999,8 +4015,6 @@
 		AA6EFDBB04770A83005F316C /* Rage */ = {
 			isa = PBXGroup;
 			children = (
-				2B75ED6D1780A0F6007CC664 /* Vector2.cpp */,
-				2B75ED6E1780A0F6007CC664 /* Vector2.hpp */,
 				AA6EFD6D04770A7C005F316C /* RageBitmapTexture.cpp */,
 				AA6EFD6E04770A7C005F316C /* RageBitmapTexture.h */,
 				AA6EFD6F04770A7C005F316C /* RageDisplay.cpp */,
@@ -4140,6 +4154,16 @@
 				AAF580A804B3E2DC00D02EE9 /* RageUtil_FileDB.h */,
 				AACA592D07B5E23400763545 /* RageUtil_WorkerThread.cpp */,
 				AACA592E07B5E23400763545 /* RageUtil_WorkerThread.h */,
+				2B75ED7F17812F06007CC664 /* ModelVertex.cpp */,
+				2B75ED7D17812EEA007CC664 /* ModelVertex.hpp */,
+				2B75ED79178122AB007CC664 /* Matrix.hpp */,
+				2B75ED7B1781232C007CC664 /* Matrix.cpp */,
+				2B75ED6D1780A0F6007CC664 /* Vector2.cpp */,
+				2B75ED6E1780A0F6007CC664 /* Vector2.hpp */,
+				2B75ED711781128F007CC664 /* Vector3.hpp */,
+				2B75ED73178112A6007CC664 /* Vector3.cpp */,
+				2B75ED7517811C8E007CC664 /* Vector4.hpp */,
+				2B75ED7717811CD3007CC664 /* Vector4.cpp */,
 			);
 			name = Rage;
 			sourceTree = "<group>";
@@ -5453,6 +5477,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				2B75ED701780A0F6007CC664 /* Vector2.hpp in Headers */,
+				2B75ED721781128F007CC664 /* Vector3.hpp in Headers */,
+				2B75ED7617811C8E007CC664 /* Vector4.hpp in Headers */,
+				2B75ED7A178122AB007CC664 /* Matrix.hpp in Headers */,
+				2B75ED7E17812EEA007CC664 /* ModelVertex.hpp in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -6502,6 +6530,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				2B75ED6F1780A0F6007CC664 /* Vector2.cpp in Sources */,
+				2B75ED74178112A7007CC664 /* Vector3.cpp in Sources */,
+				2B75ED7817811CD3007CC664 /* Vector4.cpp in Sources */,
+				2B75ED7C1781232C007CC664 /* Matrix.cpp in Sources */,
+				2B75ED8017812F06007CC664 /* ModelVertex.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -9583,6 +9615,7 @@
 				2B75ED6117809D6E007CC664 /* Debug */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Native;
 		};
 		2BD6E11313D78B8D008443DB /* Build configuration list for PBXNativeTarget "zlib" */ = {
 			isa = XCConfigurationList;

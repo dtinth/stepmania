@@ -267,15 +267,15 @@ bool msAnimation::LoadMilkshapeAsciiBones( RString sAniName, RString sPath )
 			Bone.sParentName = szName;
 
 			// flags, position, rotation
-			RageVector3 Position, Rotation;
+			Rage::Vector3 Position, Rotation;
 			if( f.GetLine( sLine ) <= 0 )
 				THROW;
 
 			int nFlags;
 			if (sscanf (sLine, "%d %f %f %f %f %f %f",
 				&nFlags,
-				&Position[0], &Position[1], &Position[2],
-				&Rotation[0], &Rotation[1], &Rotation[2]) != 7)
+				&Position.x, &Position.y, &Position.z,
+				&Rotation.x, &Rotation.y, &Rotation.z) != 7)
 			{
 				THROW;
 			}
@@ -300,12 +300,12 @@ bool msAnimation::LoadMilkshapeAsciiBones( RString sAniName, RString sPath )
 					THROW;
 
 				float fTime;
-				if (sscanf (sLine, "%f %f %f %f", &fTime, &Position[0], &Position[1], &Position[2]) != 4)
+				if (sscanf (sLine, "%f %f %f %f", &fTime, &Position.x, &Position.y, &Position.z) != 4)
 					THROW;
 
 				msPositionKey key;
 				key.fTime = fTime;
-				key.Position = RageVector3( Position[0], Position[1], Position[2] );
+				key.Position = Rage::Vector3( Position );
 				Bone.PositionKeys[j] = key;
 			}
 
@@ -324,13 +324,13 @@ bool msAnimation::LoadMilkshapeAsciiBones( RString sAniName, RString sPath )
 					THROW;
 
 				float fTime;
-				if (sscanf (sLine, "%f %f %f %f", &fTime, &Rotation[0], &Rotation[1], &Rotation[2]) != 4)
+				if (sscanf (sLine, "%f %f %f %f", &fTime, &Rotation.x, &Rotation.y, &Rotation.z) != 4)
 					THROW;
 				Rotation = RadianToDegree(Rotation);
 
 				msRotationKey key;
 				key.fTime = fTime;
-				Rotation = RageVector3( Rotation[0], Rotation[1], Rotation[2] );
+				Rotation = Rage::Vector3( Rotation );
 				RageQuatFromHPR( &key.Rotation, Rotation );
 				Bone.RotationKeys[j] = key;
 			}

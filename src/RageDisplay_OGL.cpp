@@ -881,18 +881,18 @@ static void SetupVertices( const RageSpriteVertex v[], int iNumVerts )
 
 	for( unsigned i = 0; i < unsigned(iNumVerts); ++i )
 	{
-		Vertex[i*3+0]  = v[i].p[0];
-		Vertex[i*3+1]  = v[i].p[1];
-		Vertex[i*3+2]  = v[i].p[2];
+		Vertex[i*3+0]  = v[i].p.x;
+		Vertex[i*3+1]  = v[i].p.y;
+		Vertex[i*3+2]  = v[i].p.z;
 		Color[i*4+0]   = v[i].c.r;
 		Color[i*4+1]   = v[i].c.g;
 		Color[i*4+2]   = v[i].c.b;
 		Color[i*4+3]   = v[i].c.a;
 		Texture[i*2+0] = v[i].t.x;
 		Texture[i*2+1] = v[i].t.y;
-		Normal[i*3+0] = v[i].n[0];
-		Normal[i*3+1] = v[i].n[1];
-		Normal[i*3+2] = v[i].n[2];
+		Normal[i*3+0] = v[i].n.x;
+		Normal[i*3+1] = v[i].n.y;
+		Normal[i*3+2] = v[i].n.z;
 	}
 	glEnableClientState( GL_VERTEX_ARRAY );
 	glVertexPointer( 3, GL_FLOAT, 0, Vertex );
@@ -917,12 +917,12 @@ static void SetupVertices( const RageSpriteVertex v[], int iNumVerts )
 
 void RageDisplay_Legacy::SendCurrentMatrices()
 {
-	RageMatrix projection;
+	Rage::Matrix projection;
 	RageMatrixMultiply( &projection, GetCentering(), GetProjectionTop() );
 
 	if (g_bInvertY)
 	{
-		RageMatrix flip;
+		Rage::Matrix flip;
 		RageMatrixScale( &flip, +1, -1, +1 );
 		RageMatrixMultiply( &projection, &flip, &projection );
 	}
@@ -930,7 +930,7 @@ void RageDisplay_Legacy::SendCurrentMatrices()
 	glLoadMatrixf( (const float*)&projection );
 
 	// OpenGL has just "modelView", whereas D3D has "world" and "view"
-	RageMatrix modelView;
+	Rage::Matrix modelView;
 	RageMatrixMultiply( &modelView, GetViewTop(), GetWorldTop() );
 	glMatrixMode( GL_MODELVIEW );
 	glLoadMatrixf( (const float*)&modelView );
@@ -958,7 +958,7 @@ public:
 		{
 			const MeshInfo& meshInfo = m_vMeshInfo[i];
 			const msMesh& mesh = vMeshes[i];
-			const vector<RageModelVertex> &Vertices = mesh.Vertices;
+			const vector<Rage::ModelVertex> &Vertices = mesh.Vertices;
 			const vector<msTriangle> &Triangles = mesh.Triangles;
 
 			for( unsigned j=0; j<Vertices.size(); j++ )
@@ -998,8 +998,9 @@ public:
 		{
 			// Kill the texture translation.
 			// XXX: Change me to scale the translation by the TextureTranslationScale of the first vertex.
-			RageMatrix mat;
-			glGetFloatv( GL_TEXTURE_MATRIX , (float*)mat );
+			float mat[16];
+            
+			glGetFloatv( GL_TEXTURE_MATRIX , mat );
 
 			/*
 			for( int i=0; i<4; i++ )
@@ -1011,12 +1012,12 @@ public:
 			}
 			*/
 
-			mat.m[3][0] = 0;
-			mat.m[3][1] = 0;
-			mat.m[3][2] = 0;
+			mat[12] = 0;
+			mat[13] = 0;
+			mat[14] = 0;
 
 			glMatrixMode( GL_TEXTURE );
-			glLoadMatrixf( (const float*)mat );
+			glLoadMatrixf( mat );
 		}
 
 		glDrawElements( 
@@ -1027,9 +1028,9 @@ public:
 	}
 
 protected:
-	vector<RageVector3> m_vPosition;
+	vector<Rage::Vector3> m_vPosition;
 	vector<Rage::Vector2> m_vTexture;
-	vector<RageVector3> m_vNormal;
+	vector<Rage::Vector3> m_vNormal;
 	vector<msTriangle>	m_vTriangles;
 	vector<Rage::Vector2>	m_vTexMatrixScale;
 };
@@ -1145,7 +1146,7 @@ void RageCompiledGeometryHWOGL::UploadData()
 	DebugAssertNoGLError();
 	glBufferDataARB(
 		GL_ARRAY_BUFFER_ARB,
-		GetTotalVertices()*sizeof(RageVector3),
+		GetTotalVertices()*sizeof(Rage::Vector3),
 		&m_vPosition[0],
 		GL_STATIC_DRAW_ARB);
 	DebugAssertNoGLError();
@@ -1163,7 +1164,7 @@ void RageCompiledGeometryHWOGL::UploadData()
 	DebugAssertNoGLError();
 	glBufferDataARB(
 		GL_ARRAY_BUFFER_ARB,
-		GetTotalVertices()*sizeof(RageVector3),
+		GetTotalVertices()*sizeof(Rage::Vector3),
 		&m_vNormal[0],
 		GL_STATIC_DRAW_ARB);
 	DebugAssertNoGLError();
@@ -1212,7 +1213,7 @@ void RageCompiledGeometryHWOGL::Allocate( const vector<msMesh> &vMeshes )
 	DebugAssertNoGLError();
 	glBufferDataARB( 
 		GL_ARRAY_BUFFER_ARB, 
-		GetTotalVertices()*sizeof(RageVector3), 
+		GetTotalVertices()*sizeof(Rage::Vector3), 
 		NULL, 
 		GL_STATIC_DRAW_ARB );
 	DebugAssertNoGLError();
@@ -1230,7 +1231,7 @@ void RageCompiledGeometryHWOGL::Allocate( const vector<msMesh> &vMeshes )
 	DebugAssertNoGLError();
 	glBufferDataARB( 
 		GL_ARRAY_BUFFER_ARB, 
-		GetTotalVertices()*sizeof(RageVector3), 
+		GetTotalVertices()*sizeof(Rage::Vector3), 
 		NULL, 
 		GL_STATIC_DRAW_ARB );
 	DebugAssertNoGLError();
@@ -1331,8 +1332,8 @@ void RageCompiledGeometryHWOGL::Draw( int iMeshIndex ) const
 		{
 			// Kill the texture translation.
 			// XXX: Change me to scale the translation by the TextureTranslationScale of the first vertex.
-			RageMatrix mat;
-			glGetFloatv( GL_TEXTURE_MATRIX , (float*)mat );
+			float mat[16];
+			glGetFloatv( GL_TEXTURE_MATRIX , mat );
 
 			/*
 			for( int i=0; i<4; i++ )
@@ -1344,12 +1345,12 @@ void RageCompiledGeometryHWOGL::Draw( int iMeshIndex ) const
 			}
 			*/
 
-			mat.m[3][0] = 0;
-			mat.m[3][1] = 0;
-			mat.m[3][2] = 0;
+			mat[12] = 0;
+			mat[13] = 0;
+			mat[14] = 0;
 
 			glMatrixMode( GL_TEXTURE );
-			glLoadMatrixf( (const float*)mat );
+			glLoadMatrixf( mat );
 			DebugAssertNoGLError();
 		}
 	}
@@ -1505,7 +1506,7 @@ void RageDisplay_Legacy::DrawLineStripInternal( const RageSpriteVertex v[], int 
 	 * if object space is 640x480, and we have a 1280x960 window, we'll double the
 	 * width. */
 	{
-		const RageMatrix* pMat = GetProjectionTop();
+		const Rage::Matrix* pMat = GetProjectionTop();
 		float fW = 2 / pMat->m[0][0];
 		float fH = -2 / pMat->m[1][1];
 		float fWidthVal = float(g_pWind->GetActualVideoModeParams().width) / fW;
@@ -1542,10 +1543,10 @@ void RageDisplay_Legacy::DrawLineStripInternal( const RageSpriteVertex v[], int 
 	 * use this for anything 3d at the moment anyway ...)  This is needed
 	 * because points aren't scaled like regular polys--a zero-size point
 	 * will still be drawn. */
-	RageMatrix mat;
-	glGetFloatv( GL_MODELVIEW_MATRIX, (float*)mat );
+	float mat[16];
+	glGetFloatv( GL_MODELVIEW_MATRIX, mat );
 
-	if (mat.m[0][0] < 1e-5 && mat.m[1][1] < 1e-5)
+	if (mat[0] < 1e-5 && mat[5] < 1e-5)
 		return;
 
 	glEnable( GL_POINT_SMOOTH );
@@ -1910,7 +1911,7 @@ void RageDisplay_Legacy::SetLightDirectional(
 	const RageColor &ambient, 
 	const RageColor &diffuse, 
 	const RageColor &specular, 
-	const RageVector3 &dir )
+	const Rage::Vector3 &dir )
 {
 	// Light coordinates are transformed by the modelview matrix, but
 	// we are being passed in world-space coords.

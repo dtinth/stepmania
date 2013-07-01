@@ -1,39 +1,70 @@
-/* RageModelGeometry - Stores mesh data. */
+#ifndef RAGE_VECTOR4_HPP_
+#define RAGE_VECTOR4_HPP_
 
-#ifndef RAGE_MODEL_GEOMETRY_H
-#define RAGE_MODEL_GEOMETRY_H
-
-#include "RageTypes.h"
-#include "ModelTypes.h"
-#include <vector>
-
-class RageCompiledGeometry;
-
-class RageModelGeometry
+namespace Rage
 {
-public:
-	RageModelGeometry ();
-	virtual ~RageModelGeometry ();
-
-	void LoadMilkshapeAscii( const RString& sMilkshapeAsciiFile, bool bNeedsNormals );
-	void OptimizeBones();
-	void MergeMeshes( int iFromIndex, int iToIndex );
-	bool HasAnyPerVertexBones() const;
-
-	int m_iRefCount;
-
-	vector<msMesh> m_Meshes;
-	RageCompiledGeometry* m_pCompiledGeometry;	// video memory copy of geometry shared by all meshes
-
-	Rage::Vector3 m_vMins, m_vMaxs;
-};
+	struct Vector4
+	{
+		Vector4();
+		Vector4(float, float, float, float);
+        
+		// casting
+		operator float* ();
+		operator float const * ();
+        
+		// member math
+		Vector4& operator +=(Vector4 const &);
+		Vector4& operator -=(Vector4 const &);
+		Vector4& operator *=(float);
+		Vector4& operator /=(float);
+        
+		float x;
+		float y;
+        float z;
+        float w;
+	};
+    
+	inline bool operator == (Vector4 const &lhs, Vector4 const &rhs)
+	{
+		return lhs.x == rhs.x && lhs.y == rhs.y && lhs.z == rhs.z && lhs.w == rhs.w;
+	}
+    
+	inline bool operator != (Vector4 const &lhs, Vector4 const &rhs)
+	{
+		return !operator==(lhs, rhs);
+	}
+    
+	inline Vector4 operator + (Vector4 lhs, Vector4 const &rhs)
+	{
+		lhs += rhs;
+		return lhs;
+	}
+    
+	inline Vector4 operator - (Vector4 lhs, Vector4 const &rhs)
+	{
+		lhs -= rhs;
+		return lhs;
+	}
+    
+	inline Vector4 operator * (Vector4 lhs, float rhs)
+	{
+		lhs *= rhs;
+		return lhs;
+	}
+    
+	inline Vector4 operator / (Vector4 lhs, float rhs)
+	{
+		lhs /= rhs;
+		return lhs;
+	}
+}
 
 
 
 #endif
 
 /*
- * Copyright (c) 2001-2002 Chris Danford
+ * Copyright (c) 2006-2013 Glenn Maynard
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
