@@ -79,7 +79,7 @@ protected:
 	VideoModeParams m_Params;
 	RString TryVideoMode( const VideoModeParams &p, bool & /* bNewDeviceOut */ ) { m_Params = p; return RString(); }
 	RageSurface* CreateScreenshot();
-	RageMatrix GetOrthoMatrix( float l, float r, float b, float t, float zn, float zf ); 
+	Rage::Matrix GetOrthoMatrix( float l, float r, float b, float t, float zn, float zf ); 
 	bool SupportsSurfaceFormat( RagePixelFormat ) { return true; }
 };
 

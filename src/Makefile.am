@@ -52,6 +52,7 @@ ver.cpp:
 	$(MAKE) increment_version
 
 RAGENS = \
+Rage/Matrix.hpp Rage/Matrix.cpp \
 Rage/Vector2.hpp Rage/Vector2.cpp \
 Rage/Vector3.hpp Rage/Vector3.cpp \
 Rage/Vector4.hpp Rage/Vector4.cpp

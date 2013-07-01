@@ -483,7 +483,7 @@ void Actor::BeginDraw()		// set the world matrix and calculate actor properties
 
 	if( m_pTempState->pos.x != 0 || m_pTempState->pos.y != 0 || m_pTempState->pos.z != 0 )	
 	{
-		RageMatrix m;
+		Rage::Matrix m;
 		RageMatrixTranslate( 
 			&m, 
 			m_pTempState->pos.x,
@@ -503,7 +503,7 @@ void Actor::BeginDraw()		// set the world matrix and calculate actor properties
 
 		if( fRotateX != 0 || fRotateY != 0 || fRotateZ != 0 )	
 		{
-			RageMatrix m;
+			Rage::Matrix m;
 			RageMatrixRotationXYZ( &m, fRotateX, fRotateY, fRotateZ );
 			DISPLAY->PreMultMatrix( m );
 		}
@@ -517,8 +517,8 @@ void Actor::BeginDraw()		// set the world matrix and calculate actor properties
 
 		if( fScaleX != 1 || fScaleY != 1 || fScaleZ != 1 )
 		{
-			RageMatrix m;
-			RageMatrixScale( 
+			Rage::Matrix m;
+			RageMatrixScale(
 				&m,
 				fScaleX,
 				fScaleY,
@@ -532,7 +532,7 @@ void Actor::BeginDraw()		// set the world matrix and calculate actor properties
 	{
 		float fX = SCALE( m_fHorizAlign, 0.0f, 1.0f, +m_size.x/2.0f, -m_size.x/2.0f );
 		float fY = SCALE( m_fVertAlign, 0.0f, 1.0f, +m_size.y/2.0f, -m_size.y/2.0f );
-		RageMatrix m;
+		Rage::Matrix m;
 		RageMatrixTranslate( 
 			&m, 
 			fX,
@@ -544,7 +544,7 @@ void Actor::BeginDraw()		// set the world matrix and calculate actor properties
 
 	if( m_pTempState->quat.x != 0 ||  m_pTempState->quat.y != 0 ||  m_pTempState->quat.z != 0 || m_pTempState->quat.w != 1 )
 	{
-		RageMatrix mat;
+		Rage::Matrix mat;
 		RageMatrixFromQuat( &mat, m_pTempState->quat );
 
 		DISPLAY->MultMatrix(mat);

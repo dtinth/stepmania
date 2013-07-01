@@ -471,7 +471,7 @@ void Model::DrawMesh( int i ) const
 	{
 		DISPLAY->PushMatrix();
 
-		const RageMatrix &mat = m_vpBones[pMesh->m_iBoneIndex].m_Final;
+		const Rage::Matrix &mat = m_vpBones[pMesh->m_iBoneIndex].m_Final;
 		DISPLAY->PreMultMatrix( mat );
 	}
 
@@ -548,7 +548,7 @@ void Model::PlayAnimation( const RString &sAniName, float fPlayRate )
 
 				Rage::Vector3 vTmp;
 
-				RageMatrix inverse;
+				Rage::Matrix inverse;
 				RageMatrixTranspose( &inverse, &m_vpBones[bone].m_Absolute );	// transpose = inverse for rotation matrices
 				RageVec3TransformNormal( &vTmp, &pos, &inverse );
 
@@ -661,14 +661,14 @@ void Model::SetBones( const msAnimation* pAnimation, float fFrame, vector<myBone
 			vRot = pLastRotationKey->Rotation;
 		}
 
-		RageMatrix m;
+		Rage::Matrix m;
 		RageMatrixIdentity( &m );
 		RageMatrixFromQuat( &m, vRot );
 		m.m[3][0] = vPos.x;
 		m.m[3][1] = vPos.y;
 		m.m[3][2] = vPos.z;
 
-		RageMatrix RelativeFinal;
+		Rage::Matrix RelativeFinal;
 		RageMatrixMultiply( &RelativeFinal, &vpBones[i].m_Relative, &m );
 
 		int iParentBone = pAnimation->FindBoneByName( pBone->sParentName );

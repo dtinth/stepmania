@@ -276,37 +276,6 @@ struct RageModelVertex	// doesn't have color.  Relies on material color
 	Rage::Vector2 TextureMatrixScale; // usually 1,1
 };
 
-
-// RageMatrix elements are specified in row-major order.  This
-// means that the translate terms are located in the fourth row and the
-// projection terms in the fourth column.  This is consistent with the way
-// MAX, Direct3D, and OpenGL all handle matrices.  Even though the OpenGL
-// documentation is in column-major form, the OpenGL code is designed to
-// handle matrix operations in row-major form.
-struct RageMatrix
-{
-public:
-	RageMatrix() {};
-	RageMatrix( const float *f )	{ for(int i=0; i<4; i++) for(int j=0; j<4; j++) m[j][i]=f[j*4+i]; }
-	RageMatrix( const RageMatrix& other )	{ for(int i=0; i<4; i++) for(int j=0; j<4; j++) m[j][i]=other.m[j][i]; }
-	RageMatrix( float v00, float v01, float v02, float v03,
-                float v10, float v11, float v12, float v13,
-                float v20, float v21, float v22, float v23,
-                float v30, float v31, float v32, float v33 );
-
-	// access grants
-	float& operator () ( int iRow, int iCol )	{ return m[iCol][iRow]; }
-	float  operator () ( int iRow, int iCol ) const { return m[iCol][iRow]; }
-
-	// casting operators
-	operator float* ()				{ return m[0]; }
-	operator const float* () const			{ return m[0]; }
-
-	RageMatrix GetTranspose() const;
-
-	float m[4][4];
-} SM_ALIGN(16);
-
 RageColor scale( float x, float l1, float h1, const RageColor &a, const RageColor &b );
 
 #endif

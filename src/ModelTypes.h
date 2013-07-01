@@ -5,6 +5,7 @@
 
 #include "RageTypes.h"
 #include "Rage/Vector4.hpp"
+#include "Rage/Matrix.hpp"
 
 struct msTriangle
 {
@@ -137,9 +138,9 @@ struct msAnimation
 
 struct myBone_t
 {
-	RageMatrix		m_Relative;
-	RageMatrix		m_Absolute;
-	RageMatrix		m_Final;
+	Rage::Matrix		m_Relative;
+	Rage::Matrix		m_Absolute;
+	Rage::Matrix		m_Final;
 };
 
 #endif
