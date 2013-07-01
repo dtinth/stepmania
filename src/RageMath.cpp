@@ -42,14 +42,14 @@ void RageVec3Normalize( Rage::Vector3* pOut, const Rage::Vector3* pV )
 
 void RageVec3TransformCoord( Rage::Vector3* pOut, const Rage::Vector3* pV, const RageMatrix* pM )
 {
-	RageVector4 temp( pV->x, pV->y, pV->z, 1.0f );	// translate
+	Rage::Vector4 temp( pV->x, pV->y, pV->z, 1.0f );	// translate
 	RageVec4TransformCoord( &temp, &temp, pM );
 	*pOut = Rage::Vector3( temp.x/temp.w, temp.y/temp.w, temp.z/temp.w );
 }
 
 void RageVec3TransformNormal( Rage::Vector3* pOut, const Rage::Vector3* pV, const RageMatrix* pM )
 {
-	RageVector4 temp( pV->x, pV->y, pV->z, 0.0f );	// don't translate
+	Rage::Vector4 temp( pV->x, pV->y, pV->z, 0.0f );	// don't translate
 	RageVec4TransformCoord( &temp, &temp, pM );
 	*pOut = Rage::Vector3( temp.x, temp.y, temp.z );
 }
@@ -71,11 +71,11 @@ void RageVec3TransformNormal( Rage::Vector3* pOut, const Rage::Vector3* pV, cons
 #define m32 m[3][2]
 #define m33 m[3][3]
 
-void RageVec4TransformCoord( RageVector4* pOut, const RageVector4* pV, const RageMatrix* pM )
+void RageVec4TransformCoord( Rage::Vector4* pOut, const Rage::Vector4* pV, const RageMatrix* pM )
 {
 	const RageMatrix &a = *pM;
-	const RageVector4 &v = *pV;
-	*pOut = RageVector4(
+	const Rage::Vector4 &v = *pV;
+	*pOut = Rage::Vector4(
 		a.m00*v.x+a.m10*v.y+a.m20*v.z+a.m30*v.w,
 		a.m01*v.x+a.m11*v.y+a.m21*v.z+a.m31*v.w,
 		a.m02*v.x+a.m12*v.y+a.m22*v.z+a.m32*v.w,
@@ -313,9 +313,9 @@ void RageMatrixRotationXYZ( RageMatrix* pOut, float rX, float rY, float rZ )
 	pOut->m33 = 1;
 }
 
-void RageQuatMultiply( RageVector4* pOut, const RageVector4 &pA, const RageVector4 &pB )
+void RageQuatMultiply( Rage::Vector4* pOut, const Rage::Vector4 &pA, const Rage::Vector4 &pB )
 {
-	RageVector4 out;
+	Rage::Vector4 out;
 	out.x = pA.w * pB.x + pA.x * pB.w + pA.y * pB.z - pA.z * pB.y;
 	out.y = pA.w * pB.y + pA.y * pB.w + pA.z * pB.x - pA.x * pB.z;
 	out.z = pA.w * pB.z + pA.z * pB.w + pA.x * pB.y - pA.y * pB.x;
@@ -337,7 +337,7 @@ void RageQuatMultiply( RageVector4* pOut, const RageVector4 &pA, const RageVecto
 	*pOut = out;
 }
 
-RageVector4 RageQuatFromH(float theta )
+Rage::Vector4 RageQuatFromH(float theta )
 {
 	theta *= PI/180.0f;
 	theta /= 2.0f;
@@ -345,10 +345,10 @@ RageVector4 RageQuatFromH(float theta )
 	const float c = RageFastCos(theta);
 	const float s = RageFastSin(theta);
 
-	return RageVector4(0, s, 0, c);
+	return Rage::Vector4(0, s, 0, c);
 }
 
-RageVector4 RageQuatFromP(float theta )
+Rage::Vector4 RageQuatFromP(float theta )
 {
 	theta *= PI/180.0f;
 	theta /= 2.0f;
@@ -356,10 +356,10 @@ RageVector4 RageQuatFromP(float theta )
 	const float c = RageFastCos(theta);
 	const float s = RageFastSin(theta);
 
-	return RageVector4(s, 0, 0, c);
+	return Rage::Vector4(s, 0, 0, c);
 }
 
-RageVector4 RageQuatFromR(float theta )
+Rage::Vector4 RageQuatFromR(float theta )
 {
 	theta *= PI/180.0f;
 	theta /= 2.0f;
@@ -367,14 +367,14 @@ RageVector4 RageQuatFromR(float theta )
 	const float c = RageFastCos(theta);
 	const float s = RageFastSin(theta);
 
-	return RageVector4(0, 0, s, c);
+	return Rage::Vector4(0, 0, s, c);
 }
 
 
 /* Math from http://www.gamasutra.com/features/19980703/quaternions_01.htm . */
 
 /* prh.xyz -> heading, pitch, roll */
-void RageQuatFromHPR(RageVector4* pOut, Rage::Vector3 hpr )
+void RageQuatFromHPR(Rage::Vector4* pOut, Rage::Vector3 hpr )
 {
 	hpr *= PI;
 	hpr /= 180.0f;
@@ -399,7 +399,7 @@ void RageQuatFromHPR(RageVector4* pOut, Rage::Vector3 hpr )
  */
 
 /* prh.xyz -> pitch, roll, heading */
-void RageQuatFromPRH(RageVector4* pOut, Rage::Vector3 prh )
+void RageQuatFromPRH(Rage::Vector4* pOut, Rage::Vector3 prh )
 {
 	prh *= PI;
 	prh /= 180.0f;
@@ -421,7 +421,7 @@ void RageQuatFromPRH(RageVector4* pOut, Rage::Vector3 prh )
 	pOut->z = cX * cY * sZ - sX * sY * cZ;
 }
 
-void RageMatrixFromQuat( RageMatrix* pOut, const RageVector4 q )
+void RageMatrixFromQuat( RageMatrix* pOut, const Rage::Vector4 q )
 {
 	float xx = q.x * (q.x + q.x);
 	float xy = q.x * (q.y + q.y);
@@ -444,7 +444,7 @@ void RageMatrixFromQuat( RageMatrix* pOut, const RageVector4 q )
 		0,         0,         0,         1 );
 }
 
-void RageQuatSlerp(RageVector4 *pOut, const RageVector4 &from, const RageVector4 &to, float t)
+void RageQuatSlerp(Rage::Vector4 *pOut, const Rage::Vector4 &from, const Rage::Vector4 &to, float t)
 {
 	float to1[4];
 

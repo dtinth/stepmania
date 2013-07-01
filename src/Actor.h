@@ -4,6 +4,7 @@
 #include "PlayerNumber.h"
 #include "RageTypes.h"
 #include "Rage/Vector3.hpp"
+#include "Rage/Vector4.hpp"
 #include "RageUtil_AutoPtr.h"
 #include "LuaReference.h"
 #include "EnumHelper.h"
@@ -202,7 +203,7 @@ public:
 		// start and end position for tweening
 		Rage::Vector3	pos;
 		Rage::Vector3	rotation;
-		RageVector4	quat;
+		Rage::Vector4	quat;
 		Rage::Vector3	scale;
 		float		fSkewX, fSkewY;
 		/**

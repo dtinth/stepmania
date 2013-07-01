@@ -99,34 +99,6 @@ LuaDeclareType( TextGlowMode );
 
 struct lua_State;
 
-struct RageVector4
-{
-public:
-	RageVector4(): x(0), y(0), z(0), w(0) {}
-	RageVector4( const float * f ): x(f[0]), y(f[1]), z(f[2]), w(f[3]) {}
-	RageVector4( float x1, float y1, float z1, float w1 ): x(x1), y(y1), z(z1), w(w1) {}
-	
-	// casting
-	operator float* ()					{ return &x; };
-	operator const float* () const				{ return &x; };
-	
-	// assignment operators
-	RageVector4& operator += ( const RageVector4& other )	{ x+=other.x; y+=other.y; z+=other.z; w+=other.w; return *this; }
-	RageVector4& operator -= ( const RageVector4& other )	{ x-=other.x; y-=other.y; z-=other.z; w-=other.w; return *this; }
-	RageVector4& operator *= ( float f )			{ x*=f; y*=f; z*=f; w*=f; return *this; }
-	RageVector4& operator /= ( float f )			{ x/=f; y/=f; z/=f; w/=f; return *this; }
-	
-	// binary operators
-	RageVector4 operator + ( const RageVector4& other ) const	{ return RageVector4( x+other.x, y+other.y, z+other.z, w+other.w ); }
-	RageVector4 operator - ( const RageVector4& other ) const	{ return RageVector4( x-other.x, y-other.y, z-other.z, w-other.w ); }
-	RageVector4 operator * ( float f ) const			{ return RageVector4( x*f, y*f, z*f, w*f ); }
-	RageVector4 operator / ( float f ) const			{ return RageVector4( x/f, y/f, z/f, w/f ); }
-	
-	friend RageVector4 operator * ( float f, const RageVector4& other )	{ return other*f; }
-	
-	float x, y, z, w;
-} SM_ALIGN(16);
-
 struct RageColor
 {
 public:

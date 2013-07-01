@@ -1170,7 +1170,7 @@ void Actor::TweenState::Init()
 {
 	pos = Rage::Vector3( 0, 0, 0 );
 	rotation = Rage::Vector3( 0, 0, 0 );
-	quat = RageVector4( 0, 0, 0, 1 );
+	quat = Rage::Vector4( 0, 0, 0, 1 );
 	scale = Rage::Vector3( 1, 1, 1 );
 	fSkewX = 0;
 	fSkewY = 0;

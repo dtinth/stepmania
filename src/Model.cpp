@@ -173,35 +173,37 @@ void Model::LoadMaterialsFromMilkshapeAscii( const RString &_sPath )
 					THROW;
 				Material.sName = szName;
 
+                // TODO: Have these either be Colors to start, or apply a conversion method.
+                
 				// ambient
 				if( f.GetLine( sLine ) <= 0 )
 					THROW;
-				RageVector4 Ambient;
-				if( sscanf(sLine, "%f %f %f %f", &Ambient[0], &Ambient[1], &Ambient[2], &Ambient[3]) != 4 )
+				Rage::Vector4 Ambient;
+				if( sscanf(sLine, "%f %f %f %f", &Ambient.x, &Ambient.y, &Ambient.z, &Ambient.w) != 4 )
 					THROW;
 				memcpy( &Material.Ambient, &Ambient, sizeof(Material.Ambient) );
 
 				// diffuse
 				if( f.GetLine( sLine ) <= 0 )
 					THROW;
-				RageVector4 Diffuse;
-				if( sscanf(sLine, "%f %f %f %f", &Diffuse[0], &Diffuse[1], &Diffuse[2], &Diffuse[3]) != 4 )
+				Rage::Vector4 Diffuse;
+				if( sscanf(sLine, "%f %f %f %f", &Diffuse.x, &Diffuse.y, &Diffuse.z, &Diffuse.w) != 4 )
 					THROW;
 				memcpy( &Material.Diffuse, &Diffuse, sizeof(Material.Diffuse) );
 
 				// specular
 				if( f.GetLine( sLine ) <= 0 )
 					THROW;
-				RageVector4 Specular;
-				if( sscanf(sLine, "%f %f %f %f", &Specular[0], &Specular[1], &Specular[2], &Specular[3]) != 4 )
+				Rage::Vector4 Specular;
+				if( sscanf(sLine, "%f %f %f %f", &Specular.x, &Specular.y, &Specular.z, &Specular.w) != 4 )
 					THROW;
 				memcpy( &Material.Specular, &Specular, sizeof(Material.Specular) );
 
 				// emissive
 				if( f.GetLine( sLine ) <= 0 )
 					THROW;
-				RageVector4 Emissive;
-				if( sscanf (sLine, "%f %f %f %f", &Emissive[0], &Emissive[1], &Emissive[2], &Emissive[3]) != 4 )
+				Rage::Vector4 Emissive;
+				if( sscanf (sLine, "%f %f %f %f", &Emissive.x, &Emissive.y, &Emissive.z, &Emissive.w) != 4 )
 					THROW;
 				memcpy( &Material.Emissive, &Emissive, sizeof(Material.Emissive) );
 
@@ -644,7 +646,7 @@ void Model::SetBones( const msAnimation* pAnimation, float fFrame, vector<myBone
 			pLastRotationKey = pRotationKey;
 		}
 
-		RageVector4 vRot;
+		Rage::Vector4 vRot;
 		if( pLastRotationKey != NULL && pThisRotationKey != NULL )
 		{
 			const float s = SCALE( fFrame, pLastRotationKey->fTime, pThisRotationKey->fTime, 0, 1 );

@@ -4,6 +4,7 @@
 #define MODEL_TYPES_H
 
 #include "RageTypes.h"
+#include "Rage/Vector4.hpp"
 
 struct msTriangle
 {
@@ -103,7 +104,7 @@ struct msPositionKey
 struct msRotationKey
 {
 	float fTime;
-	RageVector4 Rotation;
+	Rage::Vector4 Rotation;
 };
 
 struct msBone
