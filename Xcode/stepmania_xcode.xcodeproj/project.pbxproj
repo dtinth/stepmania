@@ -4015,11 +4015,6 @@
 		AA6EFDBB04770A83005F316C /* Rage */ = {
 			isa = PBXGroup;
 			children = (
-				2B75ED7F17812F06007CC664 /* ModelVertex.cpp */,
-				2B75ED7D17812EEA007CC664 /* ModelVertex.hpp */,
-				2B75ED79178122AB007CC664 /* Matrix.hpp */,
-				2B75ED6D1780A0F6007CC664 /* Vector2.cpp */,
-				2B75ED6E1780A0F6007CC664 /* Vector2.hpp */,
 				AA6EFD6D04770A7C005F316C /* RageBitmapTexture.cpp */,
 				AA6EFD6E04770A7C005F316C /* RageBitmapTexture.h */,
 				AA6EFD6F04770A7C005F316C /* RageDisplay.cpp */,
@@ -4159,11 +4154,16 @@
 				AAF580A804B3E2DC00D02EE9 /* RageUtil_FileDB.h */,
 				AACA592D07B5E23400763545 /* RageUtil_WorkerThread.cpp */,
 				AACA592E07B5E23400763545 /* RageUtil_WorkerThread.h */,
+				2B75ED7F17812F06007CC664 /* ModelVertex.cpp */,
+				2B75ED7D17812EEA007CC664 /* ModelVertex.hpp */,
+				2B75ED79178122AB007CC664 /* Matrix.hpp */,
+				2B75ED7B1781232C007CC664 /* Matrix.cpp */,
+				2B75ED6D1780A0F6007CC664 /* Vector2.cpp */,
+				2B75ED6E1780A0F6007CC664 /* Vector2.hpp */,
 				2B75ED711781128F007CC664 /* Vector3.hpp */,
 				2B75ED73178112A6007CC664 /* Vector3.cpp */,
 				2B75ED7517811C8E007CC664 /* Vector4.hpp */,
 				2B75ED7717811CD3007CC664 /* Vector4.cpp */,
-				2B75ED7B1781232C007CC664 /* Matrix.cpp */,
 			);
 			name = Rage;
 			sourceTree = "<group>";
