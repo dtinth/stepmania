@@ -13,7 +13,6 @@
 #include "PrefsManager.h"
 #include "Game.h"
 #include "Style.h"
-#include "Foreach.h"
 #include "arch/Dialog/Dialog.h"
 #include "GameSoundManager.h"
 #include "PlayerState.h"
@@ -158,8 +157,8 @@ void GameCommand::Load( int iIndex, const Commands& cmds )
 	m_bInvalid = false;
 	m_Commands = cmds;
 
-	FOREACH_CONST( Command, cmds.v, cmd )
-		LoadOne( *cmd );
+    for (auto &cmd : cmds.v)
+		LoadOne( cmd );
 }
 
 void GameCommand::LoadOne( const Command& cmd )
@@ -609,12 +608,12 @@ void GameCommand::Apply( const vector<PlayerNumber> &vpns ) const
 	if( m_Commands.v.size() )
 	{
 		// We were filled using a GameCommand from metrics. Apply the options in order.
-		FOREACH_CONST( Command, m_Commands.v, cmd )
+        for (auto &cmd : m_Commands.v)
 		{
 			GameCommand gc;
 			gc.m_bInvalid = false;
 			gc.m_bApplyCommitsScreens = m_bApplyCommitsScreens;
-			gc.LoadOne( *cmd );
+			gc.LoadOne( cmd );
 			gc.ApplySelf( vpns );
 		}
 	}
@@ -656,25 +655,25 @@ void GameCommand::ApplySelf( const vector<PlayerNumber> &vpns ) const
 		}
 	}
 	if( m_dc != Difficulty_Invalid )
-		FOREACH_CONST( PlayerNumber, vpns, pn )
-			GAMESTATE->m_PreferredDifficulty[*pn].Set( m_dc );
+		for (auto const &pn : vpns)
+			GAMESTATE->m_PreferredDifficulty[pn].Set( m_dc );
 	if( m_sAnnouncer != "" )
 		ANNOUNCER->SwitchAnnouncer( m_sAnnouncer );
 	if( m_sPreferredModifiers != "" )
-		FOREACH_CONST( PlayerNumber, vpns, pn )
-			GAMESTATE->ApplyPreferredModifiers( *pn, m_sPreferredModifiers );
+		for (auto const &pn : vpns)
+			GAMESTATE->ApplyPreferredModifiers( pn, m_sPreferredModifiers );
 	if( m_sStageModifiers != "" )
-		FOREACH_CONST( PlayerNumber, vpns, pn )
-			GAMESTATE->ApplyStageModifiers( *pn, m_sStageModifiers );
+		for (auto const &pn : vpns)
+			GAMESTATE->ApplyStageModifiers( pn, m_sStageModifiers );
 	if( m_LuaFunction.IsSet() )
 	{
 		Lua *L = LUA->Get();
-		FOREACH_CONST( PlayerNumber, vpns, pn )
+		for (auto const &pn : vpns)
 		{
 			m_LuaFunction.PushSelf( L );
 			ASSERT( !lua_isnil(L, -1) );
 
-			lua_pushnumber( L, *pn ); // 1st parameter
+			lua_pushnumber( L, pn ); // 1st parameter
 			lua_call( L, 1, 0 ); // call function with 1 argument and 0 results
 		}
 		LUA->Release(L);
@@ -687,22 +686,22 @@ void GameCommand::ApplySelf( const vector<PlayerNumber> &vpns ) const
 		GAMESTATE->m_pPreferredSong = m_pSong;
 	}
 	if( m_pSteps )
-		FOREACH_CONST( PlayerNumber, vpns, pn )
-			GAMESTATE->m_pCurSteps[*pn].Set( m_pSteps );
+		for (auto const &pn : vpns)
+			GAMESTATE->m_pCurSteps[pn].Set( m_pSteps );
 	if( m_pCourse )
 	{
 		GAMESTATE->m_pCurCourse.Set( m_pCourse );
 		GAMESTATE->m_pPreferredCourse = m_pCourse;
 	}
 	if( m_pTrail )
-		FOREACH_CONST( PlayerNumber, vpns, pn )
-			GAMESTATE->m_pCurTrail[*pn].Set( m_pTrail );
+		for (auto const &pn : vpns)
+			GAMESTATE->m_pCurTrail[pn].Set( m_pTrail );
 	if( m_CourseDifficulty != Difficulty_Invalid )
-		FOREACH_CONST( PlayerNumber, vpns, pn )
-			GAMESTATE->ChangePreferredCourseDifficulty( *pn, m_CourseDifficulty );
+		for (auto const &pn : vpns)
+			GAMESTATE->ChangePreferredCourseDifficulty( pn, m_CourseDifficulty );
 	if( m_pCharacter )
-		FOREACH_CONST( PlayerNumber, vpns, pn )
-			GAMESTATE->m_pCurCharacters[*pn] = m_pCharacter;
+		for (auto const &pn : vpns)
+			GAMESTATE->m_pCurCharacters[pn] = m_pCharacter;
 	for( map<RString,RString>::const_iterator i = m_SetEnv.begin(); i != m_SetEnv.end(); i++ )
 	{
 		Lua *L = LUA->Get();
@@ -720,17 +719,17 @@ void GameCommand::ApplySelf( const vector<PlayerNumber> &vpns ) const
 	if( m_sSoundPath != "" )
 		SOUND->PlayOnce( THEME->GetPathS( "", m_sSoundPath ) );
 	if( m_iWeightPounds != -1 )
-		FOREACH_CONST( PlayerNumber, vpns, pn )
-			PROFILEMAN->GetProfile(*pn)->m_iWeightPounds = m_iWeightPounds;
+		for (auto const &pn : vpns)
+			PROFILEMAN->GetProfile(pn)->m_iWeightPounds = m_iWeightPounds;
 	if( m_iGoalCalories != -1 )
-		FOREACH_CONST( PlayerNumber, vpns, pn )
-			PROFILEMAN->GetProfile(*pn)->m_iGoalCalories = m_iGoalCalories;
+		for (auto const &pn : vpns)
+			PROFILEMAN->GetProfile(pn)->m_iGoalCalories = m_iGoalCalories;
 	if( m_GoalType != GoalType_Invalid )
-		FOREACH_CONST( PlayerNumber, vpns, pn )
-			PROFILEMAN->GetProfile(*pn)->m_GoalType = m_GoalType;
+        for (auto const &pn : vpns)
+			PROFILEMAN->GetProfile(pn)->m_GoalType = m_GoalType;
 	if( !m_sProfileID.empty() )
-		FOREACH_CONST( PlayerNumber, vpns, pn )
-			ProfileManager::m_sDefaultLocalProfileID[*pn].Set( m_sProfileID );
+        for (auto const &pn : vpns)
+			ProfileManager::m_sDefaultLocalProfileID[pn].Set( m_sProfileID );
 	if( !m_sUrl.empty() )
 	{
 		if( HOOKS->GoToURL( m_sUrl ) )
@@ -749,8 +748,8 @@ void GameCommand::ApplySelf( const vector<PlayerNumber> &vpns ) const
 	if( m_bFadeMusic )
 		SOUND->DimMusic(m_fMusicFadeOutVolume, m_fMusicFadeOutSeconds);
 
-	FOREACH_CONST( RString, m_vsScreensToPrepare, s )
-		SCREENMAN->PrepareScreen( *s );
+    for (auto const &s : m_vsScreensToPrepare)
+		SCREENMAN->PrepareScreen( s );
 
 	if( m_bInsertCredit )
 	{

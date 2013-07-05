@@ -11,7 +11,6 @@
 #include "Sprite.h"
 #include "NoteTypes.h"
 #include "LuaBinding.h"
-#include "Foreach.h"
 #include "RageMath.h"
 
 const RString& NoteNotePartToString( NotePart i );
@@ -394,11 +393,11 @@ void NoteDisplay::DrawHoldPart( vector<Sprite*> &vpSpr, int iCol, int fYStep, fl
 	ASSERT( !vpSpr.empty() );
 
 	Sprite *pSprite = vpSpr.front();
-	FOREACH( Sprite *, vpSpr, s )
+    for (auto *s : vpSpr)
 	{
-		(*s)->SetZoom( ArrowEffects::GetZoom(m_pPlayerState) );
-		ASSERT( (*s)->GetUnzoomedWidth() == pSprite->GetUnzoomedWidth() );
-		ASSERT( (*s)->GetUnzoomedHeight() == pSprite->GetUnzoomedHeight() );
+		s->SetZoom( ArrowEffects::GetZoom(m_pPlayerState) );
+		ASSERT( s->GetUnzoomedWidth() == pSprite->GetUnzoomedWidth() );
+		ASSERT( s->GetUnzoomedHeight() == pSprite->GetUnzoomedHeight() );
 	}
 
 	// draw manually in small segments
@@ -498,7 +497,8 @@ void NoteDisplay::DrawHoldPart( vector<Sprite*> &vpSpr, int iCol, int fYStep, fl
 			 * start off the strip again. */
 			if( !bAllAreTransparent )
 			{
-				FOREACH( Sprite*, vpSpr, spr )
+                // use iter version
+                for (auto spr = std::begin(vpSpr); spr != std::end(vpSpr); ++spr)
 				{
 					RageTexture* pTexture = (*spr)->GetTexture();
 					DISPLAY->SetTexture( TextureUnit_1, pTexture->GetTexHandle() );

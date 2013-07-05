@@ -5,7 +5,7 @@
 #include "XmlFile.h"
 #include "GameManager.h"
 #include "Song.h"
-
+#include <numeric>
 
 int TrailUtil::GetNumSongs( const Trail *pTrail )
 {
@@ -14,10 +14,10 @@ int TrailUtil::GetNumSongs( const Trail *pTrail )
 
 float TrailUtil::GetTotalSeconds( const Trail *pTrail )
 {
-	float fSecs = 0;
-	FOREACH_CONST( TrailEntry, pTrail->m_vEntries, e )
-		fSecs += e->pSong->m_fMusicLengthSeconds;
-	return fSecs;
+    auto const &entries = pTrail->m_vEntries;
+    return std::accumulate(std::begin(entries), std::end(entries), 0.f, [](float sec, TrailEntry const &e) {
+        return sec + e.pSong->m_fMusicLengthSeconds;
+    });
 }
 
 ///////////////////////////////////////////////////////////////////////

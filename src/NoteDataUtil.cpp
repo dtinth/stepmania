@@ -8,7 +8,6 @@
 #include "Style.h"
 #include "GameState.h"
 #include "RadarValues.h"
-#include "Foreach.h"
 #include <utility>
 
 // TODO: Remove these constants that aren't time signature-aware
@@ -345,16 +344,17 @@ void NoteDataUtil::GetSMNoteDataString( const NoteData &in, RString &sRet )
 
 	SplitCompositeNoteData( in, parts );
 
-	FOREACH( NoteData, parts, nd )
+    for (auto &nd : parts)
 	{
-		InsertHoldTails( *nd );
-		fLastBeat = max( fLastBeat, nd->GetLastBeat() );
+		InsertHoldTails( nd );
+		fLastBeat = max( fLastBeat, nd.GetLastBeat() );
 	}
 
 	int iLastMeasure = int( fLastBeat/BEATS_PER_MEASURE );
 
 	sRet = "";
-	FOREACH( NoteData, parts, nd )
+    // use iter style
+    for (auto nd = std::begin(parts); nd != std::end(parts); ++nd)
 	{
 		if( nd != parts.begin() )
 			sRet.append( "&\n" );
@@ -468,13 +468,13 @@ void NoteDataUtil::SplitCompositeNoteData( const NoteData &in, vector<NoteData> 
 
 void NoteDataUtil::CombineCompositeNoteData( NoteData &out, const vector<NoteData> &in )
 {
-	FOREACH_CONST( NoteData, in, nd )
+    for (auto const &nd : in)
 	{
-		const int iMaxTracks = min( out.GetNumTracks(), nd->GetNumTracks() );
+		const int iMaxTracks = min( out.GetNumTracks(), nd.GetNumTracks() );
 
 		for( int track = 0; track < iMaxTracks; ++track )
 		{
-			for( NoteData::const_iterator i = nd->begin(track); i != nd->end(track); ++i )
+			for( NoteData::const_iterator i = nd.begin(track); i != nd.end(track); ++i )
 			{
 				int row = i->first;
 				if( out.IsHoldNoteAtRow(track, i->first) )
@@ -1026,8 +1026,8 @@ void NoteDataUtil::RemoveSimultaneousNotes( NoteData &in, int iMaxSimultaneous, 
 		vector<NoteData> vParts;
 		
 		SplitCompositeNoteData( in, vParts );
-		FOREACH( NoteData, vParts, nd )
-			RemoveSimultaneousNotes( *nd, iMaxSimultaneous, iStartIndex, iEndIndex );
+        for (auto &nd : vParts)
+			RemoveSimultaneousNotes( nd, iMaxSimultaneous, iStartIndex, iEndIndex );
 		in.Init();
 		in.SetNumTracks( vParts.front().GetNumTracks() );
 		CombineCompositeNoteData( in, vParts );
@@ -2280,14 +2280,14 @@ void NoteDataUtil::ConvertAdditionsToRegular( NoteData &inout )
 
 void NoteDataUtil::TransformNoteData( NoteData &nd, const AttackArray &aa, StepsType st, Song* pSong )
 {
-	FOREACH_CONST( Attack, aa, a )
+    for (auto const &a : aa)
 	{
 		PlayerOptions po;
-		po.FromString( a->sModifiers );
+		po.FromString( a.sModifiers );
 		if( po.ContainsTransformOrTurn() )
 		{
 			float fStartBeat, fEndBeat;
-			a->GetAttackBeats( pSong, fStartBeat, fEndBeat );
+			a.GetAttackBeats( pSong, fStartBeat, fEndBeat );
 
 			NoteDataUtil::TransformNoteData( nd, po, st, BeatToNoteRow(fStartBeat), BeatToNoteRow(fEndBeat) );
 		}

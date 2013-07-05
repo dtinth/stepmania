@@ -3,7 +3,6 @@
 #include "GameState.h"
 #include "RageUtil.h"
 #include "Song.h"
-#include "Foreach.h"
 #include "PlayerOptions.h"
 #include "PlayerState.h"
 
@@ -90,33 +89,29 @@ int Attack::GetNumAttacks() const
 
 bool AttackArray::ContainsTransformOrTurn() const
 {
-	FOREACH_CONST( Attack, *this, a )
-	{
-		if( a->ContainsTransformOrTurn() )
-			return true;
-	}
-	return false;
+    return std::any_of(std::begin(*this), std::end(*this), [](Attack const &a) {
+        return a.ContainsTransformOrTurn();
+    });
 }
 
 vector<RString> AttackArray::ToVectorString() const
 {
 	vector<RString> ret;
-	FOREACH_CONST( Attack, *this, a )
+    for (auto const &a : *this)
 	{
 		ret.push_back(ssprintf("TIME=%f:LEN=%f:MODS=%s",
-				       a->fStartSecond,
-				       a->fSecsRemaining,
-				       a->sModifiers.c_str()));
+				       a.fStartSecond,
+				       a.fSecsRemaining,
+				       a.sModifiers.c_str()));
 	}
 	return ret;
 }
 
 void AttackArray::UpdateStartTimes(float delta)
 {
-	FOREACH(Attack, *this, a)
-	{
-		a->fStartSecond += delta;
-	}
+    std::for_each(std::begin(*this), std::end(*this), [&](Attack &a) {
+        a.fStartSecond += delta;
+    });
 }
 
 /*

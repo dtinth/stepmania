@@ -9,7 +9,6 @@
 #include "CommonMetrics.h"
 #include "Course.h"
 #include "CryptManager.h"
-#include "Foreach.h"
 #include "Game.h"
 #include "GameCommand.h"
 #include "GameConstantsAndTypes.h"
@@ -1444,10 +1443,10 @@ void GameState::GetAllUsedNoteSkins( vector<RString> &out ) const
 			const Trail *pTrail = m_pCurTrail[pn];
 			ASSERT( pTrail != NULL );
 
-			FOREACH_CONST( TrailEntry, pTrail->m_vEntries, e )
+            for (auto const &e : pTrail->m_vEntries)
 			{
 				PlayerOptions po;
-				po.FromString( e->Modifiers );
+				po.FromString( e.Modifiers );
 				if( !po.m_sNoteSkin.empty() )
 					out.push_back( po.m_sNoteSkin );
 			}
@@ -1835,23 +1834,40 @@ void GameState::StoreRankingName( PlayerNumber pn, RString sName )
 	if( !PREFSMAN->m_bAllowMultipleHighScoreWithSameName )
 	{
 		// erase all but the highest score for each name
-		FOREACHM( SongID, Profile::HighScoresForASong, pProfile->m_SongHighScores, iter )
-			FOREACHM( StepsID, Profile::HighScoresForASteps, iter->second.m_StepsHighScores, iter2 )
-				iter2->second.hsl.RemoveAllButOneOfEachName();
+        for (auto &iter : pProfile->m_SongHighScores)
+        {
+            for (auto &iter2 : iter.second.m_StepsHighScores)
+            {
+                iter2.second.hsl.RemoveAllButOneOfEachName();
+            }
+        }
 
-		FOREACHM( CourseID, Profile::HighScoresForACourse, pProfile->m_CourseHighScores, iter )
-			FOREACHM( TrailID, Profile::HighScoresForATrail, iter->second.m_TrailHighScores, iter2 )
-				iter2->second.hsl.RemoveAllButOneOfEachName();
+        for (auto &iter : pProfile->m_CourseHighScores)
+        {
+            for (auto &iter2 : iter.second.m_TrailHighScores)
+            {
+				iter2.second.hsl.RemoveAllButOneOfEachName();
+            }
+        }
 	}
 
 	// clamp high score sizes
-	FOREACHM( SongID, Profile::HighScoresForASong, pProfile->m_SongHighScores, iter )
-		FOREACHM( StepsID, Profile::HighScoresForASteps, iter->second.m_StepsHighScores, iter2 )
-			iter2->second.hsl.ClampSize( true );
-
-	FOREACHM( CourseID, Profile::HighScoresForACourse, pProfile->m_CourseHighScores, iter )
-		FOREACHM( TrailID, Profile::HighScoresForATrail, iter->second.m_TrailHighScores, iter2 )
-			iter2->second.hsl.ClampSize( true );
+    for (auto &iter : pProfile->m_SongHighScores)
+    {
+        // look into std::transform
+        for (auto &iter2 : iter.second.m_StepsHighScores)
+        {
+            iter2.second.hsl.ClampSize(true);
+        }
+    }
+    
+    for (auto &iter : pProfile->m_CourseHighScores)
+    {
+        for (auto &iter2 : iter.second.m_TrailHighScores)
+        {
+            iter2.second.hsl.ClampSize(true);
+        }
+    }
 }
 
 bool GameState::AllAreInDangerOrWorse() const
@@ -1948,7 +1964,8 @@ Difficulty GameState::GetClosestShownDifficulty( PlayerNumber pn ) const
 
 	Difficulty iClosest = (Difficulty) 0;
 	int iClosestDist = -1;
-	FOREACH_CONST( Difficulty, v, dc )
+    // use iter version
+    for (auto dc = std::begin(v); dc != std::end(v); ++dc)
 	{
 		int iDist = m_PreferredDifficulty[pn] - *dc;
 		if( iDist < 0 )

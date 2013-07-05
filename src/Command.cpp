@@ -3,7 +3,7 @@
 #include "RageUtil.h"
 #include "RageLog.h"
 #include "arch/Dialog/Dialog.h"
-#include "Foreach.h"
+#include <numeric>
 
 
 RString Command::GetName() const 
@@ -81,10 +81,9 @@ static void SplitWithQuotes( const RString sSource, const char Delimitor, vector
 
 RString Commands::GetOriginalCommandString() const
 {
-	RString s;
-	FOREACH_CONST( Command, v, c )
-		s += c->GetOriginalCommandString();
-	return s;
+    return std::accumulate(std::begin(v), std::end(v), RString(), [](RString cmd, Command const &c) {
+        return cmd + c.GetOriginalCommandString();
+    });
 }
 
 void ParseCommands( const RString &sCommands, Commands &vCommandsOut )

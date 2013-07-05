@@ -5,7 +5,6 @@
 #include "RageMath.h"
 #include "RageLog.h"
 #include "arch/Dialog/Dialog.h"
-#include "Foreach.h"
 #include "XmlFile.h"
 #include "LuaBinding.h"
 #include "ThemeManager.h"
@@ -250,11 +249,11 @@ Actor::Actor( const Actor &cpy ):
 void Actor::LoadFromNode( const XNode* pNode )
 {
 	Lua *L = LUA->Get();
-	FOREACH_CONST_Attr( pNode, pAttr )
+    for (auto pAttr : pNode->m_attrs)
 	{
 		// Load Name, if any.
-		const RString &sKeyName = pAttr->first;
-		const XNodeValue *pValue = pAttr->second;
+		const RString &sKeyName = pAttr.first;
+		const XNodeValue *pValue = pAttr.second;
 		if( sKeyName == "Name" )			SetName( pValue->GetValue<RString>() );
 		else if( sKeyName == "BaseRotationX" )		SetBaseRotationX( pValue->GetValue<float>() );
 		else if( sKeyName == "BaseRotationY" )		SetBaseRotationY( pValue->GetValue<float>() );

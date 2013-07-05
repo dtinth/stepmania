@@ -32,20 +32,20 @@ void ScreenDemonstration::Init()
 		vector<RString> v;
 		split( ALLOW_STYLE_TYPES, ",", v );
 		vector<StyleType> vStyleTypeAllow;
-		FOREACH_CONST( RString, v, s )
+        for (auto const &s : v)
 		{
-			StyleType st = StringToStyleType( *s );
+			StyleType st = StringToStyleType( s );
 			ASSERT( st != StyleType_Invalid );
 			vStyleTypeAllow.push_back( st );
 		}
 
 		vector<const Style*> vStylePossible;
 		GAMEMAN->GetDemonstrationStylesForGame( GAMESTATE->m_pCurGame, vStylePossible );
-		for( int i=(int)(vStylePossible.size())-1; i>=0; i-- )
+		for( unsigned i = vStylePossible.size(); i > 0; i-- )
 		{
-			bool bAllowThis = find( vStyleTypeAllow.begin(), vStyleTypeAllow.end(), vStylePossible[i]->m_StyleType ) != vStyleTypeAllow.end();
+			bool bAllowThis = find( vStyleTypeAllow.begin(), vStyleTypeAllow.end(), vStylePossible[i - 1]->m_StyleType ) != vStyleTypeAllow.end();
 			if( !bAllowThis )
-				vStylePossible.erase( vStylePossible.begin()+i );
+				vStylePossible.erase( vStylePossible.begin()+i-1 );
 		}
 
 		ASSERT( vStylePossible.size() > 0 );

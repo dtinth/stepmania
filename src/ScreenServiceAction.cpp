@@ -43,12 +43,12 @@ static RString ClearMachineEdits()
 	vector<RString> vsEditFiles;
 	GetDirListing( PROFILEMAN->GetProfileDir(ProfileSlot_Machine)+EDIT_STEPS_SUBDIR+"*.edit", vsEditFiles, false, true );
 	GetDirListing( PROFILEMAN->GetProfileDir(ProfileSlot_Machine)+EDIT_COURSES_SUBDIR+"*.crs", vsEditFiles, false, true );
-	FOREACH_CONST( RString, vsEditFiles, i )
+    for (auto const &i : vsEditFiles)
 	{
-		iNumAttempted++;
-		bool bSuccess = FILEMAN->Remove( *i );
+		++iNumAttempted;
+		bool bSuccess = FILEMAN->Remove( i );
 		if( bSuccess )
-			iNumSuccessful++;
+			++iNumSuccessful;
 	}
 
 	// reload the machine profile
@@ -92,12 +92,12 @@ static RString ClearMemoryCardEdits()
 	vector<RString> vsEditFiles;
 	GetDirListing( sDir+EDIT_STEPS_SUBDIR+"*.edit", vsEditFiles, false, true );
 	GetDirListing( sDir+EDIT_COURSES_SUBDIR+"*.crs", vsEditFiles, false, true );
-	FOREACH_CONST( RString, vsEditFiles, i )
+    for (auto const &i : vsEditFiles)
 	{
-		iNumAttempted++;
-		bool bSuccess = FILEMAN->Remove( *i );
+		++iNumAttempted;
+		bool bSuccess = FILEMAN->Remove( i );
 		if( bSuccess )
-			iNumSuccessful++;
+			++iNumSuccessful;
 	}
 
 	MEMCARDMAN->UnmountCard(pn);
@@ -186,19 +186,19 @@ static void CopyEdits( const RString &sFromProfileDir, const RString &sToProfile
 
 		vector<RString> vsFiles;
 		GetDirListing( sFromDir+"*.edit", vsFiles, false, false );
-		FOREACH_CONST( RString, vsFiles, i )
+        for (auto const &i : vsFiles)
 		{
-			if( DoesFileExist(sToDir+*i) )
-				iNumOverwritten++;
-			bool bSuccess = FileCopy( sFromDir+*i, sToDir+*i );
+			if( DoesFileExist(sToDir + i) )
+				++iNumOverwritten;
+			bool bSuccess = FileCopy( sFromDir + i, sToDir + i );
 			if( bSuccess )
-				iNumSucceeded++;
+				++iNumSucceeded;
 			else
-				iNumErrored++;
+				++iNumErrored;
 
 			// Test whether the song we need for this edit is present and ignore this edit if not present.
 			SSCLoader loaderSSC;
-			if( !loaderSSC.LoadEditFromFile( sFromDir+*i, ProfileSlot_Machine, false ) )
+			if( !loaderSSC.LoadEditFromFile( sFromDir + i, ProfileSlot_Machine, false ) )
 			{
 				iNumIgnored++;
 				continue;
@@ -214,15 +214,15 @@ static void CopyEdits( const RString &sFromProfileDir, const RString &sToProfile
 
 		vector<RString> vsFiles;
 		GetDirListing( sFromDir+"*.crs", vsFiles, false, false );
-		FOREACH_CONST( RString, vsFiles, i )
+        for (auto const &i : vsFiles)
 		{
-			if( DoesFileExist(sToDir+*i) )
-				iNumOverwritten++;
-			bool bSuccess = FileCopy( sFromDir+*i, sToDir+*i );
+			if( DoesFileExist(sToDir + i) )
+				++iNumOverwritten;
+			bool bSuccess = FileCopy( sFromDir + i, sToDir + i );
 			if( bSuccess )
-				iNumSucceeded++;
+				++iNumSucceeded;
 			else
-				iNumErrored++;
+				++iNumErrored;
 		}
 	}
 }
@@ -375,12 +375,12 @@ static RString CopyEditsMemoryCardToMachine()
 	vector<RString> vs;
 	vs.push_back( ssprintf( COPIED_FROM_CARD.GetValue(), pn+1 ) );
 
-	FOREACH_CONST( RString, vsSubDirs, sSubDir )
+    for (auto const &sSubDir : vsSubDirs)
 	{
-		RString sFromDir = MEM_CARD_MOUNT_POINT[pn] + (RString)(*sSubDir) + "/";
+		RString sFromDir = MEM_CARD_MOUNT_POINT[pn] + sSubDir + "/";
 		RString sToDir = PROFILEMAN->GetProfileDir(ProfileSlot_Machine);
 
-		RString s = CopyEdits( sFromDir, sToDir, *sSubDir );
+		RString s = CopyEdits( sFromDir, sToDir, sSubDir );
 		vs.push_back( s );
 	}
 	
@@ -410,22 +410,22 @@ void ScreenServiceAction::BeginScreen()
 	split( sActions, ",", vsActions );
 
 	vector<RString> vsResults;
-	FOREACH( RString, vsActions, s )
+    for (auto const &s : vsActions)
 	{
 		RString (*pfn)() = NULL;
 
-		if(	 *s == "ClearBookkeepingData" )			pfn = ClearBookkeepingData;
-		else if( *s == "ClearMachineStats" )			pfn = ClearMachineStats;
-		else if( *s == "ClearMachineEdits" )			pfn = ClearMachineEdits;
-		else if( *s == "ClearMemoryCardEdits" )			pfn = ClearMemoryCardEdits;
-		else if( *s == "TransferStatsMachineToMemoryCard" )	pfn = TransferStatsMachineToMemoryCard;
-		else if( *s == "TransferStatsMemoryCardToMachine" )	pfn = TransferStatsMemoryCardToMachine;
-		else if( *s == "CopyEditsMachineToMemoryCard" )		pfn = CopyEditsMachineToMemoryCard;
-		else if( *s == "CopyEditsMemoryCardToMachine" )		pfn = CopyEditsMemoryCardToMachine;
-		else if( *s == "SyncEditsMachineToMemoryCard" )		pfn = SyncEditsMachineToMemoryCard;
-		else if( *s == "ResetPreferences" )			pfn = ResetPreferences;
+		if(	 s == "ClearBookkeepingData" )			pfn = ClearBookkeepingData;
+		else if( s == "ClearMachineStats" )			pfn = ClearMachineStats;
+		else if( s == "ClearMachineEdits" )			pfn = ClearMachineEdits;
+		else if( s == "ClearMemoryCardEdits" )			pfn = ClearMemoryCardEdits;
+		else if( s == "TransferStatsMachineToMemoryCard" )	pfn = TransferStatsMachineToMemoryCard;
+		else if( s == "TransferStatsMemoryCardToMachine" )	pfn = TransferStatsMemoryCardToMachine;
+		else if( s == "CopyEditsMachineToMemoryCard" )		pfn = CopyEditsMachineToMemoryCard;
+		else if( s == "CopyEditsMemoryCardToMachine" )		pfn = CopyEditsMemoryCardToMachine;
+		else if( s == "SyncEditsMachineToMemoryCard" )		pfn = SyncEditsMachineToMemoryCard;
+		else if( s == "ResetPreferences" )			pfn = ResetPreferences;
 		
-		ASSERT_M( pfn != NULL, *s );
+		ASSERT_M( pfn != NULL, s );
 		
 		RString sResult = pfn();
 		vsResults.push_back( sResult );

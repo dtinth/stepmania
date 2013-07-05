@@ -3,7 +3,6 @@
 #include "RageUtil.h"
 #include "RageFile.h"
 #include "RageLog.h"
-#include "Foreach.h"
 
 CsvFile::CsvFile()
 {
@@ -114,15 +113,14 @@ bool CsvFile::WriteFile( const RString &sPath ) const
 
 bool CsvFile::WriteFile( RageFileBasic &f ) const
 {
-	FOREACH_CONST( StringVector, m_vvs, line ) 
+	for (auto &line : m_vvs)
 	{
 		RString sLine;
-		FOREACH_CONST( RString, *line, value ) 
+		for (auto &sVal : line)
 		{
-			RString sVal = *value;
 			sVal.Replace( "\"", "\"\"" );	// escape quotes to double-quotes
 			sLine += "\"" + sVal + "\"";
-			if( value != line->end()-1 )
+			if( value != line.end()-1 )
 				sLine += ",";
 		}
 		if( f.PutLine(sLine) == -1 )

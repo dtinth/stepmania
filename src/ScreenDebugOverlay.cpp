@@ -95,13 +95,19 @@ ScreenDebugOverlay::~ScreenDebugOverlay()
 {
 	this->RemoveAllChildren();
 
-	FOREACH( BitmapText*, m_vptextPages, p )
-		SAFE_DELETE( *p );
-	FOREACH( BitmapText*, m_vptextButton, p )
-		SAFE_DELETE( *p );
+    for (auto *p : m_vptextPages)
+	{
+		SAFE_DELETE( p );
+	}
+	for (auto *p : m_vptextButton)
+	{	
+		SAFE_DELETE( p );
+	}
 	m_vptextButton.clear();
-	FOREACH( BitmapText*, m_vptextFunction, p )
-		SAFE_DELETE( *p );
+    for (auto *p : m_vptextFunction)
+	{
+		SAFE_DELETE( p );
+	}
 	m_vptextFunction.clear();
 }
 
@@ -216,12 +222,12 @@ void ScreenDebugOverlay::Init()
 
 	map<RString,int> iNextDebugButton;
 	int iNextGameplayButton = 0;
-	FOREACH( IDebugLine*, *g_pvpSubscribers, p )
+    for (auto *p : *g_pvpSubscribers)
 	{
-		RString sPageName = (*p)->GetPageName();
+		RString sPageName = p->GetPageName();
 
 		DeviceInput di;
-		switch( (*p)->GetType() )
+		switch( p->GetType() )
 		{
 		case IDebugLine::all_screens:
 			di = g_Mappings.debugButton[iNextDebugButton[sPageName]++];
@@ -230,7 +236,7 @@ void ScreenDebugOverlay::Init()
 			di = g_Mappings.gameplayButton[iNextGameplayButton++];
 			break;
 		}
-		(*p)->m_Button = di;
+		p->m_Button = di;
 
 		if( find(m_asPages.begin(), m_asPages.end(), sPageName) == m_asPages.end() )
 			m_asPages.push_back( sPageName );
@@ -251,7 +257,8 @@ void ScreenDebugOverlay::Init()
 	m_textHeader.SetText( DEBUG_MENU );
 	this->AddChild( &m_textHeader );
 
-	FOREACH_CONST( RString, m_asPages, s )
+    // use iter style
+    for (auto s = std::begin(m_asPages); s != std::end(m_asPages); ++s)
 	{
 		int iPage = s - m_asPages.begin();
 
@@ -272,7 +279,7 @@ void ScreenDebugOverlay::Init()
 		this->AddChild( p );
 	}
 
-	FOREACH_CONST( IDebugLine*, *g_pvpSubscribers, p )
+    for (auto const *dummy : *g_pvpSubscribers)
 	{
 		{
 			BitmapText *bt = new BitmapText;
@@ -345,7 +352,7 @@ void ScreenDebugOverlay::Update( float fDeltaTime )
 
 void ScreenDebugOverlay::UpdateText()
 {
-	FOREACH_CONST( RString, m_asPages, s )
+    for (auto s = std::begin(m_asPages); s != std::end(m_asPages); ++s)
 	{
 		int iPage = s - m_asPages.begin();
 		m_vptextPages[iPage]->PlayCommand( (iPage == m_iCurrentPage) ? "GainFocus" :  "LoseFocus" );
@@ -353,7 +360,7 @@ void ScreenDebugOverlay::UpdateText()
 
 	// todo: allow changing of various spacing/location things -aj
 	int iOffset = 0;
-	FOREACH_CONST( IDebugLine*, *g_pvpSubscribers, p )
+    for (auto p = std::begin(*g_pvpSubscribers); p != std::end(*g_pvpSubscribers); ++p)
 	{
 		RString sPageName = (*p)->GetPageName();
 
@@ -448,7 +455,8 @@ bool ScreenDebugOverlay::Input( const InputEventPlus &input )
 		return true;
 	}
 
-	FOREACH_CONST( IDebugLine*, *g_pvpSubscribers, p )
+    // user iter style
+    for (auto p = std::begin(*g_pvpSubscribers); p != std::end(*g_pvpSubscribers); ++p)
 	{
 		RString sPageName = (*p)->GetPageName();
 
@@ -883,35 +891,35 @@ static void FillProfileStats( Profile *pProfile )
 		PREFSMAN->m_iMaxHighScoresPerListForPlayer.Get();
 
 	vector<Song*> vpAllSongs = SONGMAN->GetAllSongs();
-	FOREACH( Song*, vpAllSongs, pSong )
+    for (auto *pSong : vpAllSongs)
 	{
-		vector<Steps*> vpAllSteps = (*pSong)->GetAllSteps();
-		FOREACH( Steps*, vpAllSteps, pSteps )
+		vector<Steps*> vpAllSteps = pSong->GetAllSteps();
+        for (auto *pSteps : vpAllSteps)
 		{
 			if( rand() % 5 )
-				pProfile->IncrementStepsPlayCount( *pSong, *pSteps );
+				pProfile->IncrementStepsPlayCount( pSong, pSteps );
 			for( int i=0; i<iCount; i++ )
 			{
 				int iIndex = 0;
-				pProfile->AddStepsHighScore( *pSong, *pSteps, MakeRandomHighScore(fPercentDP), iIndex );
+				pProfile->AddStepsHighScore( pSong, pSteps, MakeRandomHighScore(fPercentDP), iIndex );
 			}
 		}
 	}
 
 	vector<Course*> vpAllCourses;
 	SONGMAN->GetAllCourses( vpAllCourses, true );
-	FOREACH( Course*, vpAllCourses, pCourse )
+    for (auto *pCourse : vpAllCourses)
 	{
 		vector<Trail*> vpAllTrails;
-		(*pCourse)->GetAllTrails( vpAllTrails );
-		FOREACH( Trail*, vpAllTrails, pTrail )
+		pCourse->GetAllTrails( vpAllTrails );
+        for (auto *pTrail : vpAllTrails)
 		{
 			if( rand() % 5 )
-				pProfile->IncrementCoursePlayCount( *pCourse, *pTrail );
+				pProfile->IncrementCoursePlayCount( pCourse, pTrail );
 			for( int i=0; i<iCount; i++ )
 			{
 				int iIndex = 0;
-				pProfile->AddCourseHighScore( *pCourse, *pTrail, MakeRandomHighScore(fPercentDP), iIndex );
+				pProfile->AddCourseHighScore( pCourse, pTrail, MakeRandomHighScore(fPercentDP), iIndex );
 			}
 		}
 	}

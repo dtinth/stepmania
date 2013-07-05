@@ -11,7 +11,6 @@
 #include "CodeDetector.h"
 #include "ScreenDimensions.h"
 #include "PlayerState.h"
-#include "Foreach.h"
 #include "InputEventPlus.h"
 
 REGISTER_SCREEN_CLASS( ScreenPlayerOptions );
@@ -137,15 +136,8 @@ void ScreenPlayerOptions::UpdateDisqualified( int row, PlayerNumber pn )
 	m_bRowCausesDisqualified[pn][row] = bRowCausesDisqualified;
 
 	// Update disqualified graphic
-	bool bDisqualified = false;
-	FOREACH_CONST( bool, m_bRowCausesDisqualified[pn], b )
-	{
-		if( *b )
-		{
-			bDisqualified = true;
-			break;
-		}
-	}
+    auto const &dqs = m_bRowCausesDisqualified[pn];
+    bool bDisqualified = std::any_of(std::begin(dqs), std::end(dqs), [](bool const &b) { return b; });
 	m_sprDisqualify[pn]->SetVisible( bDisqualified );
 
 	// restore previous player options in case the user escapes back after this

@@ -1,6 +1,5 @@
 #include "global.h"
 #include "Trail.h"
-#include "Foreach.h"
 #include "GameState.h"
 #include "Steps.h"
 #include "Song.h"
@@ -8,6 +7,7 @@
 #include "NoteData.h"
 #include "NoteDataUtil.h"
 #include "CommonMetrics.h"
+#include <numeric>
 
 void TrailEntry::GetAttackArray( AttackArray &out ) const
 {
@@ -105,25 +105,25 @@ const RadarValues &Trail::GetRadarValues() const
 		RadarValues rv;
 		rv.Zero();
 
-		FOREACH_CONST( TrailEntry, m_vEntries, e )
+        for (auto const &e : m_vEntries)
 		{
-			const Steps *pSteps = e->pSteps;
+			const Steps *pSteps = e.pSteps;
 			ASSERT( pSteps != NULL );
 			// Hack: don't calculate for autogen entries
-			if( !pSteps->IsAutogen() && e->ContainsTransformOrTurn() )
+			if( !pSteps->IsAutogen() && e.ContainsTransformOrTurn() )
 			{
 				NoteData nd;
 				pSteps->GetNoteData( nd );
 				RadarValues rv_orig;
 				GAMESTATE->SetProcessedTimingData(const_cast<TimingData *>(pSteps->GetTimingData()));
-				NoteDataUtil::CalculateRadarValues( nd, e->pSong->m_fMusicLengthSeconds, rv_orig );
+				NoteDataUtil::CalculateRadarValues( nd, e.pSong->m_fMusicLengthSeconds, rv_orig );
 				PlayerOptions po;
-				po.FromString( e->Modifiers );
+				po.FromString( e.Modifiers );
 				if( po.ContainsTransformOrTurn() )
 					NoteDataUtil::TransformNoteData( nd, po, pSteps->m_StepsType );
-				NoteDataUtil::TransformNoteData( nd, e->Attacks, pSteps->m_StepsType, e->pSong );
+				NoteDataUtil::TransformNoteData( nd, e.Attacks, pSteps->m_StepsType, e.pSong );
 				RadarValues transformed_rv;
-				NoteDataUtil::CalculateRadarValues( nd, e->pSong->m_fMusicLengthSeconds, transformed_rv );
+				NoteDataUtil::CalculateRadarValues( nd, e.pSong->m_fMusicLengthSeconds, transformed_rv );
 				GAMESTATE->SetProcessedTimingData(NULL);
 				rv += transformed_rv;
 			}
@@ -157,36 +157,29 @@ int Trail::GetMeter() const
 
 int Trail::GetTotalMeter() const
 {
-	int iTotalMeter = 0;
-	FOREACH_CONST( TrailEntry, m_vEntries, e )
-	{
-		iTotalMeter += e->pSteps->GetMeter();
-	}
-
-	return iTotalMeter;
+    return std::accumulate(std::begin(m_vEntries), std::end(m_vEntries), 0, [](int meter, TrailEntry const &e) {
+        return meter + e.pSteps->GetMeter();
+    });
 }
 
 float Trail::GetLengthSeconds() const
 {
-	float fSecs = 0;
-	FOREACH_CONST( TrailEntry, m_vEntries, e )
-	{
-		fSecs += e->pSong->m_fMusicLengthSeconds;
-	}
-	return fSecs;
+    return std::accumulate(std::begin(m_vEntries), std::end(m_vEntries), 0.f, [](float sec, TrailEntry const &e) {
+        return sec + e.pSong->m_fMusicLengthSeconds;
+    });
 }
 
 void Trail::GetDisplayBpms( DisplayBpms &AddTo ) const
 {
-	FOREACH_CONST( TrailEntry, m_vEntries, e )
+    for (auto const &e : m_vEntries)
 	{
-		if( e->bSecret )
+		if( e.bSecret )
 		{
 			AddTo.Add( -1 );
 			continue;
 		}
 
-		Song *pSong = e->pSong;
+		Song *pSong = e.pSong;
 		ASSERT( pSong != NULL );
 		switch( pSong->m_DisplayBPMType )
 		{
@@ -204,22 +197,16 @@ void Trail::GetDisplayBpms( DisplayBpms &AddTo ) const
 
 bool Trail::IsSecret() const
 {
-	FOREACH_CONST( TrailEntry, m_vEntries, e )
-	{
-		if( e->bSecret )
-			return true;
-	}
-	return false;
+    return std::any_of(std::begin(m_vEntries), std::end(m_vEntries), [](TrailEntry const &e) {
+        return e.bSecret;
+    });
 }
 
 bool Trail::ContainsSong( const Song *pSong ) const
 {
-	FOREACH_CONST( TrailEntry, m_vEntries, e )
-	{
-		if( e->pSong == pSong )
-			return true;
-	}
-	return false;
+    return std::any_of(std::begin(m_vEntries), std::end(m_vEntries), [&](TrailEntry const &e) {
+        return e.pSong == pSong;
+    });
 }
 
 // lua start
@@ -242,17 +229,17 @@ public:
 	static int GetArtists( T* p, lua_State *L )
 	{
 		vector<RString> asArtists, asAltArtists;
-		FOREACH_CONST( TrailEntry, p->m_vEntries, e )
+        for (auto const &e : p->m_vEntries)
 		{
-			if( e->bSecret )
+			if( e.bSecret )
 			{
 				asArtists.push_back( "???" );
 				asAltArtists.push_back( "???" );
 			}
 			else
 			{
-				asArtists.push_back( e->pSong->GetDisplayArtist() );
-				asAltArtists.push_back( e->pSong->GetTranslitArtist() );
+				asArtists.push_back( e.pSong->GetDisplayArtist() );
+				asAltArtists.push_back( e.pSong->GetTranslitArtist() );
 			}
 		}
 

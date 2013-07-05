@@ -57,9 +57,12 @@ struct MenuRowDef
 			emShowIn(s), iDefaultChoice(d), choices(),
 			bThemeTitle(bTT), bThemeItems(bTI)
 	{
-		FOREACH(RString, options, str)
+        for (auto const &str : options)
 		{
-			if (*str != "") choices.push_back(*str);
+			if (str != "")
+            {
+                choices.push_back(str);
+            }
 		}
 	}
 	
@@ -111,7 +114,7 @@ struct MenuRowDef
 	bool SetDefaultChoiceIfPresent( RString sChoice )
 	{
 		iDefaultChoice = 0;
-		FOREACH_CONST( RString, choices, s )
+        for (auto s = std::begin(choices); s != std::end(choices); ++s)
 		{
 			if( sChoice == *s )
 			{

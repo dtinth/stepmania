@@ -8,7 +8,6 @@
 #include "GameState.h"
 #include "ThemeManager.h"
 #include "StatsManager.h"
-#include "Foreach.h"
 #include "Course.h"
 #include "Style.h"
 
@@ -23,8 +22,8 @@ WorkoutGraph::WorkoutGraph()
 
 WorkoutGraph::~WorkoutGraph()
 {
-	FOREACH( Sprite*, m_vpBars, a )
-		delete *a;
+    for (auto *a : m_vpBars)
+		delete a;
 	m_vpBars.clear();
 }
 
@@ -48,10 +47,10 @@ void WorkoutGraph::SetFromCurrentWorkout()
 
 void WorkoutGraph::SetInternal( int iMinSongsPlayed )
 {
-	FOREACH( Sprite*, m_vpBars, p )
+    for (auto *p : m_vpBars)
 	{
-		this->RemoveChild( *p );
-		delete *p;
+		this->RemoveChild( p );
+		delete p;
 	}
 	m_vpBars.clear();
 
@@ -60,10 +59,10 @@ void WorkoutGraph::SetInternal( int iMinSongsPlayed )
 		return;
 
 	vector<int> viMeters;
-	FOREACH_CONST( TrailEntry, pTrail->m_vEntries, e )
+    for (auto const &e : pTrail->m_vEntries)
 	{
-		ASSERT( e->pSteps != NULL );
-		viMeters.push_back( e->pSteps->GetMeter() );
+		ASSERT( e.pSteps != NULL );
+		viMeters.push_back( e.pSteps->GetMeter() );
 	}
 
 	int iBlocksWide = viMeters.size();
@@ -84,7 +83,8 @@ void WorkoutGraph::SetInternal( int iMinSongsPlayed )
 	m_sprEmpty.ZoomToWidth( iBlocksWide * fBlockSize );
 	m_sprEmpty.ZoomToHeight( iBlocksHigh * fBlockSize );
 
-	FOREACH_CONST( int, viMeters, iter )
+    // use the iter version.
+    for (auto iter = std::begin(viMeters); iter != std::end(viMeters); ++iter)
 	{
 		int iIndex = iter - viMeters.begin();
 		float fOffsetFromCenter = iIndex - (iBlocksWide-1)/2.0f;
@@ -105,8 +105,8 @@ void WorkoutGraph::SetFromGameStateAndHighlightSong( int iSongIndex )
 {
 	SetInternal( iSongIndex+1 );
 
-	FOREACH( Sprite*, m_vpBars, spr )
-		(*spr)->StopEffect();
+    for (auto *spr : m_vpBars)
+		spr->StopEffect();
 
 	int iBarIndex = iSongIndex - m_iSongsChoppedOffAtBeginning;
 

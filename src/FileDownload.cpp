@@ -7,7 +7,7 @@
 #include "SpecialFiles.h"
 #include "RageLog.h"
 #include "Preference.h"
-#include "Foreach.h"
+#include <numeric>
 
 FileTransfer::FileTransfer()
 {
@@ -198,10 +198,9 @@ void FileTransfer::StartTransfer( TransferType type, const RString &sURL, const 
 
 	vsHeaders.push_back( "Content-Length: " + ssprintf("%zd",sRequestPayload.size()) );
 
-	RString sHeader;
-	FOREACH_CONST( RString, vsHeaders, h )
-		sHeader += *h + "\r\n";
-	sHeader += "\r\n";
+    RString sHeader = std::accumulate(std::begin(vsHeaders), std::end(vsHeaders), RString(), [](RString header, RString const &h){
+        return header + h + "\r\n";
+    }) + "\r\n";
 
 	m_wSocket.SendData( sHeader.c_str(), sHeader.length() );
 	m_wSocket.SendData( "\r\n" );

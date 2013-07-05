@@ -418,10 +418,10 @@ void Font::LoadFontPageSettings( FontPageSettings &cfg, IniFile &ini, const RStr
 	const XNode* pNode = ini.GetChild( sPageName );
 	if( pNode )
 	{
-		FOREACH_CONST_Attr( pNode, pAttr )
+        for (auto const &pAttr : pNode->m_attrs)
 		{
-			RString sName = pAttr->first;
-			const XNodeValue *pValue = pAttr->second;
+			RString sName = pAttr.first;
+			const XNodeValue *pValue = pAttr.second;
 
 			sName.MakeUpper();
 

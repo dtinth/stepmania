@@ -9,7 +9,6 @@
 #include "ActorUtil.h"
 #include "RageDisplay.h"
 #include "ScreenDimensions.h"
-#include "Foreach.h"
 
 /* Tricky: We need ActorFrames created in Lua to auto delete their children.
  * We don't want classes that derive from ActorFrame to auto delete their 
@@ -82,8 +81,8 @@ ActorFrame::ActorFrame( const ActorFrame &cpy ):
 
 void ActorFrame::InitState()
 {
-	FOREACH( Actor*, m_SubActors, a )
-		(*a)->InitState();
+    for (auto *a : m_SubActors)
+		a->InitState();
 	Actor::InitState();
 }
 
@@ -125,7 +124,7 @@ void ActorFrame::LoadChildrenFromNode( const XNode* pNode )
 		pChildren = pNode;
 	}
 
-	FOREACH_CONST_Child( pChildren, pChild )
+    for (auto const *pChild : pChildren->m_childs)
 	{
 		if( bArrayOnly && !IsAnInt(pChild->GetName()) )
 			continue;
@@ -162,17 +161,17 @@ void ActorFrame::RemoveChild( Actor *pActor )
 
 void ActorFrame::TransferChildren( ActorFrame *pTo )
 {
-	FOREACH( Actor*, m_SubActors, i )
-		pTo->AddChild( *i );
+    for (auto *i : m_SubActors)
+		pTo->AddChild( i );
 	RemoveAllChildren();
 }
 
 Actor* ActorFrame::GetChild( const RString &sName )
 {
-	FOREACH( Actor*, m_SubActors, a )
+    for (auto *a : m_SubActors)
 	{
-		if( (*a)->GetName() == sName )
-			return *a;
+		if( a->GetName() == sName )
+			return a;
 	}
 	return NULL;
 }
@@ -284,10 +283,10 @@ void ActorFrame::EndDraw()
 void ActorFrame::PushChildrenTable( lua_State *L )
 {
 	lua_newtable( L );
-	FOREACH( Actor*, m_SubActors, a )
+    for (auto *a : m_SubActors)
 	{
-		LuaHelpers::Push( L, (*a)->GetName() );
-		(*a)->PushSelf( L );
+		LuaHelpers::Push( L, a->GetName() );
+		a->PushSelf( L );
 		lua_rawset( L, -3 );
 	}
 }

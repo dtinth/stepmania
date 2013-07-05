@@ -5,7 +5,6 @@
 
 #include "ThemeManager.h"
 #include <map>
-#include "Foreach.h"
 #include "LuaManager.h"
 #include "RageUtil.h"
 
@@ -267,13 +266,11 @@ public:
 	void Load( const RString& sGroup, MetricNameMap pfn, const vector<RString> vsValueNames )
 	{
 		m_metric.clear();
-		FOREACH_CONST( RString, vsValueNames, s )
-			m_metric[*s].Load( sGroup, pfn(*s) );
+        for (auto const &s : vsValueNames)
+			m_metric[s].Load( sGroup, pfn(s) );
 	}
 	void Read()
 	{
-		// HACK: GCC (3.4) takes this and pretty much nothing else.
-		// I don't know why.
 		for( typename map<RString,ThemeMetric<T> >::iterator m = m_metric.begin(); m != m_metric.end(); ++m )
 			m->second.Read();
 	}
@@ -284,8 +281,6 @@ public:
 	}
 	const T& GetValue( RString s ) const
 	{
-		// HACK: GCC (3.4) takes this and pretty much nothing else.
-		// I don't know why.
 		typename map<RString,ThemeMetric<T> >::const_iterator iter = m_metric.find(s);
 		ASSERT( iter != m_metric.end() );
 		return iter->second.GetValue();

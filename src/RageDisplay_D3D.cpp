@@ -13,6 +13,8 @@
 #include "DisplayResolutions.h"
 #include "LocalizedString.h"
 
+#include "Rage/ModelVertex.hpp"
+
 #include <D3dx9tex.h>
 #include <d3d9.h>
 #include <dxerr.h>
@@ -684,12 +686,12 @@ VideoModeParams RageDisplay_D3D::GetActualVideoModeParams() const
 
 void RageDisplay_D3D::SendCurrentMatrices()
 {
-	RageMatrix m;
+	Rage::Matrix m;
 	RageMatrixMultiply( &m, GetCentering(), GetProjectionTop() );
 
 	// Convert to OpenGL-style "pixel-centered" coords
-	RageMatrix m2 = GetCenteringMatrix( -0.5f, -0.5f, 0, 0 );
-	RageMatrix projection;
+	Rage::Matrix m2 = GetCenteringMatrix( -0.5f, -0.5f, 0, 0 );
+	Rage::Matrix projection;
 	RageMatrixMultiply( &projection, &m2, &m );
 	g_pd3dDevice->SetTransform( D3DTS_PROJECTION, (D3DMATRIX*)&projection );
 
@@ -710,7 +712,7 @@ void RageDisplay_D3D::SendCurrentMatrices()
 
 		if( g_bSphereMapping[tu] )
 		{
-			static const RageMatrix tex = RageMatrix
+			static const Rage::Matrix tex = Rage::Matrix
 			(
 				0.5f,   0.0f,  0.0f, 0.0f,
 				0.0f,  -0.5f,  0.0f, 0.0f,
@@ -730,8 +732,8 @@ void RageDisplay_D3D::SendCurrentMatrices()
 			 * only use translate and scale, and ignore the z component entirely,
 			 * so convert the texture matrix from 4x4 to 3x3 by dropping z. */
 
-			const RageMatrix &tex1 = *GetTextureTop();
-			const RageMatrix tex2 = RageMatrix
+			const Rage::Matrix &tex1 = *GetTextureTop();
+			const Rage::Matrix tex2 = Rage::Matrix
 			(
 				tex1.m[0][0], tex1.m[0][1],  tex1.m[0][3],	0,
 				tex1.m[1][0], tex1.m[1][1],  tex1.m[1][3],	0,
@@ -759,7 +761,7 @@ public:
 		{
 			const MeshInfo& meshInfo = m_vMeshInfo[i];
 			const msMesh& mesh = vMeshes[i];
-			const vector<RageModelVertex> &Vertices = mesh.Vertices;
+			const vector<Rage::ModelVertex> &Vertices = mesh.Vertices;
 			const vector<msTriangle> &Triangles = mesh.Triangles;
 
 			for( unsigned j=0; j<Vertices.size(); j++ )
@@ -778,7 +780,7 @@ public:
 		{
 			// Kill the texture translation.
 			// XXX: Change me to scale the translation by the TextureTranslationScale of the first vertex.
-			RageMatrix m;
+			Rage::Matrix m;
 			g_pd3dDevice->GetTransform( D3DTS_TEXTURE0, (D3DMATRIX*)&m );
 
 			m.m[2][0] = 0;
@@ -801,7 +803,7 @@ public:
 	}
 
 protected:
-	vector<RageModelVertex> m_vVertex;
+	vector<Rage::ModelVertex> m_vVertex;
 	vector<msTriangle>		m_vTriangles;
 };
 
@@ -1279,7 +1281,7 @@ void RageDisplay_D3D::SetLightDirectional(
 	const RageColor &ambient, 
 	const RageColor &diffuse, 
 	const RageColor &specular, 
-	const RageVector3 &dir )
+	const Rage::Vector3 &dir )
 {
 	g_pd3dDevice->LightEnable( index, true );
 
@@ -1421,12 +1423,12 @@ void RageDisplay_D3D::SetAlphaTest( bool b )
 	g_pd3dDevice->SetRenderState( D3DRS_ALPHAFUNC, D3DCMP_GREATER );
 }
 
-RageMatrix RageDisplay_D3D::GetOrthoMatrix( float l, float r, float b, float t, float zn, float zf )
+Rage::Matrix RageDisplay_D3D::GetOrthoMatrix( float l, float r, float b, float t, float zn, float zf )
 {
-	RageMatrix m = RageDisplay::GetOrthoMatrix( l, r, b, t, zn, zf );
-
+	Rage::Matrix m = RageDisplay::GetOrthoMatrix( l, r, b, t, zn, zf );
+	
 	// Convert from OpenGL's [-1,+1] Z values to D3D's [0,+1].
-	RageMatrix tmp;
+	Rage::Matrix tmp;
 	RageMatrixScaling( &tmp, 1, 1, 0.5f );
 	RageMatrixMultiply( &m, &tmp, &m );
 

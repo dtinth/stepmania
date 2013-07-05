@@ -24,13 +24,13 @@ REGISTER_SCREEN_CLASS( ScreenHighScores );
 static void GetAllSongsToShow( vector<Song*> &vpOut, int iNumMostRecentScoresToShow )
 {
 	vpOut.clear();
-	FOREACH_CONST( Song*, SONGMAN->GetAllSongs(), s )
+    for (auto *s : SONGMAN->GetAllSongs())
 	{
-		if( !(*s)->NormallyDisplayed() )
+		if( !s->NormallyDisplayed() )
 			continue;	// skip
-		if( !(*s)->ShowInDemonstrationAndRanking() )
+		if( !s->ShowInDemonstrationAndRanking() )
 			continue;	// skip
-		vpOut.push_back( *s );
+		vpOut.push_back( s );
 	}
 
 	if( (int)vpOut.size() > iNumMostRecentScoresToShow )
@@ -51,19 +51,20 @@ static void GetAllCoursesToShow( vector<Course*> &vpOut, CourseType ct, int iNum
 	else
 		SONGMAN->GetCourses( ct, vpCourses, false );
 
-	FOREACH_CONST( Course*, vpCourses, c)
+    for (auto *c : vpCourses)
 	{
-		if( UNLOCKMAN->CourseIsLocked(*c) )
+		if( UNLOCKMAN->CourseIsLocked(c) )
 			continue;	// skip
-		if( !(*c)->ShowInDemonstrationAndRanking() )
+		if( !c->ShowInDemonstrationAndRanking() )
 			continue;	// skip
-		vpOut.push_back( *c );
+		vpOut.push_back( c );
 	}
-	if( (int)vpOut.size() > iNumMostRecentScoresToShow )
+    
+	if( static_cast<int>(vpOut.size()) > iNumMostRecentScoresToShow )
 	{
 		CourseUtil::SortCoursePointerArrayByTitle( vpOut );
 		CourseUtil::SortByMostRecentlyPlayedForMachine( vpOut );
-		if( (int) vpOut.size() > iNumMostRecentScoresToShow )
+		if( static_cast<int>(vpOut.size()) > iNumMostRecentScoresToShow )
 			vpOut.erase( vpOut.begin()+iNumMostRecentScoresToShow, vpOut.end() );
 	}
 }
@@ -127,7 +128,8 @@ void ScoreScroller::ConfigureActor( Actor *pActor, int iItem )
 	lua_pushvalue( L, -1 );
 	msg.SetParamFromStack( L, "Entries" );
 
-	FOREACH( DifficultyAndStepsType, m_DifficultiesToShow, iter )
+    // use iter version
+    for (auto iter = std::begin(m_DifficultiesToShow); iter != std::end(m_DifficultiesToShow); ++iter)
 	{
 		int i = iter-m_DifficultiesToShow.begin();
 		Difficulty dc = iter->first;
