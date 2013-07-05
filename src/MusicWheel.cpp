@@ -16,7 +16,6 @@
 #include "ActorUtil.h"
 #include "SongUtil.h"
 #include "CourseUtil.h"
-#include "Foreach.h"
 #include "Style.h"
 #include "PlayerState.h"
 #include "CommonMetrics.h"
@@ -460,9 +459,9 @@ void MusicWheel::GetSongList( vector<Song*> &arraySongs, SortOrder so )
 				set<StepsType> vStepsType;
 				SongUtil::GetPlayableStepsTypes( pSong, vStepsType );
 
-				FOREACHS( StepsType, vStepsType, st )
+                for (auto const &st : vStepsType)
 				{
-					if(pSong->HasStepsType(*st))
+					if(pSong->HasStepsType(st))
 					{
 						arraySongs.push_back( pSong );
 						break;
@@ -767,12 +766,12 @@ void MusicWheel::BuildWheelItemDatas( vector<MusicWheelItemData *> &arrayWheelIt
 			}
 
 			vector<Course*> apCourses;
-			FOREACH_CONST( CourseType, vct, ct )
+            for (auto const &ct : vct)
 			{
 				if( bOnlyPreferred )
-					SONGMAN->GetPreferredSortCourses( *ct, apCourses, PREFSMAN->m_bAutogenGroupCourses );
+					SONGMAN->GetPreferredSortCourses( ct, apCourses, PREFSMAN->m_bAutogenGroupCourses );
 				else
-					SONGMAN->GetCourses( *ct, apCourses, PREFSMAN->m_bAutogenGroupCourses );
+					SONGMAN->GetCourses( ct, apCourses, PREFSMAN->m_bAutogenGroupCourses );
 			}
 
 			switch( PREFSMAN->m_CourseSortOrder )
@@ -856,8 +855,8 @@ void MusicWheel::BuildWheelItemDatas( vector<MusicWheelItemData *> &arrayWheelIt
 			WID.m_Flags.bEdits = false;
 			set<StepsType> vStepsType;
 			SongUtil::GetPlayableStepsTypes( WID.m_pSong, vStepsType );
-			FOREACHS( StepsType, vStepsType, st )
-				WID.m_Flags.bEdits |= WID.m_pSong->HasEdits( *st );
+            for (auto const &st : vStepsType)
+				WID.m_Flags.bEdits |= WID.m_pSong->HasEdits( st );
 			WID.m_Flags.iStagesForSong = GameState::GetNumStagesMultiplierForSong( WID.m_pSong );
 		}
 		else if( WID.m_pCourse != NULL )
@@ -1574,7 +1573,6 @@ Song *MusicWheel::GetPreferredSelectionForRandomOrPortal()
 #define NUM_PROBES 1000
 	for( int i=0; i<NUM_PROBES; i++ )
 	{
-		bool isValid = true;
 		/* Maintaining difficulties is higher priority than maintaining
 		 * the current group. */
 		if( i == NUM_PROBES/4 )
@@ -1595,16 +1593,9 @@ Song *MusicWheel::GetPreferredSelectionForRandomOrPortal()
 		if( i < 900 && pSong->IsTutorial() )
 			continue;
 
-		FOREACH( Difficulty, vDifficultiesToRequire, d )
-		{
-			if( !pSong->HasStepsTypeAndDifficulty(st,*d) )
-			{
-				isValid = false;
-				break;
-			}
-		}
-
-		if (isValid)
+        if (std::none_of(std::begin(vDifficultiesToRequire), std::end(vDifficultiesToRequire), [&](Difficulty const &d) {
+            return pSong->HasStepsTypeAndDifficulty(st, d);
+        }))
 		{
 			return wid[iSelection]->m_pSong;
 		}

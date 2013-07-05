@@ -11,7 +11,6 @@
 #include "RageLog.h"
 #include "RageUtil.h"
 #include "DateTime.h"
-#include "Foreach.h"
 #include "LuaManager.h"
 
 const RString XNode::TEXT_ATTRIBUTE = "__TEXT__";
@@ -28,9 +27,9 @@ XNode::XNode( const RString &sName )
 XNode::XNode( const XNode &cpy ):
 	m_sName( cpy.m_sName )
 {
-	FOREACH_CONST_Attr( &cpy, pAttr )
-		this->AppendAttrFrom( pAttr->first, pAttr->second->Copy() );
-	FOREACH_CONST_Child( &cpy, c )
+    for (auto const &pAttr : cpy.m_attrs)
+		this->AppendAttrFrom( pAttr.first, pAttr.second->Copy() );
+    for (auto const *c : cpy.m_childs)
 		this->AppendChild( new XNode(*c) );
 }
 
@@ -41,11 +40,15 @@ void XNode::Clear()
 
 void XNode::Free()
 {
-	FOREACH_Child( this, p )
+    for (auto *p : this->m_childs)
+    {
 		delete p;
-	FOREACH_Attr( this, pAttr )
-		delete pAttr->second;
-	m_childs.clear();
+    }
+    for (auto const &pAttr : this->m_attrs)
+    {
+		delete pAttr.second;
+	}
+    m_childs.clear();
 	m_attrs.clear();
 }
 	
@@ -93,23 +96,23 @@ XNodeValue *XNode::GetAttr( const RString &attrname )
 	XAttrs::iterator it = m_attrs.find( attrname );
 	if( it != m_attrs.end() )
 		return it->second;
-	return NULL;
+	return nullptr;
 }
 
 XNode *XNode::GetChild( const RString &sName )
 {
-	FOREACH_Child( this, it )
+    for (XNode *it : this->m_childs)
 	{
 		if( it->GetName() == sName )
 			return it;
 	}
-	return NULL;
+	return nullptr;
 }
 
 bool XNode::PushChildValue( lua_State *L, const RString &sName ) const
 {
 	const XNode *pChild = GetChild(sName);
-	if( pChild == NULL )
+	if( pChild == nullptr )
 	{
 		lua_pushnil( L );
 		return false;
@@ -120,12 +123,12 @@ bool XNode::PushChildValue( lua_State *L, const RString &sName ) const
 
 const XNode *XNode::GetChild( const RString &sName ) const
 {
-	FOREACH_CONST_Child( this, it )
+    for (XNode *it : this->m_childs)
 	{
 		if( it->GetName() == sName )
 			return it;
 	}
-	return NULL;
+	return nullptr;
 }
 
 XNode *XNode::AppendChild( XNode *node )

@@ -8,7 +8,6 @@
 #include "Steps.h"
 #include "Song.h"
 #include "StepsUtil.h"
-#include "Foreach.h"
 #include "CommonMetrics.h"
 #include "BannerCache.h"
 #include "UnlockManager.h"
@@ -401,8 +400,10 @@ void EditMenu::OnRowValueChanged( EditMenuRow row )
 							vector<Steps*> v;
 							SongUtil::GetSteps( GetSelectedSong(), v, GetSelectedStepsType(), Difficulty_Edit );
 							StepsUtil::SortStepsByDescription( v );
-							FOREACH_CONST( Steps*, v, p )
-								m_vpSteps.push_back( StepsAndDifficulty(*p,dc) );
+                            for (auto *p : v)
+                            {
+								m_vpSteps.push_back( StepsAndDifficulty(p,dc) );
+                            }
 						}
 						break;
 					case EditMode_Home:
@@ -454,7 +455,8 @@ void EditMenu::OnRowValueChanged( EditMenuRow row )
 			}
 			StripLockedStepsAndDifficulty( m_vpSteps );
 
-			FOREACH( StepsAndDifficulty, m_vpSteps, s )
+            // use iter style
+            for (auto s = std::begin(m_vpSteps); s != std::end(m_vpSteps); ++s)
 			{
 				if( s->dc == dcOld )
 				{
@@ -499,8 +501,10 @@ void EditMenu::OnRowValueChanged( EditMenuRow row )
 				vector<Steps*> v;
 				SongUtil::GetSteps( GetSelectedSong(), v, GetSelectedSourceStepsType(), dc );
 				StepsUtil::SortStepsByDescription( v );
-				FOREACH_CONST( Steps*, v, pSteps )
-					m_vpSourceSteps.push_back( StepsAndDifficulty(*pSteps,dc) );
+                for (auto *pSteps : v)
+                {
+                    m_vpSourceSteps.push_back( StepsAndDifficulty(pSteps,dc) );
+                }
 			}
 		}
 		StripLockedStepsAndDifficulty( m_vpSteps );

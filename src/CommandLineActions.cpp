@@ -8,7 +8,6 @@
 #include "LuaManager.h"
 #include "ProductInfo.h"
 #include "DateTime.h"
-#include "Foreach.h"
 #include "arch/Dialog/Dialog.h"
 #include "RageFileManager.h"
 #include "SpecialFiles.h"
@@ -37,10 +36,10 @@ static void Nsis()
 
 	vector<RString> vs;
 	GetDirListing(INSTALLER_LANGUAGES_DIR + "*.ini", vs, false, false);
-	FOREACH_CONST(RString, vs, s)
+    for (auto const &s : vs)
 	{
 		RString sThrowAway, sLangCode;
-		splitpath(*s, sThrowAway, sLangCode, sThrowAway);
+		splitpath(s, sThrowAway, sLangCode, sThrowAway);
 		const LanguageInfo *pLI = GetLanguageInfo(sLangCode);
 
 		RString sLangNameUpper = pLI->szEnglishName;
@@ -49,12 +48,12 @@ static void Nsis()
 		IniFile ini;
 		if(!ini.ReadFile(INSTALLER_LANGUAGES_DIR + *s))
 			RageException::Throw("Error opening file for read.");
-		FOREACH_CONST_Child(&ini, child)
+        for (auto const *child : ini.m_childs)
 		{
-			FOREACH_CONST_Attr(child, attr)
+            for (auto &attr : child->m_attrs)
 			{
-				RString sName = attr->first;
-				RString sValue = attr->second->GetValue<RString>();
+				RString sName = attr.first;
+				RString sValue = attr.second->GetValue<RString>();
 				sValue.Replace("\\n", "$\\n");
 				RString sLine = ssprintf("LangString %s ${LANG_%s} \"%s\"", sName.c_str(), sLangNameUpper.c_str(), sValue.c_str());
 				out.PutLine(sLine);

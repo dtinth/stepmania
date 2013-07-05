@@ -37,7 +37,6 @@
 #include "StatsManager.h"
 #include "PlayerAI.h" // for NUM_SKILL_LEVELS
 #include "NetworkSyncManager.h"
-#include "Foreach.h"
 #include "DancingCharacters.h"
 #include "ScreenDimensions.h"
 #include "ThemeMetric.h"
@@ -769,10 +768,10 @@ void ScreenGameplay::Init()
 
 	// Fill StageStats
 	STATSMAN->m_CurStageStats.m_vpPossibleSongs = m_apSongsQueue;
-	FOREACH( PlayerInfo, m_vPlayerInfo, pi )
+    for (auto &pi : m_vPlayerInfo)
 	{
-		if( pi->GetPlayerStageStats() )
-			pi->GetPlayerStageStats()->m_vpPossibleSteps = pi->m_vpStepsQueue;
+		if( pi.GetPlayerStageStats() )
+			pi.GetPlayerStageStats()->m_vpPossibleSteps = pi.m_vpStepsQueue;
 	}
 
 	FOREACH_EnabledPlayerInfo( m_vPlayerInfo, pi )
@@ -820,10 +819,10 @@ void ScreenGameplay::InitSongQueues()
 		PlayerNumber pnMaster = GAMESTATE->GetMasterPlayerNumber();
 		Trail *pTrail = GAMESTATE->m_pCurTrail[pnMaster];
 		ASSERT( pTrail != NULL );
-		FOREACH_CONST( TrailEntry, pTrail->m_vEntries, e )
+        for (auto &e : pTrail->m_vEntries)
 		{
-			ASSERT( e->pSong != NULL );
-			m_apSongsQueue.push_back( e->pSong );
+			ASSERT( e.pSong != NULL );
+			m_apSongsQueue.push_back( e.pSong );
 		}
 
 		FOREACH_EnabledPlayerInfo( m_vPlayerInfo, pi )
@@ -833,12 +832,12 @@ void ScreenGameplay::InitSongQueues()
 
 			pi->m_vpStepsQueue.clear();
 			pi->m_asModifiersQueue.clear();
-			FOREACH_CONST( TrailEntry, lTrail->m_vEntries, e )
+            for (auto &e : lTrail->m_vEntries)
 			{
-				ASSERT( e->pSteps != NULL );
-				pi->m_vpStepsQueue.push_back( e->pSteps );
+				ASSERT( e.pSteps != NULL );
+				pi->m_vpStepsQueue.push_back( e.pSteps );
 				AttackArray a;
-				e->GetAttackArray( a );
+				e.GetAttackArray( a );
 				pi->m_asModifiersQueue.push_back( a );
 			}
 
@@ -2264,10 +2263,10 @@ bool ScreenGameplay::Input( const InputEventPlus &input )
 	{
 		if( input.mp != MultiPlayer_Invalid  &&  GAMESTATE->IsMultiPlayerEnabled(input.mp)  &&  iCol != -1 )
 		{
-			FOREACH( PlayerInfo, m_vPlayerInfo, pi )
+            for (auto const &pi : m_vPlayerInfo)
 			{
-				if( input.mp == pi->m_mp )
-					pi->m_pPlayer->Step( iCol, -1, input.DeviceI.ts, false, bRelease );
+				if( input.mp == pi.m_mp )
+					pi.m_pPlayer->Step( iCol, -1, input.DeviceI.ts, false, bRelease );
 			}
 			return true;
 		}

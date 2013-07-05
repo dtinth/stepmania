@@ -1,7 +1,7 @@
 #ifndef RAGE_MODEL_VERTEX_HPP_
 #define RAGE_MODEL_VERTEX_HPP_
 
-#include <cstdlib>
+#include <cstdint>
 #include "Vector2.hpp"
 #include "Vector3.hpp"
 

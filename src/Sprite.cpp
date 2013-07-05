@@ -10,9 +10,9 @@
 #include "RageUtil.h"
 #include "ActorUtil.h"
 #include "arch/Dialog/Dialog.h"
-#include "Foreach.h"
 #include "LuaBinding.h"
 #include "LuaManager.h"
+#include <numeric>
 
 REGISTER_ACTOR_CLASS( Sprite );
 
@@ -742,10 +742,9 @@ void Sprite::SetState( int iNewState )
 
 float Sprite::GetAnimationLengthSeconds() const
 {
-	float fTotal = 0;
-	FOREACH_CONST( State, m_States, s )
-		fTotal += s->fDelay;
-	return fTotal;
+    return std::accumulate(std::begin(m_States), std::end(m_States), 0.f, [](float total, State const &s) {
+        return total + s.fDelay;
+    });
 }
 
 void Sprite::SetSecondsIntoAnimation( float fSeconds )

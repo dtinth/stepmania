@@ -5,7 +5,6 @@
 #include "RageThreads.h"
 #include "RageTimer.h"
 #include "RageUtil.h"
-#include "Foreach.h"
 
 #if defined(WINDOWS)
 #include <windows.h>
@@ -588,18 +587,21 @@ void NetworkPostData::CreateMimeData( const map<RString,RString> &mapNameToData,
 	while(1)
 	{
 		sMimeBoundaryOut = ssprintf( "--%08i", rand() );
-		FOREACHM_CONST( RString, RString, mapNameToData, d )
-			if( d->second.find(sMimeBoundaryOut) != RString::npos )
-				continue;
+		if (std::any_of(std::begin(mapNameToData), std::end(mapNameToData), [&](std::pair<RString, RString> const &d) {
+			return d.second.find(sMimeBoundaryOut) != RString::npos;
+		}))
+		{
+			continue;
+		}
 		break;
 	}
 
-	FOREACHM_CONST( RString, RString, mapNameToData, d )
+	for (auto const &d : mapNameToData)
 	{
 		sOut += "--" + sMimeBoundaryOut + "\r\n";
-		sOut += ssprintf( "Content-Disposition: form-data; name=\"%s\"\r\n", d->first.c_str() );
+		sOut += ssprintf( "Content-Disposition: form-data; name=\"%s\"\r\n", d.first.c_str() );
 		sOut += "\r\n";
-		sOut += d->second;
+		sOut += d.second;
 		sOut += "\r\n";
 	}
 	if( sOut.size() )

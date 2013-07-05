@@ -6,7 +6,6 @@
 #include "RageUtil.h"
 #include "RageLog.h"
 #include "arch/Dialog/Dialog.h"
-#include "Foreach.h"
 
 bool XmlFileUtil::LoadFromFileShowErrors( XNode &xml, RageFileBasic &f )
 {
@@ -408,15 +407,15 @@ bool GetXMLInternal( const XNode *pNode, RageFileBasic &f, bool bWriteTabs, int 
 	WRITE( "<" );
 	WRITE( pNode->GetName() );
 
-	// <TAG Attr1="Val1" 
-	FOREACH_CONST_Attr( pNode, p )
+	// <TAG Attr1="Val1"
+    for (auto const &p : pNode->m_attrs)
 	{
-		if( p->first == XNode::TEXT_ATTRIBUTE )
+		if( p.first == XNode::TEXT_ATTRIBUTE )
 			continue;
-		RString attr( p->second->GetValue<RString>() );
+		RString attr( p.second->GetValue<RString>() );
 		ReplaceEntityText( attr, g_mapCharsToEntities );
 		WRITE( " " );
-		WRITE( p->first );
+		WRITE( p.first );
 		WRITE( "='" );
 		WRITE( attr );
 		WRITE( "'" );
@@ -435,7 +434,7 @@ bool GetXMLInternal( const XNode *pNode, RageFileBasic &f, bool bWriteTabs, int 
 		if( !pNode->m_childs.empty() )
 			iTabBase++;
 
-		FOREACH_CONST_Child( pNode, p )
+        for (auto const *p : pNode->m_childs)
 			if( !GetXMLInternal( p, f, bWriteTabs, iTabBase ) )
 				return false;
 
@@ -609,14 +608,16 @@ void XmlFileUtil::CompileXNodeTree( XNode *pNode, const RString &sFile )
 	{
 		pNode = aToCompile.back();
 		aToCompile.pop_back();
-		FOREACH_Child( pNode, pChild )
-			aToCompile.push_back( pChild );
+        for (auto *pChild : pNode->m_childs)
+        {
+            aToCompile.push_back( pChild );
+        }
 
-		FOREACH_Attr( pNode, pAttr )
+        for (auto &pAttr : pNode->m_attrs)
 		{
-			XNodeValue *pValue = CompileXMLNodeValue( L, pAttr->first, pAttr->second, sFile );
-			delete pAttr->second;
-			pAttr->second = pValue;
+			XNodeValue *pValue = CompileXMLNodeValue( L, pAttr.first, pAttr.second, sFile );
+			delete pAttr.second;
+			pAttr.second = pValue;
 		}
 	}
 
@@ -772,10 +773,10 @@ void XmlFileUtil::MergeIniUnder( XNode *pFrom, XNode *pTo )
 		}
 		else
 		{
-			FOREACH_Attr( pSectionNode, it2 )
+            for (auto const &it2 : pSectionNode->m_attrs)
 			{
 				// Don't overwrite existing nodes.
-				pChildNode->AppendAttrFrom( it2->first, it2->second->Copy(), false );
+				pChildNode->AppendAttrFrom( it2.first, it2.second->Copy(), false );
 			}
 		}
 

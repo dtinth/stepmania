@@ -4,7 +4,6 @@
 #include "global.h"
 #include "stdafx.h"
 #include "smpackage.h"
-#include "Foreach.h"
 #include "LanguagesDlg.h"
 #include "SpecialFiles.h"
 #include "RageUtil.h"
@@ -53,8 +52,8 @@ BOOL LanguagesDlg::OnInitDialog()
 	vector<RString> vs;
 	GetDirListing( SpecialFiles::THEMES_DIR+"*", vs, true );
 	StripCvsAndSvn( vs );
-	FOREACH_CONST( RString, vs, s )
-		m_listThemes.AddString( *s );
+	for (auto const &s : vs)
+		m_listThemes.AddString( s );
 	if( !vs.empty() )
 		m_listThemes.SetSel( 0 );
 
@@ -100,9 +99,9 @@ void LanguagesDlg::OnSelchangeListThemes()
 
 		vector<RString> vs;
 		GetDirListing( sLanguagesDir+"*.ini", vs, false );
-		FOREACH_CONST( RString, vs, s )
+		for (auto const &s : vs)
 		{
-			RString sIsoCode = GetFileNameWithoutExtension(*s);
+			RString sIsoCode = GetFileNameWithoutExtension(s);
 			RString sLanguage = SMPackageUtil::GetLanguageDisplayString(sIsoCode);
 			m_listLanguages.AddString( ConvertUTF8ToACP(sLanguage) );
 		}
@@ -389,7 +388,8 @@ void LanguagesDlg::OnBnClickedButtonImport()
 	int iNumModified = 0;
 	int iNumUnchanged = 0;
 	int iNumIgnored = 0;
-	FOREACH_CONST( CsvFile::StringVector, csv.m_vvs, line ) 
+	// use iter style
+	for (auto line = std::begin(csv.m_vvs); line != std::end(csv.m_vvs); ++line)
 	{
 		int iLineIndex = line - csv.m_vvs.begin();
 
@@ -462,9 +462,9 @@ void GetAllMatches( const RString &sRegex, const RString &sString, vector<RStrin
 void DumpList( const vector<RString> &asList, RageFile &file )
 {
 	RString sLine;
-	FOREACH_CONST( RString, asList, s )
+	for (auto const &s : asList)
 	{
-		if( sLine.size() + s->size() > 100 )
+		if( sLine.size() + s.size() > 100 )
 		{
 			file.PutLine( sLine );
 			sLine = "";
@@ -475,7 +475,7 @@ void DumpList( const vector<RString> &asList, RageFile &file )
 		else
 			sLine += "    ";
 
-		sLine += *s;
+		sLine += s;
 	}
 
 	file.PutLine( sLine );

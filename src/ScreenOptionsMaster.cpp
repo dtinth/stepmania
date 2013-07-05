@@ -10,7 +10,6 @@
 #include "PrefsManager.h"
 #include "StepMania.h"
 #include "RageSoundManager.h"
-#include "Foreach.h"
 #include "OptionRowHandler.h"
 #include "ScreenOptionsMasterPrefs.h"
 #include "CommonMetrics.h"
@@ -69,8 +68,10 @@ void ScreenOptionsMaster::Init()
 
 void ScreenOptionsMaster::ImportOptions( int r, const vector<PlayerNumber> &vpns )
 {
-	FOREACH_CONST( PlayerNumber, vpns, pn )
-		ASSERT( GAMESTATE->IsHumanPlayer(*pn) );
+    for (auto const &pn : vpns)
+	{
+		ASSERT( GAMESTATE->IsHumanPlayer(pn) );
+	}
 	OptionRow &row = *m_pRows[r];
 	row.ImportOptions( vpns );
 }
@@ -82,10 +83,10 @@ void ScreenOptionsMaster::ExportOptions( int r, const vector<PlayerNumber> &vpns
 	OptionRow &row = *m_pRows[r];
 	bool bRowHasFocus[NUM_PLAYERS];
 	ZERO( bRowHasFocus );
-	FOREACH_CONST( PlayerNumber, vpns, p )
+    for (auto const &p : vpns)
 	{
-		int iCurRow = m_iCurrentRow[*p];
-		bRowHasFocus[*p] = iCurRow == r;
+		int iCurRow = m_iCurrentRow[p];
+		bRowHasFocus[p] = iCurRow == r;
 	}
 	m_iChangeMask |= row.ExportOptions( vpns, bRowHasFocus );
 }

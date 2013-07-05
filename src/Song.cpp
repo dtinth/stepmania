@@ -20,7 +20,6 @@
 #include "NoteDataUtil.h"
 #include "SongUtil.h"
 #include "StepsUtil.h"
-#include "Foreach.h"
 #include "BackgroundUtil.h"
 #include "SpecialFiles.h"
 #include "NotesLoader.h"
@@ -86,8 +85,10 @@ Song::Song()
 
 Song::~Song()
 {
-	FOREACH( Steps*, m_vpSteps, s )
-		SAFE_DELETE( *s );
+    for (auto *s : m_vpSteps)
+	{
+		SAFE_DELETE( s );
+	}
 	m_vpSteps.clear();
 	
 	// It's the responsibility of the owner of this Song to make sure
@@ -149,8 +150,10 @@ void Song::SetSpecifiedLastSecond(const float f)
 // Reset to an empty song.
 void Song::Reset()
 {
-	FOREACH( Steps*, m_vpSteps, s )
-		SAFE_DELETE( *s );
+    for (auto *s : m_vpSteps)
+	{
+		SAFE_DELETE( s );
+	}
 	m_vpSteps.clear();
 	FOREACH_ENUM( StepsType, st )
 		m_vpStepsByType[st].clear();
@@ -165,18 +168,19 @@ void Song::Reset()
 
 void Song::AddBackgroundChange( BackgroundLayer iLayer, BackgroundChange seg )
 {
-	// Delete old background change at this start beat, if any.
-	FOREACH( BackgroundChange, GetBackgroundChanges(iLayer), bgc )
+	// Delete old background change at this start beat, if any. Use iter style
+    auto &changes = GetBackgroundChanges(iLayer);
+    for (auto bgc = std::begin(changes); bgc != std::end(changes); ++bgc)
 	{
 		if( bgc->m_fStartBeat == seg.m_fStartBeat )
 		{
-			GetBackgroundChanges(iLayer).erase( bgc );
+			changes.erase( bgc );
 			break;
 		}
 	}
 
 	ASSERT( iLayer >= 0 && iLayer < NUM_BackgroundLayer );
-	BackgroundUtil::AddBackgroundChange( GetBackgroundChanges(iLayer), seg );
+	BackgroundUtil::AddBackgroundChange( changes, seg );
 }
 
 void Song::AddForegroundChange( BackgroundChange seg )
@@ -334,11 +338,11 @@ bool Song::LoadFromSongDir( RString sDir )
 			sCacheFilePath = RString();
 	}
 
-	FOREACH( Steps*, m_vpSteps, s )
+    for (auto *s : m_vpSteps)
 	{
 		/* Compress all Steps. During initial caching, this will remove cached
 		 * NoteData; during cached loads, this will just remove cached SMData. */
-		(*s)->Compress();
+		s->Compress();
 	}
 
 	// Load the cached banners, if it's not loaded already.
@@ -551,9 +555,9 @@ void Song::TidyUpData( bool fromCache, bool /* duringCache */ )
 
 	m_SongTiming.TidyUpData( false );
 	
-	FOREACH( Steps *, m_vpSteps, s )
+    for (auto *s : m_vpSteps)
 	{
-		(*s)->m_Timing.TidyUpData( true );
+		s->m_Timing.TidyUpData( true );
 	}
 
 	/* Generate these before we autogen notes, so the new notes can inherit
@@ -986,9 +990,8 @@ bool Song::SaveToSMFile()
 		FileCopy( sPath, sPath + ".old" );
 	
 	vector<Steps*> vpStepsToSave;
-	FOREACH_CONST( Steps*, m_vpSteps, s ) 
+    for (auto *pSteps : m_vpSteps)
 	{
-		Steps *pSteps = *s;
 		if( pSteps->IsAutogen() )
 			continue; // don't write autogen notes
 		
@@ -1016,9 +1019,8 @@ bool Song::SaveToSSCFile( RString sPath, bool bSavingCache )
 		FileCopy( path, path + ".old" );
 
 	vector<Steps*> vpStepsToSave;
-	FOREACH_CONST( Steps*, m_vpSteps, s ) 
+    for (auto *pSteps : m_vpSteps)
 	{
-		Steps *pSteps = *s;
 		if( pSteps->IsAutogen() )
 			continue; // don't write autogen notes
 
@@ -1061,8 +1063,8 @@ bool Song::SaveToSSCFile( RString sPath, bool bSavingCache )
 	}
 
 	// Mark these steps saved to disk.
-	FOREACH( Steps*, vpStepsToSave, s )
-		(*s)->SetSavedToDisk( true );
+    for (auto *s : vpStepsToSave)
+		s->SetSavedToDisk( true );
 
 	return true;
 }
@@ -1210,11 +1212,11 @@ bool Song::IsEasy( StepsType st ) const
 bool Song::IsTutorial() const
 {
 	// A Song is considered a Tutorial if it has only Beginner steps.
-	FOREACH_CONST( Steps*, m_vpSteps, s )
+    for (auto const *s : m_vpSteps)
 	{
-		if( (*s)->m_StepsType == StepsType_lights_cabinet )
+		if( s->m_StepsType == StepsType_lights_cabinet )
 			continue; // ignore
-		if( (*s)->GetDifficulty() != Difficulty_Beginner )
+		if( s->GetDifficulty() != Difficulty_Beginner )
 			return false;
 	}
 
@@ -1321,9 +1323,9 @@ vector<BackgroundChange> &Song::GetForegroundChanges()
 vector<RString> Song::GetChangesToVectorString(const vector<BackgroundChange> & changes) const
 {
 	vector<RString> ret;
-	FOREACH_CONST( BackgroundChange, changes, bgc )
+    for (auto const &bgc : changes)
 	{
-		ret.push_back((*bgc).ToString());
+		ret.push_back(bgc.ToString());
 	}
 	return ret;
 }

@@ -5,7 +5,6 @@
 #include "PlayerNumber.h"
 #include "ThemeManager.h"
 #include "XmlFile.h"
-#include "Foreach.h"
 #include "RadarValues.h"
 
 ThemeMetric<RString> EMPTY_NAME("HighScore","EmptyName");
@@ -349,7 +348,7 @@ void HighScoreList::LoadFromNode( const XNode* pHighScoreList )
 	Init();
 
 	ASSERT( pHighScoreList->GetName() == "HighScoreList" );
-	FOREACH_CONST_Child( pHighScoreList, p )
+    for (auto const *p : pHighScoreList->m_childs)
 	{
 		const RString &name = p->GetName();
 		if( name == "NumTimesPlayed" )
@@ -384,7 +383,8 @@ void HighScoreList::LoadFromNode( const XNode* pHighScoreList )
 
 void HighScoreList::RemoveAllButOneOfEachName()
 {
-	FOREACH( HighScore, vHighScores, i )
+    // use iter version
+    for (auto i = std::begin(vHighScores); i != std::end(vHighScores); ++i)
 	{
 		for( vector<HighScore>::iterator j = i+1; j != vHighScores.end(); j++ )
 		{
