@@ -71,7 +71,7 @@ void Bookkeeper::LoadFromNode( const XNode *pNode )
 		return;
 	}
 
-	FOREACH_CONST_Child( pData, day )
+    for (auto const *day : pData->m_childs)
 	{
 		Date d;
 		if( !day->GetAttrValue( "Hour", d.m_iHour ) ||

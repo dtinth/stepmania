@@ -47,10 +47,10 @@ void SMALoader::ProcessBeatsPerMeasure( TimingData &out, const RString sParam )
 	vector<RString> vs1;
 	split( sParam, ",", vs1 );
 	
-	FOREACH_CONST( RString, vs1, s1 )
+    for (auto const &s1 : vs1)
 	{
 		vector<RString> vs2;
-		split( *s1, "=", vs2 );
+		split( s1, "=", vs2 );
 
 		if( vs2.size() < 2 )
 		{
@@ -89,18 +89,19 @@ void SMALoader::ProcessSpeeds( TimingData &out, const RString line, const int ro
 	vector<RString> vs1;
 	split( line, ",", vs1 );
 
-	FOREACH_CONST( RString, vs1, s1 )
+    int counter = 0;
+    for (auto const &s1 : vs1)
 	{
 		vector<RString> vs2;
 		vs2.clear(); // trying something.
-		RString loopTmp = *s1;
+		RString loopTmp = s1;
 		Trim( loopTmp );
 		split( loopTmp, "=", vs2 );
 		
 		if( vs2.size() == 2 ) // First one always seems to have 2.
 		{
 			// Aldo_MX: 4 is the default value in SMA, although SM5 requires 0 for the first segment :/
-			vs2.push_back(s1 == vs1.begin() ? "0" : "4");
+			vs2.push_back((counter++ == 0) ? "0" : "4");
 		}
 		
 		if( vs2.size() < 3 )

@@ -20,7 +20,6 @@
 #include "MenuTimer.h"
 #include "StatsManager.h"
 #include "StepsUtil.h"
-#include "Foreach.h"
 #include "Style.h"
 #include "PlayerState.h"
 #include "CommonMetrics.h"
@@ -1524,9 +1523,8 @@ void ScreenSelectMusic::AfterStepsOrTrailChange( const vector<PlayerNumber> &vpn
 		MESSAGEMAN->Broadcast("TwoPartConfirmCanceled");
 	}
 
-	FOREACH_CONST( PlayerNumber, vpns, p )
-	{
-		PlayerNumber pn = *p;
+    for (auto const &pn : vpns)
+    {
 		ASSERT( GAMESTATE->IsHumanPlayer(pn) );
 
 		if( GAMESTATE->m_pCurSong )
@@ -1584,7 +1582,8 @@ void ScreenSelectMusic::SwitchToPreferredDifficulty()
 			// Find the closest match to the user's preferred difficulty and StepsType.
 			int iCurDifference = -1;
 			int &iSelection = m_iSelection[pn];
-			FOREACH_CONST( Steps*, m_vpSteps, s )
+            // use iter style
+            for (auto s = std::begin(m_vpSteps); s != std::end(m_vpSteps); ++s)
 			{
 				int i = s - m_vpSteps.begin();
 
@@ -1621,7 +1620,8 @@ void ScreenSelectMusic::SwitchToPreferredDifficulty()
 			// Find the closest match to the user's preferred difficulty.
 			int iCurDifference = -1;
 			int &iSelection = m_iSelection[pn];
-			FOREACH_CONST( Trail*, m_vpTrails, t )
+            // use iter style
+            for (auto t = std::begin(m_vpTrails); t != std::end(m_vpTrails); ++t)
 			{
 				int i = t - m_vpTrails.begin();
 

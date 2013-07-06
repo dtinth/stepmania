@@ -1,3 +1,5 @@
+AUTOMAKE_OPTIONS = subdir-objects
+
 ## Do not install stepmania in the traditional way.
 noinst_PROGRAMS = stepmania
 TESTS = 
@@ -7,17 +9,26 @@ noinst_PROGRAMS += $(TESTS)
 endif
 
 AM_LDFLAGS =
-AM_CXXFLAGS = 
-AM_CFLAGS = 
+if SUPPORTS_CPP11_NATIVE
+AM_CXXFLAGS =
+else
+AM_CXXFLAGS=--std=c++11
+endif
+AM_CFLAGS = -DLTC_NO_ASM
 noinst_LIBRARIES =
 EXTRA_DIST =
 
 
 AM_CXXFLAGS += -fno-exceptions
 
+if USING_GPP
 # Relax inlining; the default of 600 takes way too long to compile and
 # generates enormous output.
 AM_CXXFLAGS += -finline-limit=300
+endif
+
+# Temp plan until all compilers can utilize this.
+AM_CXXFLAGS += -DLTC_NO_ASM
 
 AM_CXXFLAGS += $(XCFLAGS)
 
@@ -41,6 +52,13 @@ increment_version:
 
 ver.cpp:
 	$(MAKE) increment_version
+
+RAGENS = \
+Rage/Matrix.hpp Rage/Matrix.cpp \
+Rage/ModelVertex.hpp Rage/ModelVertex.cpp \
+Rage/Vector2.hpp Rage/Vector2.cpp \
+Rage/Vector3.hpp Rage/Vector3.cpp \
+Rage/Vector4.hpp Rage/Vector4.cpp
 
 PNG = \
 ../extern/libpng/include/png.c ../extern/libpng/include/.png.h \
@@ -199,7 +217,7 @@ XmlFile.cpp XmlFile.h \
 XmlFileUtil.cpp XmlFileUtil.h
 
 StepMania = CommandLineActions.h CommandLineActions.cpp \
-StdString.h Foreach.h \
+StdString.h \
 StepMania.cpp StepMania.h \
 GameLoop.cpp GameLoop.h \
 global.cpp global.h \
@@ -611,7 +629,9 @@ main_CPPFLAGS = \
 	-I$(top_srcdir)/extern/jsoncpp/include
 #-I$(top_srcdir)/extern/glew-1.5.8/include
 
-main_SOURCES = $(PNG) \
+main_SOURCES = \
+		$(PNG) \
+		$(RAGENS) \
 		$(Screens) \
 		$(DataStructures) \
 		$(FileTypes) \

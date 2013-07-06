@@ -2,7 +2,6 @@
 #include "global.h"
 #include "Course.h"
 #include "CourseLoaderCRS.h"
-#include "Foreach.h"
 #include "GameManager.h"
 #include "GameState.h"
 #include "LocalizedString.h"
@@ -207,8 +206,8 @@ void Course::Init()
 
 bool Course::IsPlayableIn( StepsType st ) const
 {
-	// Stripped down version of GetTrailUnsorted
-	FOREACH_CONST( CourseEntry, m_vEntries, e )
+	// Stripped down version of GetTrailUnsorted: use iter version.
+    for (auto e = std::begin(m_vEntries); e != std::end(m_vEntries); ++e)
 	{
 		SongCriteria soc = e->songCriteria;
 
@@ -472,7 +471,7 @@ bool Course::GetTrailUnsorted( StepsType st, CourseDifficulty cd, Trail &trail )
 	vector<SongAndSteps> vSongAndSteps;
 
 	// Resolve each entry to a Song and Steps.
-	FOREACH_CONST( CourseEntry, entries, e )
+    for (auto e = std::begin(entries); e != std::end(entries); ++e)
 	{
 		SongAndSteps resolved;	// fill this in
 		SongCriteria soc = e->songCriteria;
@@ -521,13 +520,13 @@ bool Course::GetTrailUnsorted( StepsType st, CourseDifficulty cd, Trail &trail )
 		vector<Song*> vpSongs;
 		typedef vector<Steps*> StepsVector;
 		map<Song*,StepsVector> mapSongToSteps;
-		FOREACH_CONST( SongAndSteps, vSongAndSteps, sas )
+        for (auto const &sas : vSongAndSteps)
 		{
-			StepsVector &v = mapSongToSteps[sas->pSong];
+			StepsVector &v = mapSongToSteps[sas.pSong];
 
-			v.push_back( sas->pSteps );
+			v.push_back( sas.pSteps );
 			if( v.size() == 1 )
-				vpSongs.push_back( sas->pSong );
+				vpSongs.push_back( sas.pSong );
 		}
 
 		CourseSortSongs( e->songSort, vpSongs, rnd );
@@ -679,9 +678,9 @@ void Course::GetAllTrails( vector<Trail*> &AddTo ) const
 {
 	vector<StepsType> vStepsTypesToShow;
 	GAMEMAN->GetStepsTypesForGame( GAMESTATE->m_pCurGame, vStepsTypesToShow );
-	FOREACH( StepsType, vStepsTypesToShow, st )
+    for (auto const &st : vStepsTypesToShow)
 	{
-		GetTrails( AddTo, *st );
+		GetTrails( AddTo, st );
 	}
 }
 
@@ -697,13 +696,9 @@ int Course::GetMeter( StepsType st, CourseDifficulty cd ) const
 
 bool Course::HasMods() const
 {
-	FOREACH_CONST( CourseEntry, m_vEntries, e )
-	{
-		if( !e->attacks.empty() )
-			return true;
-	}
-
-	return false;
+    return std::any_of(std::begin(m_vEntries), std::end(m_vEntries), [](CourseEntry const &e) {
+        return !e.attacks.empty();
+    });
 }
 
 bool Course::HasTimedMods() const
@@ -712,16 +707,16 @@ bool Course::HasTimedMods() const
 	// HasTimedMods now searches for bGlobal in the attacks; if one of
 	// them is false, it has timed mods. Also returning false will probably
 	// take longer than expected. -aj
-	FOREACH_CONST( CourseEntry, m_vEntries, e )
+    for (auto const &e : m_vEntries)
 	{
-		if( !e->attacks.empty() )
+		if( !e.attacks.empty() )
 		{
-			for( unsigned s=0; s < e->attacks.size(); s++ )
-			{
-				const Attack attack = e->attacks[s];
-				if(!attack.bGlobal)
-					return true;
-			}
+            if (std::any_of(std::begin(e.attacks), std::end(e.attacks), [](Attack const &a) {
+                return !a.bGlobal;
+            }))
+            {
+                return true;
+            }
 		}
 	}
 	return false;
@@ -729,12 +724,9 @@ bool Course::HasTimedMods() const
 
 bool Course::AllSongsAreFixed() const
 {
-	FOREACH_CONST( CourseEntry, m_vEntries, e )
-	{
-		if( !e->IsFixedSong() )
-			return false;
-	}
-	return true;
+    return std::all_of(std::begin(m_vEntries), std::end(m_vEntries), [](CourseEntry const &e) {
+        return e.IsFixedSong();
+    });
 }
 
 const Style *Course::GetCourseStyle( const Game *pGame, int iNumPlayers ) const
@@ -742,16 +734,15 @@ const Style *Course::GetCourseStyle( const Game *pGame, int iNumPlayers ) const
 	vector<const Style*> vpStyles;
 	GAMEMAN->GetCompatibleStyles( pGame, iNumPlayers, vpStyles );
 
-	for( int s=0; s < (int) vpStyles.size(); ++s ) 
+    for (auto const *pStyle : vpStyles)
 	{
-		const Style *pStyle = vpStyles[s];
-		FOREACHS_CONST( RString, m_setStyles, style )
+        for (auto const &style : m_setStyles)
 		{
-			if( !style->CompareNoCase(pStyle->m_szName) )
+			if( !style.CompareNoCase(pStyle->m_szName) )
 				return pStyle;
 		}
 	}
-	return NULL;
+	return nullptr;
 }
 
 void Course::InvalidateTrailCache()
@@ -761,9 +752,9 @@ void Course::InvalidateTrailCache()
 
 void Course::Invalidate( const Song *pStaleSong )
 {
-	FOREACH_CONST( CourseEntry, m_vEntries, e )
+    for (auto const &e : m_vEntries)
 	{
-		Song *pSong = e->songID.ToSong();
+		Song *pSong = e.songID.ToSong();
 		if( pSong == pStaleSong )	// a fixed entry that references the stale Song
 		{
 			RevertFromDisk();
@@ -799,9 +790,9 @@ void Course::RegenerateNonFixedTrails() const
 	if( AllSongsAreFixed() )
 		return;
 
-	FOREACHM( CacheEntry, CacheData, m_TrailCache, e )
+    for (auto const &e : m_TrailCache)
 	{
-		const CacheEntry &ce = e->first;
+		const CacheEntry &ce = e.first;
 		GetTrailForceRegenCache( ce.first, ce.second );
 	}
 }
@@ -859,15 +850,10 @@ bool Course::GetTotalSeconds( StepsType st, float& fSecondsOut ) const
 
 bool Course::CourseHasBestOrWorst() const
 {
-	FOREACH_CONST( CourseEntry, m_vEntries, e )
-	{
-		if( e->iChooseIndex == SongSort_MostPlays  &&  e->iChooseIndex != -1 )
-			return true;
-		if( e->iChooseIndex == SongSort_FewestPlays  &&  e->iChooseIndex != -1 )
-			return true;
-	}
-
-	return false;
+    return std::any_of(std::begin(m_vEntries), std::end(m_vEntries), [](CourseEntry const &e) {
+        return e.iChooseIndex != -1 &&
+            (e.iChooseIndex == SongSort_MostPlays || e.iChooseIndex == SongSort_FewestPlays);
+    });
 }
 
 RString Course::GetBannerPath() const
@@ -942,9 +928,8 @@ bool Course::IsRanking() const
 
 const CourseEntry *Course::FindFixedSong( const Song *pSong ) const
 {
-	FOREACH_CONST( CourseEntry, m_vEntries, e )
+    for (auto const &entry : m_vEntries)
 	{
-		const CourseEntry &entry = *e;
 		Song *lSong = entry.songID.ToSong();
 		if( pSong == lSong )
 			return &entry;

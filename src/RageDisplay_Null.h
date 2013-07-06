@@ -58,7 +58,7 @@ public:
 		const RageColor & /* unreferenced: ambient */, 
 		const RageColor & /* unreferenced: diffuse */, 
 		const RageColor & /* unreferenced: specular */, 
-		const RageVector3 & /* unreferenced: dir */ ) { }
+		const Rage::Vector3 & /* unreferenced: dir */ ) { }
 
 	void SetSphereEnvironmentMapping( TextureUnit /* tu */, bool /* b */ ) { }
 	void SetCelShaded( int /* stage */ ) { }
@@ -79,7 +79,7 @@ protected:
 	VideoModeParams m_Params;
 	RString TryVideoMode( const VideoModeParams &p, bool & /* bNewDeviceOut */ ) { m_Params = p; return RString(); }
 	RageSurface* CreateScreenshot();
-	RageMatrix GetOrthoMatrix( float l, float r, float b, float t, float zn, float zf ); 
+	Rage::Matrix GetOrthoMatrix( float l, float r, float b, float t, float zn, float zf ); 
 	bool SupportsSurfaceFormat( RagePixelFormat ) { return true; }
 };
 

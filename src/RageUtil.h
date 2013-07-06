@@ -46,7 +46,7 @@ inline unsigned long max( unsigned long a, unsigned int b ) { return a > b? a:b;
 template<typename T, typename U>
 inline U lerp( T x, U l, U h )
 {
-	return U(x * (h - l) + l);
+	return U((h - l) * x + l);
 }
 
 inline bool CLAMP( int &x, int l, int h )
@@ -647,7 +647,7 @@ template<class T>
 void GetAsNotInBs( const vector<T> &as, const vector<T> &bs, vector<T> &difference )
 {
 	vector<T> bsUnmatched = bs;
-	// Cannot use FOREACH_CONST here because vector<T>::const_iterator is an implicit type.
+	// Cannot use a range for loop here because vector<T>::const_iterator is an implicit type.
 	for( typename vector<T>::const_iterator a = as.begin(); a != as.end(); ++a )
 	{
 		typename vector<T>::iterator iter = find( bsUnmatched.begin(), bsUnmatched.end(), *a );

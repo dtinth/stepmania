@@ -4,7 +4,6 @@
 #include "BGAnimationLayer.h"
 #include "RageUtil.h"
 #include "ActorUtil.h"
-#include "Foreach.h"
 #include "LuaManager.h"
 #include "PrefsManager.h"
 
@@ -37,7 +36,7 @@ void BGAnimation::AddLayersFromAniDir( const RString &_sAniDir, const XNode *pNo
 
 	{
 		vector<RString> vsLayerNames;
-		FOREACH_CONST_Child( pNode, pLayer )
+		for (auto const *pLayer : pNode->m_childs)
 		{
 			if( strncmp(pLayer->GetName(), "Layer", 5) == 0 )
 				vsLayerNames.push_back( pLayer->GetName() );
@@ -45,10 +44,8 @@ void BGAnimation::AddLayersFromAniDir( const RString &_sAniDir, const XNode *pNo
 
 		sort( vsLayerNames.begin(), vsLayerNames.end(), CompareLayerNames );
 
-
-		FOREACH_CONST( RString, vsLayerNames, s )
+        for (auto const &sLayer : vsLayerNames)
 		{
-			const RString &sLayer = *s;
 			const XNode* pKey = pNode->GetChild( sLayer );
 			ASSERT( pKey != NULL );
 

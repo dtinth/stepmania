@@ -11,7 +11,6 @@
 #include "Sprite.h"
 #include "NoteTypes.h"
 #include "LuaBinding.h"
-#include "Foreach.h"
 #include "RageMath.h"
 
 const RString& NoteNotePartToString( NotePart i );
@@ -32,7 +31,7 @@ static const char *NotePartNames[] = {
 XToString( NotePart );
 LuaXType( NotePart );
 
-static bool IsVectorZero( const RageVector2 &v )
+static bool IsVectorZero( const Rage::Vector2 &v )
 {
 	return v.x == 0  &&  v.y == 0;
 }
@@ -50,8 +49,8 @@ struct NoteMetricCache_t
 	bool m_bTapHoldRollOnRowMeansHold;
 	float m_fAnimationLength[NUM_NotePart];
 	bool m_bAnimationIsVivid[NUM_NotePart];
-	RageVector2 m_fAdditionTextureCoordOffset[NUM_NotePart];
-	RageVector2 m_fNoteColorTextureCoordSpacing[NUM_NotePart];
+	Rage::Vector2 m_fAdditionTextureCoordOffset[NUM_NotePart];
+	Rage::Vector2 m_fNoteColorTextureCoordSpacing[NUM_NotePart];
 
 	//For animation based on beats or seconds -DaisuMaster
 	bool m_bAnimationBasedOnBeats;
@@ -394,11 +393,11 @@ void NoteDisplay::DrawHoldPart( vector<Sprite*> &vpSpr, int iCol, int fYStep, fl
 	ASSERT( !vpSpr.empty() );
 
 	Sprite *pSprite = vpSpr.front();
-	FOREACH( Sprite *, vpSpr, s )
+    for (auto *s : vpSpr)
 	{
-		(*s)->SetZoom( ArrowEffects::GetZoom(m_pPlayerState) );
-		ASSERT( (*s)->GetUnzoomedWidth() == pSprite->GetUnzoomedWidth() );
-		ASSERT( (*s)->GetUnzoomedHeight() == pSprite->GetUnzoomedHeight() );
+		s->SetZoom( ArrowEffects::GetZoom(m_pPlayerState) );
+		ASSERT( s->GetUnzoomedWidth() == pSprite->GetUnzoomedWidth() );
+		ASSERT( s->GetUnzoomedHeight() == pSprite->GetUnzoomedHeight() );
 	}
 
 	// draw manually in small segments
@@ -487,9 +486,9 @@ void NoteDisplay::DrawHoldPart( vector<Sprite*> &vpSpr, int iCol, int fYStep, fl
 		if( fAlpha > 0 )
 			bAllAreTransparent = false;
 
-		queue.v[0].p = RageVector3(fXLeft,  fY, fZLeft);  queue.v[0].c = color; queue.v[0].t = RageVector2(fTexCoordLeft,  fTexCoordTop);
-		queue.v[1].p = RageVector3(fXCenter, fY, fZCenter); queue.v[1].c = color; queue.v[1].t = RageVector2(fTexCoordCenter, fTexCoordTop);
-		queue.v[2].p = RageVector3(fXRight, fY, fZRight);  queue.v[2].c = color; queue.v[2].t = RageVector2(fTexCoordRight, fTexCoordTop);
+		queue.v[0].p = Rage::Vector3(fXLeft,  fY, fZLeft);  queue.v[0].c = color; queue.v[0].t = Rage::Vector2(fTexCoordLeft,  fTexCoordTop);
+		queue.v[1].p = Rage::Vector3(fXCenter, fY, fZCenter); queue.v[1].c = color; queue.v[1].t = Rage::Vector2(fTexCoordCenter, fTexCoordTop);
+		queue.v[2].p = Rage::Vector3(fXRight, fY, fZRight);  queue.v[2].c = color; queue.v[2].t = Rage::Vector2(fTexCoordRight, fTexCoordTop);
 		queue.v+=3;
 
 		if( queue.Free() < 3 || bLast )
@@ -498,7 +497,8 @@ void NoteDisplay::DrawHoldPart( vector<Sprite*> &vpSpr, int iCol, int fYStep, fl
 			 * start off the strip again. */
 			if( !bAllAreTransparent )
 			{
-				FOREACH( Sprite*, vpSpr, spr )
+                // use iter version
+                for (auto spr = std::begin(vpSpr); spr != std::end(vpSpr); ++spr)
 				{
 					RageTexture* pTexture = (*spr)->GetTexture();
 					DISPLAY->SetTexture( TextureUnit_1, pTexture->GetTexHandle() );
@@ -730,7 +730,7 @@ void NoteDisplay::DrawActor( const TapNote& tn, Actor* pActor, NotePart part, in
 		DISPLAY->TexturePushMatrix();
 		NoteType nt = BeatToNoteType( fBeat );
 		ENUM_CLAMP( nt, (NoteType)0, MAX_DISPLAY_NOTE_TYPE );
-		DISPLAY->TextureTranslate( (bIsAddition ? cache->m_fAdditionTextureCoordOffset[part] : RageVector2(0,0)) + cache->m_fNoteColorTextureCoordSpacing[part]*(float)nt );
+		DISPLAY->TextureTranslate( (bIsAddition ? cache->m_fAdditionTextureCoordOffset[part] : Rage::Vector2(0,0)) + cache->m_fNoteColorTextureCoordSpacing[part]*(float)nt );
 	}
 
 	pActor->Draw();

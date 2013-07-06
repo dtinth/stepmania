@@ -4,6 +4,9 @@
 #define MODEL_TYPES_H
 
 #include "RageTypes.h"
+#include "Rage/ModelVertex.hpp"
+#include "Rage/Vector4.hpp"
+#include "Rage/Matrix.hpp"
 
 struct msTriangle
 {
@@ -16,7 +19,7 @@ struct msMesh
 	RString			sName;
 	char			nMaterialIndex;
 
-	vector<RageModelVertex>	Vertices;
+	vector<Rage::ModelVertex>	Vertices;
 
 	// OPTIMIZATION: If all verts in a mesh are transformed by the same bone, 
 	// then send the transform to the graphics card for the whole mesh instead
@@ -47,7 +50,7 @@ public:
 	float GetAnimationLengthSeconds() const;
 	void SetSecondsIntoAnimation( float fSeconds );
 	float GetSecondsIntoAnimation() const;
-	RageVector2 GetTextureTranslate();
+	Rage::Vector2 GetTextureTranslate();
 
 	bool		m_bSphereMapped;
 	BlendMode	m_BlendMode;
@@ -55,8 +58,8 @@ public:
 	bool NeedsNormals() const { return m_bSphereMapped; }
 
 private:
-	RageVector2		m_vTexOffset;
-	RageVector2		m_vTexVelocity;
+	Rage::Vector2		m_vTexOffset;
+	Rage::Vector2		m_vTexVelocity;
 
 	int m_iCurState;
 	float m_fSecsIntoFrame;
@@ -65,14 +68,14 @@ private:
 		AnimatedTextureState(
 			RageTexture* pTexture_,
 			float		fDelaySecs_,
-			RageVector2	vTranslate_
+			Rage::Vector2	vTranslate_
 				     ):
 			pTexture(pTexture_), fDelaySecs(fDelaySecs_),
 			vTranslate(vTranslate_) {}
 
 		RageTexture* pTexture;
 		float		fDelaySecs;
-		RageVector2	vTranslate;
+		Rage::Vector2	vTranslate;
 	};
 	vector<AnimatedTextureState> vFrames;
 };
@@ -97,13 +100,13 @@ struct msMaterial
 struct msPositionKey
 {
 	float fTime;
-	RageVector3 Position;
+	Rage::Vector3 Position;
 };
 
 struct msRotationKey
 {
 	float fTime;
-	RageVector4 Rotation;
+	Rage::Vector4 Rotation;
 };
 
 struct msBone
@@ -111,8 +114,8 @@ struct msBone
 	int			nFlags;
 	RString			sName;
 	RString			sParentName;
-	RageVector3		Position;
-	RageVector3		Rotation;
+	Rage::Vector3		Position;
+	Rage::Vector3		Rotation;
 
 	vector<msPositionKey>	PositionKeys;
 	vector<msRotationKey>	RotationKeys;
@@ -136,9 +139,9 @@ struct msAnimation
 
 struct myBone_t
 {
-	RageMatrix		m_Relative;
-	RageMatrix		m_Absolute;
-	RageMatrix		m_Final;
+	Rage::Matrix		m_Relative;
+	Rage::Matrix		m_Absolute;
+	Rage::Matrix		m_Final;
 };
 
 #endif

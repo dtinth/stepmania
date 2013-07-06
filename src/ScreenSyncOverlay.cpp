@@ -229,10 +229,10 @@ bool ScreenSyncOverlay::Input( const InputEventPlus &input )
 				TimingData &sTiming = GAMESTATE->m_pCurSong->m_SongTiming;
 				BPMSegment * seg = sTiming.GetBPMSegmentAtBeat( GAMESTATE->m_Position.m_fSongBeat );
 				seg->SetBPS( seg->GetBPS() + fDelta );
-				const vector<Steps *>& vpSteps = GAMESTATE->m_pCurSong->GetAllSteps();
-				FOREACH( Steps*, const_cast<vector<Steps *>&>(vpSteps), s )
+				auto const & vpSteps = GAMESTATE->m_pCurSong->GetAllSteps();
+                for (auto *s : vpSteps)
 				{
-					TimingData &pTiming = (*s)->m_Timing;
+					TimingData &pTiming = s->m_Timing;
 					// Empty means it inherits song timing,
 					// which has already been updated.
 					if( pTiming.empty() )
@@ -279,14 +279,14 @@ bool ScreenSyncOverlay::Input( const InputEventPlus &input )
 					if( GAMESTATE->m_pCurSong != NULL )
 					{
 						GAMESTATE->m_pCurSong->m_SongTiming.m_fBeat0OffsetInSeconds += fDelta;
-						const vector<Steps *>& vpSteps = GAMESTATE->m_pCurSong->GetAllSteps();
-						FOREACH( Steps*, const_cast<vector<Steps *>&>(vpSteps), s )
+						auto const & vpSteps = GAMESTATE->m_pCurSong->GetAllSteps();
+                        for (auto *s : vpSteps)
 						{
 							// Empty means it inherits song timing,
 							// which has already been updated.
-							if( (*s)->m_Timing.empty() )
+							if( s->m_Timing.empty() )
 								continue;
-							(*s)->m_Timing.m_fBeat0OffsetInSeconds += fDelta;
+							s->m_Timing.m_fBeat0OffsetInSeconds += fDelta;
 						}
 					}
 					break;

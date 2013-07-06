@@ -5,7 +5,6 @@
 #include "RageMath.h"
 #include "RageLog.h"
 #include "arch/Dialog/Dialog.h"
-#include "Foreach.h"
 #include "XmlFile.h"
 #include "LuaBinding.h"
 #include "ThemeManager.h"
@@ -88,8 +87,8 @@ void Actor::InitState()
 
 	m_pTempState = NULL;
 
-	m_baseRotation = RageVector3( 0, 0, 0 );
-	m_baseScale = RageVector3( 1, 1, 1 );
+	m_baseRotation = Rage::Vector3( 0, 0, 0 );
+	m_baseScale = Rage::Vector3( 1, 1, 1 );
 	m_fBaseAlpha = 1;
 	m_internalDiffuse = RageColor( 1, 1, 1, 1 );
 	m_internalGlow = RageColor( 0, 0, 0, 0 );
@@ -113,7 +112,7 @@ void Actor::InitState()
 	m_fEffectHoldAtZero = 0;
 	m_fEffectOffset = 0;
 	m_EffectClock = CLOCK_TIMER;
-	m_vEffectMagnitude = RageVector3(0,0,10);
+	m_vEffectMagnitude = Rage::Vector3(0,0,10);
 	m_effectColor1 = RageColor(1,1,1,1);
 	m_effectColor2 = RageColor(1,1,1,1);
 
@@ -161,7 +160,7 @@ Actor::Actor()
 		lua_pop( L, 1 );
 	LUA->Release( L );
 	
-	m_size = RageVector2( 1, 1 );
+	m_size = Rage::Vector2( 1, 1 );
 	InitState();
 	m_pParent = NULL;
 	m_bFirstUpdate = true;
@@ -250,11 +249,11 @@ Actor::Actor( const Actor &cpy ):
 void Actor::LoadFromNode( const XNode* pNode )
 {
 	Lua *L = LUA->Get();
-	FOREACH_CONST_Attr( pNode, pAttr )
+    for (auto pAttr : pNode->m_attrs)
 	{
 		// Load Name, if any.
-		const RString &sKeyName = pAttr->first;
-		const XNodeValue *pValue = pAttr->second;
+		const RString &sKeyName = pAttr.first;
+		const XNodeValue *pValue = pAttr.second;
 		if( sKeyName == "Name" )			SetName( pValue->GetValue<RString>() );
 		else if( sKeyName == "BaseRotationX" )		SetBaseRotationX( pValue->GetValue<float>() );
 		else if( sKeyName == "BaseRotationY" )		SetBaseRotationY( pValue->GetValue<float>() );
@@ -432,8 +431,8 @@ void Actor::BeginDraw()		// set the world matrix and calculate actor properties
 			break;
 		case pulse:
 			{
-				float fMinZoom = m_vEffectMagnitude[0];
-				float fMaxZoom = m_vEffectMagnitude[1];
+				float fMinZoom = m_vEffectMagnitude.x;
+				float fMaxZoom = m_vEffectMagnitude.y;
 				float fPercentOffset = RageFastSin( fPercentThroughEffect*PI ); 
 				float fZoom = SCALE( fPercentOffset, 0.f, 1.f, fMinZoom, fMaxZoom );
 				tempState.scale *= fZoom;
@@ -483,7 +482,7 @@ void Actor::BeginDraw()		// set the world matrix and calculate actor properties
 
 	if( m_pTempState->pos.x != 0 || m_pTempState->pos.y != 0 || m_pTempState->pos.z != 0 )	
 	{
-		RageMatrix m;
+		Rage::Matrix m;
 		RageMatrixTranslate( 
 			&m, 
 			m_pTempState->pos.x,
@@ -503,7 +502,7 @@ void Actor::BeginDraw()		// set the world matrix and calculate actor properties
 
 		if( fRotateX != 0 || fRotateY != 0 || fRotateZ != 0 )	
 		{
-			RageMatrix m;
+			Rage::Matrix m;
 			RageMatrixRotationXYZ( &m, fRotateX, fRotateY, fRotateZ );
 			DISPLAY->PreMultMatrix( m );
 		}
@@ -517,8 +516,8 @@ void Actor::BeginDraw()		// set the world matrix and calculate actor properties
 
 		if( fScaleX != 1 || fScaleY != 1 || fScaleZ != 1 )
 		{
-			RageMatrix m;
-			RageMatrixScale( 
+			Rage::Matrix m;
+			RageMatrixScale(
 				&m,
 				fScaleX,
 				fScaleY,
@@ -532,7 +531,7 @@ void Actor::BeginDraw()		// set the world matrix and calculate actor properties
 	{
 		float fX = SCALE( m_fHorizAlign, 0.0f, 1.0f, +m_size.x/2.0f, -m_size.x/2.0f );
 		float fY = SCALE( m_fVertAlign, 0.0f, 1.0f, +m_size.y/2.0f, -m_size.y/2.0f );
-		RageMatrix m;
+		Rage::Matrix m;
 		RageMatrixTranslate( 
 			&m, 
 			fX,
@@ -544,7 +543,7 @@ void Actor::BeginDraw()		// set the world matrix and calculate actor properties
 
 	if( m_pTempState->quat.x != 0 ||  m_pTempState->quat.y != 0 ||  m_pTempState->quat.z != 0 || m_pTempState->quat.w != 1 )
 	{
-		RageMatrix mat;
+		Rage::Matrix mat;
 		RageMatrixFromQuat( &mat, m_pTempState->quat );
 
 		DISPLAY->MultMatrix(mat);
@@ -746,7 +745,7 @@ void Actor::UpdateInternal( float fDeltaTime )
 	switch( m_Effect )
 	{
 		case spin:
-			m_current.rotation += m_fEffectDelta*m_vEffectMagnitude;
+			m_current.rotation += (m_vEffectMagnitude * m_fEffectDelta);
 			wrap( m_current.rotation.x, 360 );
 			wrap( m_current.rotation.y, 360 );
 			wrap( m_current.rotation.z, 360 );
@@ -1020,7 +1019,7 @@ void Actor::SetEffectRainbow( float fEffectPeriodSeconds )
 	SetEffectPeriod( fEffectPeriodSeconds );
 }
 
-void Actor::SetEffectWag( float fPeriod, RageVector3 vect )
+void Actor::SetEffectWag( float fPeriod, Rage::Vector3 vect )
 {
 	// todo: account for SSC_FUTURES -aj
 	if( m_Effect != wag )
@@ -1032,7 +1031,7 @@ void Actor::SetEffectWag( float fPeriod, RageVector3 vect )
 	m_vEffectMagnitude = vect;
 }
 
-void Actor::SetEffectBounce( float fPeriod, RageVector3 vect )
+void Actor::SetEffectBounce( float fPeriod, Rage::Vector3 vect )
 {
 	// todo: account for SSC_FUTURES -aj
 	m_Effect = bounce;
@@ -1041,7 +1040,7 @@ void Actor::SetEffectBounce( float fPeriod, RageVector3 vect )
 	m_fSecsIntoEffect = 0;
 }
 
-void Actor::SetEffectBob( float fPeriod, RageVector3 vect )
+void Actor::SetEffectBob( float fPeriod, Rage::Vector3 vect )
 {
 	// todo: account for SSC_FUTURES -aj
 	if( m_Effect!=bob || GetEffectPeriod() != fPeriod )
@@ -1053,14 +1052,14 @@ void Actor::SetEffectBob( float fPeriod, RageVector3 vect )
 	m_vEffectMagnitude = vect;
 }
 
-void Actor::SetEffectSpin( RageVector3 vect )
+void Actor::SetEffectSpin( Rage::Vector3 vect )
 {
 	// todo: account for SSC_FUTURES -aj
 	m_Effect = spin;
 	m_vEffectMagnitude = vect;
 }
 
-void Actor::SetEffectVibrate( RageVector3 vect )
+void Actor::SetEffectVibrate( Rage::Vector3 vect )
 {
 	// todo: account for SSC_FUTURES -aj
 	m_Effect = vibrate;
@@ -1072,8 +1071,8 @@ void Actor::SetEffectPulse( float fPeriod, float fMinZoom, float fMaxZoom )
 	// todo: account for SSC_FUTURES -aj
 	m_Effect = pulse;
 	SetEffectPeriod( fPeriod );
-	m_vEffectMagnitude[0] = fMinZoom;
-	m_vEffectMagnitude[1] = fMaxZoom;
+	m_vEffectMagnitude.x = fMinZoom;
+	m_vEffectMagnitude.y = fMaxZoom;
 }
 
 
@@ -1168,10 +1167,10 @@ void Actor::SetDiffuseColor( RageColor c )
 
 void Actor::TweenState::Init()
 {
-	pos = RageVector3( 0, 0, 0 );
-	rotation = RageVector3( 0, 0, 0 );
-	quat = RageVector4( 0, 0, 0, 1 );
-	scale = RageVector3( 1, 1, 1 );
+	pos = Rage::Vector3( 0, 0, 0 );
+	rotation = Rage::Vector3( 0, 0, 0 );
+	quat = Rage::Vector4( 0, 0, 0, 1 );
+	scale = Rage::Vector3( 1, 1, 1 );
 	fSkewX = 0;
 	fSkewY = 0;
 	crop = RectF( 0,0,0,0 );
@@ -1456,8 +1455,8 @@ public:
 	static int effecttiming( T* p, lua_State *L )		{ p->SetEffectTiming(FArg(1),FArg(2),FArg(3),FArg(4)); return 0; }
 	static int effectoffset( T* p, lua_State *L )		{ p->SetEffectOffset(FArg(1)); return 0; }
 	static int effectclock( T* p, lua_State *L )		{ p->SetEffectClockString(SArg(1)); return 0; }
-	static int effectmagnitude( T* p, lua_State *L )	{ p->SetEffectMagnitude( RageVector3(FArg(1),FArg(2),FArg(3)) ); return 0; }
-	static int geteffectmagnitude( T* p, lua_State *L )	{ RageVector3 v = p->GetEffectMagnitude(); lua_pushnumber(L, v[0]); lua_pushnumber(L, v[1]); lua_pushnumber(L, v[2]); return 3; }
+	static int effectmagnitude( T* p, lua_State *L )	{ p->SetEffectMagnitude( Rage::Vector3(FArg(1),FArg(2),FArg(3)) ); return 0; }
+	static int geteffectmagnitude( T* p, lua_State *L )	{ Rage::Vector3 v = p->GetEffectMagnitude(); lua_pushnumber(L, v.x); lua_pushnumber(L, v.y); lua_pushnumber(L, v.z); return 3; }
 	static int scaletocover( T* p, lua_State *L )		{ p->ScaleToCover( RectF(FArg(1), FArg(2), FArg(3), FArg(4)) ); return 0; }
 	static int scaletofit( T* p, lua_State *L )		{ p->ScaleToFitInside( RectF(FArg(1), FArg(2), FArg(3), FArg(4)) ); return 0; }
 	static int animate( T* p, lua_State *L )		{ p->EnableAnimation(BIArg(1)); return 0; }

@@ -10,7 +10,6 @@
 #include "LightsManager.h"	// for NUM_CabinetLight
 #include "Game.h"
 #include "Style.h"
-#include "Foreach.h"
 
 GameManager*	GAMEMAN = NULL;	// global and accessable from anywhere in our program
 
@@ -3007,9 +3006,13 @@ const Style *GameManager::GetFirstCompatibleStyle( const Game *pGame, int iNumPl
 {
 	vector<const Style*> vpStyles;
 	GetCompatibleStyles( pGame, iNumPlayers, vpStyles );
-	FOREACH_CONST( const Style*, vpStyles, s )
-		if( (*s)->m_StepsType == st )
-			return *s;
+    for (auto const *s : vpStyles)
+    {
+		if( s->m_StepsType == st )
+		{
+            return s;
+        }
+    }
 	FAIL_M( ssprintf("No compatible styles for %s - %s with %d player%s.", pGame->m_szName,
 			 GetStepsTypeInfo(st).szName, iNumPlayers, iNumPlayers==1?"":"s") );
 	return NULL;

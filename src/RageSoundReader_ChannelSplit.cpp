@@ -38,7 +38,6 @@
 #include "RageUtil.h"
 #include "RageSoundMixBuffer.h"
 #include "RageSoundUtil.h"
-#include "Foreach.h"
 #include <set>
 
 class RageSoundReader_Split;
@@ -183,10 +182,10 @@ int RageSoundSplitterImpl::ReadBuffer()
 	/* Discard any bytes that are no longer requested by any sound. */
 	int iMinFrameRequested = INT_MAX;
 	int iMaxFrameRequested = INT_MIN;
-	FOREACHS( RageSoundReader_Split *, m_apSounds, snd )
+    for (auto const *snd : m_apSounds)
 	{
-		iMinFrameRequested = min( iMinFrameRequested, (*snd)->m_iPositionFrame );
-		iMaxFrameRequested = max( iMaxFrameRequested, (*snd)->m_iPositionFrame + (*snd)->m_iRequestFrames );
+		iMinFrameRequested = min( iMinFrameRequested, snd->m_iPositionFrame );
+		iMaxFrameRequested = max( iMaxFrameRequested, snd->m_iPositionFrame + snd->m_iRequestFrames );
 	}
 
 	if( iMinFrameRequested > m_iBufferPositionFrames )

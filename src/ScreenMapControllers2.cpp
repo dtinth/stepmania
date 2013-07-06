@@ -9,7 +9,6 @@
 #include "ScreenDimensions.h"
 #include "InputEventPlus.h"
 #include "LocalizedString.h"
-#include "Foreach.h"
 #include "LuaBinding.h"
 
 static const float g_fSecondsToWaitForInput = 0.05f;
@@ -110,18 +109,18 @@ void ScreenMapControllers2::Init()
 	MAPPING_SCROLLER_TRANSFORM.Load( m_sName, "MappingScrollerTransform" );
 	MAPPING_SCROLLER_SUBDIVISIONS.Load( m_sName, "MappingScrollerSubdivisions" );
 
-	FOREACH( PlayerNumber, vpns, p )
+	for (auto const &p : vpns)
 	{
 		// mapping scroller
-		m_MappingScroller[*p].SetLoop( LOOP_MAPPING_SCROLLER );
-		m_MappingScroller[*p].SetNumItemsToDraw( MAPPING_SCROLLER_NUM_ITEMS_TO_DRAW );
-		m_MappingScroller[*p].Load2();
-		m_MappingScroller[*p].SetTransformFromReference( MAPPING_SCROLLER_TRANSFORM );
-		m_MappingScroller[*p].SetSecondsPerItem( MAPPING_SCROLLER_SECONDS_PER_ITEM );
-		m_MappingScroller[*p].SetNumSubdivisions( MAPPING_SCROLLER_SUBDIVISIONS );
-		m_MappingScroller[*p].SetName( "MappingScroller"+ssprintf("P%d",(*p)+1) );
-		LOAD_ALL_COMMANDS_AND_SET_XY( m_MappingScroller[*p] );
-		this->AddChild( &m_MappingScroller[*p] );
+		m_MappingScroller[p].SetLoop( LOOP_MAPPING_SCROLLER );
+		m_MappingScroller[p].SetNumItemsToDraw( MAPPING_SCROLLER_NUM_ITEMS_TO_DRAW );
+		m_MappingScroller[p].Load2();
+		m_MappingScroller[p].SetTransformFromReference( MAPPING_SCROLLER_TRANSFORM );
+		m_MappingScroller[p].SetSecondsPerItem( MAPPING_SCROLLER_SECONDS_PER_ITEM );
+		m_MappingScroller[p].SetNumSubdivisions( MAPPING_SCROLLER_SUBDIVISIONS );
+		m_MappingScroller[p].SetName( "MappingScroller"+ssprintf("P%d", p + 1) );
+		LOAD_ALL_COMMANDS_AND_SET_XY( m_MappingScroller[p] );
+		this->AddChild( &m_MappingScroller[p] );
 	}
 }
 

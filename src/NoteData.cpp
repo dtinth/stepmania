@@ -10,7 +10,6 @@
 #include "RageLog.h"
 #include "XmlFile.h"
 #include "GameState.h" // blame radar calculations.
-#include "Foreach.h"
 #include "RageUtil_AutoPtr.h"
 
 REGISTER_CLASS_TRAITS( NoteData, new NoteData(*pCopy) )
@@ -31,9 +30,13 @@ bool NoteData::IsComposite() const
 {
 	for( int track = 0; track < GetNumTracks(); ++track )
 	{
-		FOREACHM_CONST( int, TapNote, m_TapNotes[track], tn )
-			if( tn->second.pn != PLAYER_INVALID )
-				return true;
+        if (std::any_of(std::begin(m_TapNotes[track]), std::end(m_TapNotes[track]), [](std::pair<int, TapNote> const &tn)
+        {
+            return tn.second.pn != PLAYER_INVALID;
+        }))
+        {
+            return true;
+		}
 	}
 	return false;
 }

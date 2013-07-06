@@ -8,7 +8,6 @@
 #include "RageLog.h"
 #include "RageMath.h"
 #include "StageStats.h"
-#include "Foreach.h"
 #include "Song.h"
 #include "XmlFile.h"
 
@@ -120,7 +119,7 @@ public:
 		for( int i = 0; i < 2*VALUE_RESOLUTION; ++i )
 		{
 			m_Slices[i].c = RageColor(1,1,1,1);
-			m_Slices[i].t = RageVector2( 0,0 );
+			m_Slices[i].t = Rage::Vector2( 0,0 );
 		}
 	}
 	~GraphBody()
@@ -156,8 +155,10 @@ GraphDisplay::GraphDisplay()
 
 GraphDisplay::~GraphDisplay()
 {
-	FOREACH( Actor*, m_vpSongBoundaries, p )
-		SAFE_DELETE( *p );
+    for (auto *p : m_vpSongBoundaries)
+	{
+		SAFE_DELETE( p );
+	}
 	m_vpSongBoundaries.clear();
 	SAFE_DELETE( m_pGraphLine );
 	SAFE_DELETE( m_pGraphBody );
@@ -176,7 +177,8 @@ void GraphDisplay::Set( const StageStats &ss, const PlayerStageStats &pss )
 
 	// Show song boundaries
 	float fSec = 0;
-	FOREACH_CONST( Song*, ss.m_vpPossibleSongs, song )
+    // use iter version
+    for (auto song = std::begin(ss.m_vpPossibleSongs); song != std::end(ss.m_vpPossibleSongs); ++song)
 	{
 		if( song == ss.m_vpPossibleSongs.end()-1 )
 			continue;
@@ -254,19 +256,19 @@ void GraphDisplay::UpdateVerts()
 		const float fX = SCALE( float(i), 0.0f, float(VALUE_RESOLUTION-1), m_quadVertices.left, m_quadVertices.right );
 		const float fY = SCALE( m_Values[i], 0.0f, 1.0f, m_quadVertices.bottom, m_quadVertices.top );
 
-		m_pGraphBody->m_Slices[i*2+0].p = RageVector3( fX, fY, 0 );
-		m_pGraphBody->m_Slices[i*2+1].p = RageVector3( fX, m_quadVertices.bottom, 0 );
+		m_pGraphBody->m_Slices[i*2+0].p = Rage::Vector3( fX, fY, 0 );
+		m_pGraphBody->m_Slices[i*2+1].p = Rage::Vector3( fX, m_quadVertices.bottom, 0 );
 
 		const RectF *pRect = m_pGraphBody->m_pTexture->GetTextureCoordRect( 0 );
 
 		const float fU = SCALE( fX, m_quadVertices.left, m_quadVertices.right, pRect->left, pRect->right );
 		const float fV = SCALE( fY, m_quadVertices.top, m_quadVertices.bottom, pRect->top, pRect->bottom );
-		m_pGraphBody->m_Slices[i*2+0].t = RageVector2( fU, fV );
-		m_pGraphBody->m_Slices[i*2+1].t = RageVector2( fU, pRect->bottom );
+		m_pGraphBody->m_Slices[i*2+0].t = Rage::Vector2( fU, fV );
+		m_pGraphBody->m_Slices[i*2+1].t = Rage::Vector2( fU, pRect->bottom );
 
-		LineStrip[i].p = RageVector3( fX, fY, 0 );
+		LineStrip[i].p = Rage::Vector3( fX, fY, 0 );
 		LineStrip[i].c = RageColor( 1,1,1,1 );
-		LineStrip[i].t = RageVector2( 0,0 );
+		LineStrip[i].t = Rage::Vector2( 0,0 );
 	}
 
 	m_pGraphLine->Set( LineStrip, VALUE_RESOLUTION );

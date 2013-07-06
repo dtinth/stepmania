@@ -9,7 +9,6 @@
 #include "RageTexture.h"
 #include "RageUtil.h"
 #include "ActorUtil.h"
-#include "Foreach.h"
 #include "LuaBinding.h"
 #include "LuaManager.h"
 
@@ -35,8 +34,8 @@ ActorMultiTexture::ActorMultiTexture( const ActorMultiTexture &cpy ):
 	CPY( m_aTextureUnits );
 #undef CPY
 
-	FOREACH( TextureUnitState, m_aTextureUnits, tex )
-		tex->m_pTexture = TEXTUREMAN->CopyTexture( tex->m_pTexture );
+    for (auto &tex : m_aTextureUnits)
+		tex.m_pTexture = TEXTUREMAN->CopyTexture( tex.m_pTexture );
 }
 
 void ActorMultiTexture::SetTextureCoords( const RectF &r )
@@ -58,8 +57,8 @@ void ActorMultiTexture::SetSizeFromTexture( RageTexture *pTexture )
 
 void ActorMultiTexture::ClearTextures()
 {
-	FOREACH( TextureUnitState, m_aTextureUnits, tex )
-		TEXTUREMAN->UnloadTexture( tex->m_pTexture );
+    for (auto &tex : m_aTextureUnits)
+		TEXTUREMAN->UnloadTexture( tex.m_pTexture );
 	m_aTextureUnits.clear();
 }
 
@@ -101,16 +100,16 @@ void ActorMultiTexture::DrawPrimitives()
 	DISPLAY->SetEffectMode( m_EffectMode );
 
 	static RageSpriteVertex v[4];
-	v[0].p = RageVector3( quadVerticies.left,	quadVerticies.top,	0 );	// top left
-	v[1].p = RageVector3( quadVerticies.left,	quadVerticies.bottom,	0 );	// bottom left
-	v[2].p = RageVector3( quadVerticies.right,	quadVerticies.bottom,	0 );	// bottom right
-	v[3].p = RageVector3( quadVerticies.right,	quadVerticies.top,	0 );	// top right
+	v[0].p = Rage::Vector3( quadVerticies.left,	quadVerticies.top,	0 );	// top left
+	v[1].p = Rage::Vector3( quadVerticies.left,	quadVerticies.bottom,	0 );	// bottom left
+	v[2].p = Rage::Vector3( quadVerticies.right,	quadVerticies.bottom,	0 );	// bottom right
+	v[3].p = Rage::Vector3( quadVerticies.right,	quadVerticies.top,	0 );	// top right
 
 	const RectF *pTexCoordRect = &m_Rect;
-	v[0].t = RageVector2( pTexCoordRect->left, pTexCoordRect->top );	// top left
-	v[1].t = RageVector2( pTexCoordRect->left, pTexCoordRect->bottom );	// bottom left
-	v[2].t = RageVector2( pTexCoordRect->right, pTexCoordRect->bottom );	// bottom right
-	v[3].t = RageVector2( pTexCoordRect->right, pTexCoordRect->top );	// top right
+	v[0].t = Rage::Vector2( pTexCoordRect->left, pTexCoordRect->top );	// top left
+	v[1].t = Rage::Vector2( pTexCoordRect->left, pTexCoordRect->bottom );	// bottom left
+	v[2].t = Rage::Vector2( pTexCoordRect->right, pTexCoordRect->bottom );	// bottom right
+	v[3].t = Rage::Vector2( pTexCoordRect->right, pTexCoordRect->top );	// top right
 
 	v[0].c = m_pTempState->diffuse[0];	// top left
 	v[1].c = m_pTempState->diffuse[2];	// bottom left

@@ -1,5 +1,6 @@
 #include "global.h"
 #include "Profile.h"
+#include <numeric>
 #include "RageUtil.h"
 #include "PrefsManager.h"
 #include "XmlFile.h"
@@ -20,7 +21,6 @@
 #include "UnlockManager.h"
 #include "XmlFile.h"
 #include "XmlFileUtil.h"
-#include "Foreach.h"
 #include "Bookkeeper.h"
 #include "Game.h"
 #include "CharacterManager.h"
@@ -60,22 +60,18 @@ const unsigned int DEFAULT_WEIGHT_POUNDS	= 120;
 
 int Profile::HighScoresForASong::GetNumTimesPlayed() const
 {
-	int iCount = 0;
-	FOREACHM_CONST( StepsID, HighScoresForASteps, m_StepsHighScores, i )
-	{
-		iCount += i->second.hsl.GetNumTimesPlayed();
-	}
-	return iCount;
+    return std::accumulate(std::begin(m_StepsHighScores), std::end(m_StepsHighScores), 0, [](int total, std::pair<StepsID, HighScoresForASteps> const &i)
+    {
+        return total + i.second.hsl.GetNumTimesPlayed();
+    });
 }
 
 int Profile::HighScoresForACourse::GetNumTimesPlayed() const
 {
-	int iCount = 0;
-	FOREACHM_CONST( TrailID, HighScoresForATrail, m_TrailHighScores, i )
-	{
-		iCount += i->second.hsl.GetNumTimesPlayed();
-	}
-	return iCount;
+    return std::accumulate(std::begin(m_TrailHighScores), std::end(m_TrailHighScores), 0, [](int total, std::pair<TrailID, HighScoresForATrail> const &i)
+    {
+        return total + i.second.hsl.GetNumTimesPlayed();
+    });
 }
 
 
@@ -193,10 +189,10 @@ Character *Profile::GetCharacter() const
 {
 	vector<Character*> vpCharacters;
 	CHARMAN->GetCharacters( vpCharacters );
-	FOREACH_CONST( Character*, vpCharacters, c )
+    for (auto *c : vpCharacters)
 	{
-		if( (*c)->m_sCharacterID.CompareNoCase(m_sCharacterID)==0 )
-			return *c;
+		if( c->m_sCharacterID.CompareNoCase(m_sCharacterID)==0 )
+			return c;
 	}
 	return CHARMAN->GetDefaultCharacter();
 }
@@ -249,20 +245,20 @@ int Profile::GetTotalStepsWithTopGrade( StepsType st, Difficulty d, Grade g ) co
 {
 	int iCount = 0;
 
-	FOREACH_CONST( Song*, SONGMAN->GetAllSongs(), pSong )
+    for (auto const *pSong : SONGMAN->GetAllSongs())
 	{
-		if( !(*pSong)->NormallyDisplayed() )
+		if( !pSong->NormallyDisplayed() )
 			continue;	// skip
 
-		FOREACH_CONST( Steps*, (*pSong)->GetAllSteps(), pSteps )
+        for (auto const *pSteps : pSong->GetAllSteps())
 		{
-			if( (*pSteps)->m_StepsType != st )
+			if( pSteps->m_StepsType != st )
 				continue;	// skip
 
-			if( (*pSteps)->GetDifficulty() != d )
+			if( pSteps->GetDifficulty() != d )
 				continue;	// skip
 
-			const HighScoreList &hsl = GetStepsHighScoreList( *pSong, *pSteps );
+			const HighScoreList &hsl = GetStepsHighScoreList( pSong, pSteps );
 			if( hsl.vHighScores.empty() )
 				continue;	// skip
 
@@ -281,18 +277,18 @@ int Profile::GetTotalTrailsWithTopGrade( StepsType st, CourseDifficulty d, Grade
 	// add course high scores
 	vector<Course*> vCourses;
 	SONGMAN->GetAllCourses( vCourses, false );
-	FOREACH_CONST( Course*, vCourses, pCourse )
+    for (auto *pCourse : vCourses)
 	{
 		// Don't count any course that has any entries that change over time.
-		if( !(*pCourse)->AllSongsAreFixed() )
+		if( !pCourse->AllSongsAreFixed() )
 			continue;
 
 		vector<Trail*> vTrails;
-		Trail* pTrail = (*pCourse)->GetTrail( st, d );
+		Trail* pTrail = pCourse->GetTrail( st, d );
 		if( pTrail == NULL )
 			continue;
 
-		const HighScoreList &hsl = GetCourseHighScoreList( *pCourse, pTrail );
+		const HighScoreList &hsl = GetCourseHighScoreList( pCourse, pTrail );
 		if( hsl.vHighScores.empty() )
 			continue;	// skip
 
@@ -309,18 +305,14 @@ float Profile::GetSongsPossible( StepsType st, Difficulty dc ) const
 
 	// add steps high scores
 	const vector<Song*> &vSongs = SONGMAN->GetAllSongs();
-	for( unsigned i=0; i<vSongs.size(); i++ )
+    for (auto const *pSong : vSongs)
 	{
-		Song* pSong = vSongs[i];
-		
 		if( !pSong->NormallyDisplayed() )
 			continue;	// skip
 
 		vector<Steps*> vSteps = pSong->GetAllSteps();
-		for( unsigned j=0; j<vSteps.size(); j++ )
+        for (auto const *pSteps : vSteps)
 		{
-			Steps* pSteps = vSteps[j];
-			
 			if( pSteps->m_StepsType != st )
 				continue;	// skip
 
@@ -341,9 +333,9 @@ float Profile::GetSongsActual( StepsType st, Difficulty dc ) const
 	float fTotalPercents = 0;
 
 	// add steps high scores
-	FOREACHM_CONST( SongID, HighScoresForASong, m_SongHighScores, i )
+    for (auto const &i : m_SongHighScores)
 	{
-		const SongID &id = i->first;
+		const SongID &id = i.first;
 		Song* pSong = id.ToSong();
 
 		CHECKPOINT_M( ssprintf("Profile::GetSongsActual: %p", pSong) );
@@ -357,11 +349,11 @@ float Profile::GetSongsActual( StepsType st, Difficulty dc ) const
 			continue;	// skip
 
 		CHECKPOINT_M( ssprintf("Profile::GetSongsActual: song %s", pSong->GetSongDir().c_str()) );
-		const HighScoresForASong &hsfas = i->second;
+		const HighScoresForASong &hsfas = i.second;
 
-		FOREACHM_CONST( StepsID, HighScoresForASteps, hsfas.m_StepsHighScores, j )
+        for (auto const &j : hsfas.m_StepsHighScores)
 		{
-			const StepsID &sid = j->first;
+			const StepsID &sid = j.first;
 			Steps* pSteps = sid.ToSteps( pSong, true );
 			CHECKPOINT_M( ssprintf("Profile::GetSongsActual: song %p, steps %p", pSong, pSteps) );
 
@@ -378,7 +370,7 @@ float Profile::GetSongsActual( StepsType st, Difficulty dc ) const
 				continue;	// skip
 			CHECKPOINT;
 
-			const HighScoresForASteps& h = j->second;
+			const HighScoresForASteps& h = j.second;
 			const HighScoreList& hsl = h.hsl;
 
 			fTotalPercents += hsl.GetTopScore().GetPercentDP();
@@ -400,32 +392,23 @@ static void GetHighScoreCourses( vector<Course*> &vpCoursesOut )
 
 	vector<Course*> vpCourses;
 	SONGMAN->GetAllCourses( vpCourses, false );
-	FOREACH_CONST( Course*, vpCourses, c )
+    for (auto *c : vpCourses)
 	{
 		// Don't count any course that has any entries that change over time.
-		if( !(*c)->AllSongsAreFixed() )
+		if( !c->AllSongsAreFixed() )
 			continue;
 
-		vpCoursesOut.push_back( *c );
+		vpCoursesOut.push_back( c );
 	}
 }
 
 float Profile::GetCoursesPossible( StepsType st, CourseDifficulty cd ) const
 {
-	int iTotalTrails = 0;
-
 	vector<Course*> vpCourses;
 	GetHighScoreCourses( vpCourses );
-	FOREACH_CONST( Course*, vpCourses, c )
-	{
-		Trail* pTrail = (*c)->GetTrail(st,cd);
-		if( pTrail == NULL )
-			continue;
-
-		iTotalTrails++;
-	}
-	
-	return (float) iTotalTrails;
+    return std::count_if(std::begin(vpCourses), std::end(vpCourses), [&](Course *c) {
+        return c->GetTrail(st, cd) != nullptr;
+    });
 }
 
 float Profile::GetCoursesActual( StepsType st, CourseDifficulty cd ) const
@@ -434,13 +417,13 @@ float Profile::GetCoursesActual( StepsType st, CourseDifficulty cd ) const
 
 	vector<Course*> vpCourses;
 	GetHighScoreCourses( vpCourses );
-	FOREACH_CONST( Course*, vpCourses, c )
+    for (auto *c : vpCourses)
 	{
-		Trail *pTrail = (*c)->GetTrail( st, cd );
+		Trail *pTrail = c->GetTrail( st, cd );
 		if( pTrail == NULL )
 			continue;
 
-		const HighScoreList& hsl = GetCourseHighScoreList( *c, pTrail );
+		const HighScoreList& hsl = GetCourseHighScoreList( c, pTrail );
 		fTotalPercents += hsl.GetTopScore().GetPercentDP();
 	}
 
@@ -482,14 +465,11 @@ int Profile::GetSongNumTimesPlayed( const SongID& songID ) const
 	if( hsSong == NULL )
 		return 0;
 
-	int iTotalNumTimesPlayed = 0;
-	FOREACHM_CONST( StepsID, HighScoresForASteps, hsSong->m_StepsHighScores, j )
-	{
-		const HighScoresForASteps &hsSteps = j->second;
-
-		iTotalNumTimesPlayed += hsSteps.hsl.GetNumTimesPlayed();
-	}
-	return iTotalNumTimesPlayed;
+    auto const &scores = hsSong->m_StepsHighScores;
+    return std::accumulate(std::begin(scores), std::end(scores), 0, [](int total, std::pair<StepsID, HighScoresForASteps> const &j)
+    {
+        return total + j.second.hsl.GetNumTimesPlayed();
+    });
 }
 
 /*
@@ -529,12 +509,12 @@ Song *Profile::GetMostPopularSong() const
 {
 	int iMaxNumTimesPlayed = 0;
 	SongID id;
-	FOREACHM_CONST( SongID, HighScoresForASong, m_SongHighScores, i )
+    for (auto const &i : m_SongHighScores)
 	{
-		int iNumTimesPlayed = i->second.GetNumTimesPlayed();
+		int iNumTimesPlayed = i.second.GetNumTimesPlayed();
 		if( iNumTimesPlayed > iMaxNumTimesPlayed )
 		{
-			id = i->first;
+			id = i.first;
 			iMaxNumTimesPlayed = iNumTimesPlayed;
 		}
 	}
@@ -546,12 +526,12 @@ Course *Profile::GetMostPopularCourse() const
 {
 	int iMaxNumTimesPlayed = 0;
 	CourseID id;
-	FOREACHM_CONST( CourseID, HighScoresForACourse, m_CourseHighScores, i )
+    for (auto const &i : m_CourseHighScores)
 	{
-		int iNumTimesPlayed = i->second.GetNumTimesPlayed();
+		int iNumTimesPlayed = i.second.GetNumTimesPlayed();
 		if( iNumTimesPlayed > iMaxNumTimesPlayed )
 		{
-			id = i->first;
+			id = i.first;
 			iMaxNumTimesPlayed = iNumTimesPlayed;
 		}
 	}
@@ -600,9 +580,9 @@ DateTime Profile::GetSongLastPlayedDateTime( const Song* pSong ) const
 	ASSERT( !iter->second.m_StepsHighScores.empty() );
 
 	DateTime dtLatest;	// starts out zeroed
-	FOREACHM_CONST( StepsID, HighScoresForASteps, iter->second.m_StepsHighScores, i )
+    for (auto const &i : iter->second.m_StepsHighScores)
 	{
-		const HighScoreList &hsl = i->second.hsl;
+		const HighScoreList &hsl = i.second.hsl;
 		if( hsl.GetNumTimesPlayed() == 0 )
 			continue;
 		if( dtLatest < hsl.GetLastPlayed() )
@@ -627,12 +607,11 @@ bool Profile::HasPassedSteps( const Song* pSong, const Steps* pSteps ) const
 
 bool Profile::HasPassedAnyStepsInSong( const Song* pSong ) const
 {
-	FOREACH_CONST( Steps*, pSong->GetAllSteps(), steps )
-	{
-		if( HasPassedSteps( pSong, *steps ) )
-			return true;
-	}
-	return false;
+    auto const &steps = pSong->GetAllSteps();
+    
+    return std::any_of(std::begin(steps), std::end(steps), [&](Steps const *step) {
+        return HasPassedSteps(pSong, step);
+    });
 }
 
 void Profile::IncrementStepsPlayCount( const Song* pSong, const Steps* pSteps )
@@ -653,13 +632,13 @@ void Profile::GetGrades( const Song* pSong, StepsType st, int iCounts[NUM_Grade]
 
 	FOREACH_ENUM( Grade,g)
 	{
-		FOREACHM_CONST( StepsID, HighScoresForASteps, hsSong->m_StepsHighScores, it )
+        for (auto const &it : hsSong->m_StepsHighScores)
 		{
-			const StepsID &id = it->first;
+			const StepsID &id = it.first;
 			if( !id.MatchesStepsType(st) )
 				continue;
 
-			const HighScoresForASteps &hsSteps = it->second;
+			const HighScoresForASteps &hsSteps = it.second;
 			if( hsSteps.hsl.GetTopScore().GetGrade() == g )
 				iCounts[g]++;
 		}
@@ -702,33 +681,30 @@ int Profile::GetCourseNumTimesPlayed( const Course* pCourse ) const
 int Profile::GetCourseNumTimesPlayed( const CourseID &courseID ) const
 {
 	const HighScoresForACourse *hsCourse = GetHighScoresForACourse( courseID );
-	if( hsCourse == NULL )
+	if( hsCourse == nullptr )
 		return 0;
 
-	int iTotalNumTimesPlayed = 0;
-	FOREACHM_CONST( TrailID, HighScoresForATrail, hsCourse->m_TrailHighScores, j )
-	{
-		const HighScoresForATrail &hsTrail = j->second;
-
-		iTotalNumTimesPlayed += hsTrail.hsl.GetNumTimesPlayed();
-	}
-	return iTotalNumTimesPlayed;
+    auto const &scores = hsCourse->m_TrailHighScores;
+    return std::accumulate(std::begin(scores), std::end(scores), 0, [](int total, std::pair<TrailID, HighScoresForATrail> const &j)
+    {
+        return total + j.second.hsl.GetNumTimesPlayed();
+    });
 }
 
 DateTime Profile::GetCourseLastPlayedDateTime( const Course* pCourse ) const
 {
 	CourseID id;
 	id.FromCourse( pCourse );
-	std::map<CourseID,HighScoresForACourse>::const_iterator iter = m_CourseHighScores.find( id );
+	auto iter = m_CourseHighScores.find( id );
 
 	// don't call this unless has been played once
 	ASSERT( iter != m_CourseHighScores.end() );
 	ASSERT( !iter->second.m_TrailHighScores.empty() );
 
 	DateTime dtLatest;	// starts out zeroed
-	FOREACHM_CONST( TrailID, HighScoresForATrail, iter->second.m_TrailHighScores, i )
+    for (auto const &i : iter->second.m_TrailHighScores)
 	{
-		const HighScoreList &hsl = i->second.hsl;
+		const HighScoreList &hsl = i.second.hsl;
 		if( hsl.GetNumTimesPlayed() == 0 )
 			continue;
 		if( dtLatest < hsl.GetLastPlayed() )
@@ -1071,16 +1047,18 @@ XNode* Profile::SaveGeneralDataCreateNode() const
 
 	{
 		XNode* pDefaultModifiers = pGeneralDataNode->AppendChild("DefaultModifiers");
-		FOREACHM_CONST( RString, RString, m_sDefaultModifiers, it )
-			pDefaultModifiers->AppendChild( it->first, it->second );
+        for (std::pair<RString, RString> const &it : m_sDefaultModifiers)
+        {
+			pDefaultModifiers->AppendChild( it.first, it.second );
+        }
 	}
 
 	{
 		XNode* pUnlocks = pGeneralDataNode->AppendChild("Unlocks");
-		FOREACHS_CONST( RString, m_UnlockedEntryIDs, it )
+        for (auto const it : m_UnlockedEntryIDs)
 		{
 			XNode *pEntry = pUnlocks->AppendChild("UnlockEntry");
-			RString sUnlockEntry = it->c_str();
+			RString sUnlockEntry = it.c_str();
 			pEntry->AppendAttr( "UnlockEntryID", sUnlockEntry );
 			if( !UNLOCK_AUTH_STRING.GetValue().empty() )
 			{
@@ -1103,10 +1081,10 @@ XNode* Profile::SaveGeneralDataCreateNode() const
 
 	{
 		XNode* pNumSongsPlayedByStyle = pGeneralDataNode->AppendChild("NumSongsPlayedByStyle");
-		FOREACHM_CONST( StyleID, int, m_iNumSongsPlayedByStyle, iter )
+        for (auto const &iter : m_iNumSongsPlayedByStyle)
 		{
-			const StyleID &s = iter->first;
-			int iNumPlays = iter->second;
+			const StyleID &s = iter.first;
+			int iNumPlays = iter.second;
 
 			XNode *pStyleNode = s.CreateNode();
 			pStyleNode->AppendAttr(XNode::TEXT_ATTRIBUTE, iNumPlays );
@@ -1252,7 +1230,7 @@ void Profile::LoadGeneralDataFromNode( const XNode* pNode )
 		const XNode* pDefaultModifiers = pNode->GetChild("DefaultModifiers");
 		if( pDefaultModifiers )
 		{
-			FOREACH_CONST_Child( pDefaultModifiers, game_type )
+            for (auto const *game_type : pDefaultModifiers->m_childs)
 			{
 				game_type->GetTextValue( m_sDefaultModifiers[game_type->GetName()] );
 			}
@@ -1263,7 +1241,7 @@ void Profile::LoadGeneralDataFromNode( const XNode* pNode )
 		const XNode* pUnlocks = pNode->GetChild("Unlocks");
 		if( pUnlocks )
 		{
-			FOREACH_CONST_Child( pUnlocks, unlock )
+            for (auto const *unlock : pUnlocks->m_childs)
 			{
 				RString sUnlockEntryID;
 				if( !unlock->GetAttrValue("UnlockEntryID",sUnlockEntryID) )
@@ -1296,7 +1274,7 @@ void Profile::LoadGeneralDataFromNode( const XNode* pNode )
 		const XNode* pNumSongsPlayedByStyle = pNode->GetChild("NumSongsPlayedByStyle");
 		if( pNumSongsPlayedByStyle )
 		{
-			FOREACH_CONST_Child( pNumSongsPlayedByStyle, style )
+            for (auto const *style : pNumSongsPlayedByStyle->m_childs)
 			{
 				if( style->GetName() != "Style" )
 					continue;
@@ -1387,10 +1365,10 @@ XNode* Profile::SaveSongScoresCreateNode() const
 
 	XNode* pNode = new XNode( "SongScores" );
 
-	FOREACHM_CONST( SongID, HighScoresForASong, m_SongHighScores, i )
+    for (auto const &i : m_SongHighScores)
 	{
-		const SongID &songID = i->first;
-		const HighScoresForASong &hsSong = i->second;
+		const SongID &songID = i.first;
+		const HighScoresForASong &hsSong = i.second;
 
 		// skip songs that have never been played
 		if( pProfile->GetSongNumTimesPlayed(songID) == 0 )
@@ -1400,12 +1378,12 @@ XNode* Profile::SaveSongScoresCreateNode() const
 
 		int jCheck2 = hsSong.m_StepsHighScores.size();
 		int jCheck1 = 0;
-		FOREACHM_CONST( StepsID, HighScoresForASteps, hsSong.m_StepsHighScores, j )
+        for (auto const &j : hsSong.m_StepsHighScores)
 		{
 			jCheck1++;
 			ASSERT( jCheck1 <= jCheck2 );
-			const StepsID &stepsID = j->first;
-			const HighScoresForASteps &hsSteps = j->second;
+			const StepsID &stepsID = j.first;
+			const HighScoresForASteps &hsSteps = j.second;
 
 			const HighScoreList &hsl = hsSteps.hsl;
 
@@ -1428,7 +1406,7 @@ void Profile::LoadSongScoresFromNode( const XNode* pSongScores )
 
 	ASSERT( pSongScores->GetName() == "SongScores" );
 
-	FOREACH_CONST_Child( pSongScores, pSong )
+    for (auto const *pSong : pSongScores->m_childs)
 	{
 		if( pSong->GetName() != "Song" )
 			continue;
@@ -1438,7 +1416,7 @@ void Profile::LoadSongScoresFromNode( const XNode* pSongScores )
 		if( !songID.IsValid() )
 			continue;
 
-		FOREACH_CONST_Child( pSong, pSteps )
+        for (auto const *pSteps : pSong->m_childs)
 		{
 			if( pSteps->GetName() != "Steps" )
 				continue;
@@ -1468,10 +1446,10 @@ XNode* Profile::SaveCourseScoresCreateNode() const
 
 	XNode* pNode = new XNode( "CourseScores" );
 
-	FOREACHM_CONST( CourseID, HighScoresForACourse, m_CourseHighScores, i )
+    for (auto const &i : m_CourseHighScores)
 	{
-		const CourseID &courseID = i->first;
-		const HighScoresForACourse &hsCourse = i->second;
+		const CourseID &courseID = i.first;
+		const HighScoresForACourse &hsCourse = i.second;
 
 		// skip courses that have never been played
 		if( pProfile->GetCourseNumTimesPlayed(courseID) == 0 )
@@ -1479,10 +1457,10 @@ XNode* Profile::SaveCourseScoresCreateNode() const
 
 		XNode* pCourseNode = pNode->AppendChild( courseID.CreateNode() );
 
-		FOREACHM_CONST( TrailID, HighScoresForATrail, hsCourse.m_TrailHighScores, j )
+        for (auto const &j : hsCourse.m_TrailHighScores)
 		{
-			const TrailID &trailID = j->first;
-			const HighScoresForATrail &hsTrail = j->second;
+			const TrailID &trailID = j.first;
+			const HighScoresForATrail &hsTrail = j.second;
 
 			const HighScoreList &hsl = hsTrail.hsl;
 
@@ -1508,7 +1486,7 @@ void Profile::LoadCourseScoresFromNode( const XNode* pCourseScores )
 	vector<Course*> vpAllCourses;
 	SONGMAN->GetAllCourses( vpAllCourses, true );
 
-	FOREACH_CONST_Child( pCourseScores, pCourse )
+    for (auto const *pCourse : pCourseScores->m_childs)
 	{
 		if( pCourse->GetName() != "Course" )
 			continue;
@@ -1532,13 +1510,13 @@ void Profile::LoadCourseScoresFromNode( const XNode* pCourseScores )
 				splitpath( courseID.GetPath(), sDir, sFName, sExt );
 				RString sFullFileName = sFName + sExt;
 
-				FOREACH_CONST( Course*, vpAllCourses, c )
+                for (auto *c : vpAllCourses)
 				{
-					RString sOther = (*c)->m_sPath.Right(sFullFileName.size());
+					RString sOther = c->m_sPath.Right(sFullFileName.size());
 
 					if( sFullFileName.CompareNoCase(sOther) == 0 )
 					{
-						pC = *c;
+						pC = c;
 						courseID.FromCourse( pC );
 						break;
 					}
@@ -1546,8 +1524,7 @@ void Profile::LoadCourseScoresFromNode( const XNode* pCourseScores )
 			}
 		}
 
-
-		FOREACH_CONST_Child( pCourse, pTrail )
+        for (auto const *pTrail : pCourse->m_childs)
 		{
 			if( pTrail->GetName() != "Trail" )
 				continue;
@@ -1609,7 +1586,7 @@ void Profile::LoadCategoryScoresFromNode( const XNode* pCategoryScores )
 
 	ASSERT( pCategoryScores->GetName() == "CategoryScores" );
 
-	FOREACH_CONST_Child( pCategoryScores, pStepsType )
+    for (auto const *pStepsType : pCategoryScores->m_childs)
 	{
 		if( pStepsType->GetName() != "StepsType" )
 			continue;
@@ -1621,7 +1598,7 @@ void Profile::LoadCategoryScoresFromNode( const XNode* pCategoryScores )
 		if( st == StepsType_Invalid )
 			WARN_AND_CONTINUE_M( str );
 
-		FOREACH_CONST_Child( pStepsType, pRadarCategory )
+        for (auto const *pRadarCategory : pStepsType->m_childs)
 		{
 			if( pRadarCategory->GetName() != "RankingCategory" )
 				continue;
@@ -1663,7 +1640,7 @@ void Profile::LoadScreenshotDataFromNode( const XNode* pScreenshotData )
 	CHECKPOINT;
 
 	ASSERT( pScreenshotData->GetName() == "ScreenshotData" );
-	FOREACH_CONST_Child( pScreenshotData, pScreenshot )
+    for (auto const *pScreenshot : pScreenshotData->m_childs)
 	{
 		if( pScreenshot->GetName() != "Screenshot" )
 			WARN_AND_CONTINUE_M( pScreenshot->GetName() );
@@ -1684,9 +1661,9 @@ XNode* Profile::SaveScreenshotDataCreateNode() const
 
 	XNode* pNode = new XNode( "ScreenshotData" );
 
-	FOREACH_CONST( Screenshot, m_vScreenshots, ss )
+    for (auto const &ss : m_vScreenshots)
 	{
-		pNode->AppendChild( ss->CreateNode() );
+		pNode->AppendChild( ss.CreateNode() );
 	}
 
 	return pNode;
@@ -1697,7 +1674,7 @@ void Profile::LoadCalorieDataFromNode( const XNode* pCalorieData )
 	CHECKPOINT;
 
 	ASSERT( pCalorieData->GetName() == "CalorieData" );
-	FOREACH_CONST_Child( pCalorieData, pCaloriesBurned )
+    for (auto const *pCaloriesBurned : pCalorieData->m_childs)
 	{
 		if( pCaloriesBurned->GetName() != "CaloriesBurned" )
 			WARN_AND_CONTINUE_M( pCaloriesBurned->GetName() );
@@ -1726,11 +1703,11 @@ XNode* Profile::SaveCalorieDataCreateNode() const
 
 	XNode* pNode = new XNode( "CalorieData" );
 
-	FOREACHM_CONST( DateTime, Calories, m_mapDayToCaloriesBurned, i )
+    for (auto const &i : m_mapDayToCaloriesBurned)
 	{
-		XNode* pCaloriesBurned = pNode->AppendChild( "CaloriesBurned", i->second.fCals );
+		XNode* pCaloriesBurned = pNode->AppendChild( "CaloriesBurned", i.second.fCals );
 
-		pCaloriesBurned->AppendAttr( "Date", i->first.GetString() );
+		pCaloriesBurned->AppendAttr( "Date", i.first.GetString() );
 	}
 
 	return pNode;

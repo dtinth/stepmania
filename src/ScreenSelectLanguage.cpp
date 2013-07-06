@@ -13,7 +13,8 @@ void ScreenSelectLanguage::Init()
 	THEME->GetLanguages( vs );
 	SortRStringArray( vs, true );
 
-	FOREACH_CONST( RString, vs, s )
+    // use iter version
+    for (auto s = std::begin(vs); s != std::end(vs); ++s)
 	{
 		const LanguageInfo *pLI = GetLanguageInfo( *s );
 

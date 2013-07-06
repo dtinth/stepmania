@@ -10,9 +10,9 @@
 #include "RageUtil.h"
 #include "ActorUtil.h"
 #include "arch/Dialog/Dialog.h"
-#include "Foreach.h"
 #include "LuaBinding.h"
 #include "LuaManager.h"
+#include <numeric>
 
 REGISTER_ACTOR_CLASS( Sprite );
 
@@ -470,10 +470,10 @@ void Sprite::DrawTexture( const TweenState *state )
 	IF_CROP_POS( bottom, top ); 
 
 	static RageSpriteVertex v[4];
-	v[0].p = RageVector3( croppedQuadVerticies.left,	croppedQuadVerticies.top,	0 );	// top left
-	v[1].p = RageVector3( croppedQuadVerticies.left,	croppedQuadVerticies.bottom,	0 );	// bottom left
-	v[2].p = RageVector3( croppedQuadVerticies.right,	croppedQuadVerticies.bottom,	0 );	// bottom right
-	v[3].p = RageVector3( croppedQuadVerticies.right,	croppedQuadVerticies.top,	0 );	// top right
+	v[0].p = Rage::Vector3( croppedQuadVerticies.left,	croppedQuadVerticies.top,	0 );	// top left
+	v[1].p = Rage::Vector3( croppedQuadVerticies.left,	croppedQuadVerticies.bottom,	0 );	// bottom left
+	v[2].p = Rage::Vector3( croppedQuadVerticies.right,	croppedQuadVerticies.bottom,	0 );	// bottom right
+	v[3].p = Rage::Vector3( croppedQuadVerticies.right,	croppedQuadVerticies.top,	0 );	// top right
 
 	DISPLAY->ClearAllTextures();
 	DISPLAY->SetTexture( TextureUnit_1, m_pTexture? m_pTexture->GetTexHandle():0 );
@@ -490,11 +490,11 @@ void Sprite::DrawTexture( const TweenState *state )
 
 		if( state->crop.left || state->crop.right || state->crop.top || state->crop.bottom )
 		{
-			RageVector2 texCoords[4] = {
-				RageVector2( f[0], f[1] ),	// top left
-				RageVector2( f[2], f[3] ),	// bottom left
-				RageVector2( f[4], f[5] ),	// bottom right
-				RageVector2( f[6], f[7] ) 	// top right
+			Rage::Vector2 texCoords[4] = {
+				Rage::Vector2( f[0], f[1] ),	// top left
+				Rage::Vector2( f[2], f[3] ),	// bottom left
+				Rage::Vector2( f[4], f[5] ),	// bottom right
+				Rage::Vector2( f[6], f[7] ) 	// top right
 			};
 
 			for( int i = 0; i < 4; ++i )
@@ -512,10 +512,10 @@ void Sprite::DrawTexture( const TweenState *state )
 		}
 		else
 		{
-			v[0].t = RageVector2( f[0], f[1] );	// top left
-			v[1].t = RageVector2( f[2], f[3] );	// bottom left
-			v[2].t = RageVector2( f[4], f[5] );	// bottom right
-			v[3].t = RageVector2( f[6], f[7] );	// top right
+			v[0].t = Rage::Vector2( f[0], f[1] );	// top left
+			v[1].t = Rage::Vector2( f[2], f[3] );	// bottom left
+			v[2].t = Rage::Vector2( f[4], f[5] );	// bottom right
+			v[3].t = Rage::Vector2( f[6], f[7] );	// top right
 		}
 	}
 	else
@@ -742,10 +742,9 @@ void Sprite::SetState( int iNewState )
 
 float Sprite::GetAnimationLengthSeconds() const
 {
-	float fTotal = 0;
-	FOREACH_CONST( State, m_States, s )
-		fTotal += s->fDelay;
-	return fTotal;
+    return std::accumulate(std::begin(m_States), std::end(m_States), 0.f, [](float total, State const &s) {
+        return total + s.fDelay;
+    });
 }
 
 void Sprite::SetSecondsIntoAnimation( float fSeconds )
@@ -897,7 +896,7 @@ void Sprite::ScaleToClipped( float fWidth, float fHeight )
 				1 - fPercentageToCutOffEachSide );
 			SetCustomImageRect( fCustomImageRect );
 		}
-		m_size = RageVector2( fWidth, fHeight );
+		m_size = Rage::Vector2( fWidth, fHeight );
 		SetZoom( 1 );
 	}
 
@@ -956,7 +955,7 @@ void Sprite::CropTo( float fWidth, float fHeight )
 				1 - fPercentageToCutOffEachSide );
 			SetCustomImageRect( fCustomImageRect );
 		}
-		m_size = RageVector2( fWidth, fHeight );
+		m_size = Rage::Vector2( fWidth, fHeight );
 		SetZoom( 1 );
 	}
 

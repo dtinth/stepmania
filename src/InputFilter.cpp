@@ -5,7 +5,6 @@
 #include "RageUtil.h"
 #include "RageThreads.h"
 #include "Preference.h"
-#include "Foreach.h"
 // for mouse stuff: -aj
 #include "PrefsManager.h"
 #include "ScreenDimensions.h"
@@ -195,9 +194,9 @@ void InputFilter::ResetDevice( InputDevice device )
 	RageTimer now;
 
 	const ButtonStateMap ButtonStates( g_ButtonStates );
-	FOREACHM_CONST( DeviceButtonPair, ButtonState, ButtonStates, b )
+    for (auto const &b : ButtonStates)
 	{
-		const DeviceButtonPair &db = b->first;
+		const DeviceButtonPair &db = b.first;
 		if( db.device == device )
 			ButtonPressed( DeviceInput(device, db.button, 0, now) );
 	}
@@ -274,7 +273,7 @@ void InputFilter::Update( float fDeltaTime )
 
 	vector<ButtonStateMap::iterator> ButtonsToErase;
 
-	FOREACHM( DeviceButtonPair, ButtonState, g_ButtonStates, b )
+    for( map<DeviceButtonPair, ButtonState>::iterator b = g_ButtonStates.begin(); b != g_ButtonStates.end(); ++b )
 	{
 		di.device = b->first.device;
 		di.button = b->first.button;
@@ -327,8 +326,8 @@ void InputFilter::Update( float fDeltaTime )
 		ReportButtonChange( di, IET_REPEAT );
 	}
 
-	FOREACH( ButtonStateMap::iterator, ButtonsToErase, it )
-		g_ButtonStates.erase( *it );
+    for (auto &it : ButtonsToErase)
+		g_ButtonStates.erase( it );
 }
 
 template<typename T, typename IT>

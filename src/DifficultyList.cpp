@@ -7,7 +7,6 @@
 #include "StepsDisplay.h"
 #include "StepsUtil.h"
 #include "CommonMetrics.h"
-#include "Foreach.h"
 #include "SongUtil.h"
 #include "XmlFile.h"
 
@@ -260,10 +259,10 @@ void StepsDisplayList::SetFromGameState()
 		// DIFFICULTIES_TO_SHOW.
 		const vector<Difficulty>& difficulties = CommonMetrics::DIFFICULTIES_TO_SHOW.GetValue();
 		m_Rows.resize( difficulties.size() );
-		FOREACH_CONST( Difficulty, difficulties, d )
+        for (auto const &d : difficulties)
 		{
-			m_Rows[i].m_dc = *d;
-			m_Lines[i].m_Meter.SetFromStepsTypeAndMeterAndDifficultyAndCourseType( GAMESTATE->m_pCurStyle->m_StepsType, 0, *d, CourseType_Invalid );
+			m_Rows[i].m_dc = d;
+			m_Lines[i].m_Meter.SetFromStepsTypeAndMeterAndDifficultyAndCourseType( GAMESTATE->m_pCurStyle->m_StepsType, 0, d, CourseType_Invalid );
 			++i;
 		}
 	}
@@ -274,11 +273,11 @@ void StepsDisplayList::SetFromGameState()
 		// Should match the sort in ScreenSelectMusic::AfterMusicChange.
 
 		m_Rows.resize( vpSteps.size() );
-		FOREACH_CONST( Steps*, vpSteps, s )
+        for (auto const *s : vpSteps)
 		{
 			//LOG->Trace(ssprintf("setting steps for row %i",i));
-			m_Rows[i].m_Steps = *s;
-			m_Lines[i].m_Meter.SetFromSteps( *s );
+			m_Rows[i].m_Steps = s;
+			m_Lines[i].m_Meter.SetFromSteps( s );
 			++i;
 		}
 	}

@@ -9,7 +9,6 @@
 #include "Font.h"
 #include "ActorUtil.h"
 #include "LuaBinding.h"
-#include "Foreach.h"
 
 REGISTER_ACTOR_CLASS( BitmapText );
 
@@ -231,19 +230,19 @@ void BitmapText::BuildChars()
 				iX -= g.m_iHadvance;
 
 			// set vertex positions
-			v[0].p = RageVector3( iX+g.m_fHshift,			iY+g.m_pPage->m_fVshift,		0 );	// top left
-			v[1].p = RageVector3( iX+g.m_fHshift,			iY+g.m_pPage->m_fVshift+g.m_fHeight,	0 );	// bottom left
-			v[2].p = RageVector3( iX+g.m_fHshift+g.m_fWidth,	iY+g.m_pPage->m_fVshift+g.m_fHeight,	0 );	// bottom right
-			v[3].p = RageVector3( iX+g.m_fHshift+g.m_fWidth,	iY+g.m_pPage->m_fVshift,		0 );	// top right
+			v[0].p = Rage::Vector3( iX+g.m_fHshift,			iY+g.m_pPage->m_fVshift,		0 );	// top left
+			v[1].p = Rage::Vector3( iX+g.m_fHshift,			iY+g.m_pPage->m_fVshift+g.m_fHeight,	0 );	// bottom left
+			v[2].p = Rage::Vector3( iX+g.m_fHshift+g.m_fWidth,	iY+g.m_pPage->m_fVshift+g.m_fHeight,	0 );	// bottom right
+			v[3].p = Rage::Vector3( iX+g.m_fHshift+g.m_fWidth,	iY+g.m_pPage->m_fVshift,		0 );	// top right
 
 			// Advance the cursor.
 			iX += g.m_iHadvance;
 
 			// set texture coordinates
-			v[0].t = RageVector2( g.m_TexRect.left,	g.m_TexRect.top );
-			v[1].t = RageVector2( g.m_TexRect.left,	g.m_TexRect.bottom );
-			v[2].t = RageVector2( g.m_TexRect.right,	g.m_TexRect.bottom );
-			v[3].t = RageVector2( g.m_TexRect.right,	g.m_TexRect.top );
+			v[0].t = Rage::Vector2( g.m_TexRect.left,	g.m_TexRect.top );
+			v[1].t = Rage::Vector2( g.m_TexRect.left,	g.m_TexRect.bottom );
+			v[2].t = Rage::Vector2( g.m_TexRect.right,	g.m_TexRect.bottom );
+			v[3].t = Rage::Vector2( g.m_TexRect.right,	g.m_TexRect.top );
 
 			m_aVertices.insert( m_aVertices.end(), &v[0], &v[4] );
 			m_vpFontPageTextures.push_back( g.GetFontPageTextures() );
@@ -627,7 +626,7 @@ void BitmapText::DrawPrimitives()
 		}
 
 		// apply jitter to verts
-		vector<RageVector3> vGlyphJitter;
+		vector<Rage::Vector3> vGlyphJitter;
 		if( m_bJitter )
 		{
 			int iSeed = lrintf( RageTimer::GetTimeSinceStartFast()*8 );
@@ -635,7 +634,7 @@ void BitmapText::DrawPrimitives()
 
 			for( unsigned i=0; i<m_aVertices.size(); i+=4 )
 			{
-				RageVector3 jitter( rnd()%2, rnd()%3, 0 );
+				Rage::Vector3 jitter( rnd()%2, rnd()%3, 0 );
 				vGlyphJitter.push_back( jitter );
 
 				m_aVertices[i+0].p += jitter;	// top left
@@ -653,7 +652,7 @@ void BitmapText::DrawPrimitives()
 			ASSERT( vGlyphJitter.size() == m_aVertices.size()/4 );
 			for( unsigned i=0; i<m_aVertices.size(); i+=4 )
 			{
-				const RageVector3 &jitter = vGlyphJitter[i/4];;
+				const Rage::Vector3 &jitter = vGlyphJitter[i/4];;
 
 				m_aVertices[i+0].p -= jitter;	// top left
 				m_aVertices[i+1].p -= jitter;	// bottom left
@@ -733,9 +732,9 @@ void BitmapText::AddAttribute( size_t iPos, const Attribute &attr )
 	int iLines = 0;
 	size_t iAdjustedPos = iPos;
 	
-	FOREACH_CONST( wstring, m_wTextLines, line )
+    for (auto const &line : m_wTextLines)
 	{
-		size_t length = line->length();
+		size_t length = line.length();
 		if( length >= iAdjustedPos )
 			break;
 		iAdjustedPos -= length;

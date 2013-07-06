@@ -1,6 +1,5 @@
 #include "global.h"
 #include "PlayerState.h"
-#include "Foreach.h"
 #include "GameState.h"
 #include "RageLog.h"
 #include "RadarValues.h"
@@ -137,8 +136,8 @@ void PlayerState::RemoveActiveAttacks( AttackLevel al )
 
 void PlayerState::EndActiveAttacks()
 {
-	FOREACH( Attack, m_ActiveAttacks, a )
-		a->fSecsRemaining = 0;
+    for (auto &a : m_ActiveAttacks)
+		a.fSecsRemaining = 0;
 }
 
 void PlayerState::RemoveAllInventory()

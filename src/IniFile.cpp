@@ -9,7 +9,6 @@ http://en.wikipedia.org/wiki/INI_file
 #include "RageUtil.h"
 #include "RageLog.h"
 #include "RageFile.h"
-#include "Foreach.h"
 
 IniFile::IniFile(): XNode("IniFile")
 {
@@ -111,7 +110,7 @@ bool IniFile::WriteFile( const RString &sPath ) const
 
 bool IniFile::WriteFile( RageFileBasic &f ) const
 {
-	FOREACH_CONST_Child( this, pKey ) 
+    for (auto const *pKey : this->m_childs)
 	{
 		if( f.PutLine( ssprintf("[%s]", pKey->GetName().c_str()) ) == -1 )
 		{
@@ -119,10 +118,10 @@ bool IniFile::WriteFile( RageFileBasic &f ) const
 			return false;
 		}
 
-		FOREACH_CONST_Attr( pKey, pAttr )
+        for (auto const &pAttr : pKey->m_attrs)
 		{
-			const RString &sName = pAttr->first;
-			const RString &sValue = pAttr->second->GetValue<RString>();
+			const RString &sName = pAttr.first;
+			const RString &sValue = pAttr.second->GetValue<RString>();
 
 			// TODO: Are there escape rules for these?
 			// take a cue from how multi-line Lua functions are parsed

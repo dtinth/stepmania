@@ -244,7 +244,7 @@ void BeginnerHelper::DrawPrimitives()
 				RageColor(0.5f,0.5f,0.5f,1), 
 				RageColor(1,1,1,1),
 				RageColor(0,0,0,1),
-				RageVector3(0, 0, 1) );
+				Rage::Vector3(0, 0, 1) );
 
 			m_pDancePad->Draw();
 			DISPLAY->ClearZBuffer();	// So character doesn't step "into" the dance pad.
@@ -273,7 +273,7 @@ void BeginnerHelper::DrawPrimitives()
 			RageColor(0.5f,0.5f,0.5f,1), 
 			RageColor(1,1,1,1),
 			RageColor(0,0,0,1),
-			RageVector3(0, 0, 1) );
+			Rage::Vector3(0, 0, 1) );
 
 		FOREACH_PlayerNumber( pn )
 			if( GAMESTATE->IsHumanPlayer(pn) )

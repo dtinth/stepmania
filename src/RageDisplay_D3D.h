@@ -3,6 +3,9 @@
 #ifndef RAGE_DISPLAY_D3D_H
 #define RAGE_DISPLAY_D3D_H
 
+#include "Rage/Matrix.hpp"
+#include "Rage/Vector3.hpp"
+
 class RageDisplay_D3D: public RageDisplay
 {
 public:
@@ -61,7 +64,7 @@ public:
 		const RageColor &ambient, 
 		const RageColor &diffuse, 
 		const RageColor &specular, 
-		const RageVector3 &dir );
+		const Rage::Vector3 &dir );
 
 	void SetSphereEnvironmentMapping( TextureUnit tu, bool b );
 	void SetCelShaded( int stage );
@@ -80,7 +83,7 @@ protected:
 
 	RString TryVideoMode( const VideoModeParams &p, bool &bNewDeviceOut );
 	RageSurface* CreateScreenshot();
-	RageMatrix GetOrthoMatrix( float l, float r, float b, float t, float zn, float zf ); 
+	Rage::Matrix GetOrthoMatrix( float l, float r, float b, float t, float zn, float zf ); 
 
 	void SendCurrentMatrices();
 };

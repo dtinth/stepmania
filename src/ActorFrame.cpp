@@ -9,7 +9,6 @@
 #include "ActorUtil.h"
 #include "RageDisplay.h"
 #include "ScreenDimensions.h"
-#include "Foreach.h"
 
 /* Tricky: We need ActorFrames created in Lua to auto delete their children.
  * We don't want classes that derive from ActorFrame to auto delete their 
@@ -37,7 +36,7 @@ ActorFrame::ActorFrame()
 	m_ambientColor = RageColor(1,1,1,1);
 	m_diffuseColor = RageColor(1,1,1,1);
 	m_specularColor = RageColor(1,1,1,1);
-	m_lightDirection = RageVector3(0,0,1);
+	m_lightDirection = Rage::Vector3(0,0,1);
 }
 
 ActorFrame::~ActorFrame()
@@ -82,8 +81,8 @@ ActorFrame::ActorFrame( const ActorFrame &cpy ):
 
 void ActorFrame::InitState()
 {
-	FOREACH( Actor*, m_SubActors, a )
-		(*a)->InitState();
+    for (auto *a : m_SubActors)
+		a->InitState();
 	Actor::InitState();
 }
 
@@ -107,7 +106,7 @@ void ActorFrame::LoadFromNode( const XNode* pNode )
 	m_diffuseColor.FromString(sTemp2);
 	pNode->GetAttrValue( "SpecularColor", sTemp3 );
 	m_specularColor.FromString(sTemp3);
-	// Values need to be converted into a RageVector3, so more work needs to be done...
+	// Values need to be converted into a Rage::Vector3, so more work needs to be done...
 	//pNode->GetAttrValue( "LightDirection", m_lightDirection );
 }
 
@@ -125,7 +124,7 @@ void ActorFrame::LoadChildrenFromNode( const XNode* pNode )
 		pChildren = pNode;
 	}
 
-	FOREACH_CONST_Child( pChildren, pChild )
+    for (auto const *pChild : pChildren->m_childs)
 	{
 		if( bArrayOnly && !IsAnInt(pChild->GetName()) )
 			continue;
@@ -162,17 +161,17 @@ void ActorFrame::RemoveChild( Actor *pActor )
 
 void ActorFrame::TransferChildren( ActorFrame *pTo )
 {
-	FOREACH( Actor*, m_SubActors, i )
-		pTo->AddChild( *i );
+    for (auto *i : m_SubActors)
+		pTo->AddChild( i );
 	RemoveAllChildren();
 }
 
 Actor* ActorFrame::GetChild( const RString &sName )
 {
-	FOREACH( Actor*, m_SubActors, a )
+    for (auto *a : m_SubActors)
 	{
-		if( (*a)->GetName() == sName )
-			return *a;
+		if( a->GetName() == sName )
+			return a;
 	}
 	return NULL;
 }
@@ -284,10 +283,10 @@ void ActorFrame::EndDraw()
 void ActorFrame::PushChildrenTable( lua_State *L )
 {
 	lua_newtable( L );
-	FOREACH( Actor*, m_SubActors, a )
+    for (auto *a : m_SubActors)
 	{
-		LuaHelpers::Push( L, (*a)->GetName() );
-		(*a)->PushSelf( L );
+		LuaHelpers::Push( L, a->GetName() );
+		a->PushSelf( L );
 		lua_rawset( L, -3 );
 	}
 }
@@ -542,7 +541,7 @@ public:
 		{
 			//error
 		}
-		RageVector3 vTmp = RageVector3( coords[0], coords[1], coords[2] );
+		Rage::Vector3 vTmp = Rage::Vector3( coords[0], coords[1], coords[2] );
 		p->SetLightDirection( vTmp );
 		return 0;
 	}

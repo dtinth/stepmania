@@ -8,7 +8,7 @@
 #include "RageTextureManager.h"
 #include "RageLog.h"
 #include "RageDisplay.h"
-#include "Foreach.h"
+#include <numeric>
 
 #define MS_MAX_NAME	32
 
@@ -17,8 +17,8 @@ AnimatedTexture::AnimatedTexture()
 	m_iCurState = 0;
 	m_fSecsIntoFrame = 0;
 	m_bSphereMapped = false;
-	m_vTexOffset = RageVector2(0,0);
-	m_vTexVelocity = RageVector2(0,0);
+	m_vTexOffset = Rage::Vector2(0,0);
+	m_vTexVelocity = Rage::Vector2(0,0);
 	m_BlendMode = BLEND_NORMAL;
 }
 
@@ -30,9 +30,9 @@ AnimatedTexture::~AnimatedTexture()
 void AnimatedTexture::LoadBlank()
 {
 	AnimatedTextureState state(
-		NULL,
+		nullptr,
 		1,
-		RageVector2(0,0)
+		Rage::Vector2(0,0)
 		);
 	vFrames.push_back( state );
 }
@@ -75,7 +75,7 @@ void AnimatedTexture::Load( const RString &sTexOrIniPath )
 				RString sTranslateXKey = ssprintf( "TranslateX%04d", i );
 				RString sTranslateYKey = ssprintf( "TranslateY%04d", i );
 
-				RageVector2 vOffset(0,0);
+				Rage::Vector2 vOffset(0,0);
 				pAnimatedTexture->GetAttrValue( sTranslateXKey, vOffset.x );
 				pAnimatedTexture->GetAttrValue( sTranslateYKey, vOffset.y );
 
@@ -107,7 +107,7 @@ void AnimatedTexture::Load( const RString &sTexOrIniPath )
 		AnimatedTextureState state(
 			TEXTUREMAN->LoadTexture( ID ),
 			1,
-			RageVector2(0,0)
+			Rage::Vector2(0,0)
 			);
 		vFrames.push_back( state );
 	}
@@ -148,10 +148,9 @@ void AnimatedTexture::SetState( int iState )
 
 float AnimatedTexture::GetAnimationLengthSeconds() const
 {
-	float fTotalSeconds = 0;
-	FOREACH_CONST( AnimatedTextureState, vFrames, ats )
-		fTotalSeconds += ats->fDelaySecs;
-	return fTotalSeconds;
+    return std::accumulate(std::begin(vFrames), std::end(vFrames), 0.f, [](float total, AnimatedTextureState const &ats) {
+        return total + ats.fDelaySecs;
+    });
 }
 
 void AnimatedTexture::SetSecondsIntoAnimation( float fSeconds )
@@ -182,7 +181,7 @@ float AnimatedTexture::GetSecondsIntoAnimation() const
 	for( unsigned i=0; i<vFrames.size(); i++ )
 	{
 		const AnimatedTextureState& ats = vFrames[i];
-		if( int(i) >= m_iCurState )
+		if( static_cast<int>(i) >= m_iCurState )
 			break;
 
 		fSeconds += ats.fDelaySecs;
@@ -200,10 +199,10 @@ void AnimatedTexture::Unload()
 	m_fSecsIntoFrame = 0;
 }
 
-RageVector2 AnimatedTexture::GetTextureTranslate()
+Rage::Vector2 AnimatedTexture::GetTextureTranslate()
 {
 	float fPercentIntoAnimation = GetSecondsIntoAnimation() / GetAnimationLengthSeconds();
-	RageVector2 v = m_vTexVelocity * fPercentIntoAnimation + m_vTexOffset;
+	Rage::Vector2 v = m_vTexVelocity * fPercentIntoAnimation + m_vTexOffset;
 
 	if( vFrames.empty() )
 		return v;
@@ -267,15 +266,15 @@ bool msAnimation::LoadMilkshapeAsciiBones( RString sAniName, RString sPath )
 			Bone.sParentName = szName;
 
 			// flags, position, rotation
-			RageVector3 Position, Rotation;
+			Rage::Vector3 Position, Rotation;
 			if( f.GetLine( sLine ) <= 0 )
 				THROW;
 
 			int nFlags;
 			if (sscanf (sLine, "%d %f %f %f %f %f %f",
 				&nFlags,
-				&Position[0], &Position[1], &Position[2],
-				&Rotation[0], &Rotation[1], &Rotation[2]) != 7)
+				&Position.x, &Position.y, &Position.z,
+				&Rotation.x, &Rotation.y, &Rotation.z) != 7)
 			{
 				THROW;
 			}
@@ -300,12 +299,12 @@ bool msAnimation::LoadMilkshapeAsciiBones( RString sAniName, RString sPath )
 					THROW;
 
 				float fTime;
-				if (sscanf (sLine, "%f %f %f %f", &fTime, &Position[0], &Position[1], &Position[2]) != 4)
+				if (sscanf (sLine, "%f %f %f %f", &fTime, &Position.x, &Position.y, &Position.z) != 4)
 					THROW;
 
 				msPositionKey key;
 				key.fTime = fTime;
-				key.Position = RageVector3( Position[0], Position[1], Position[2] );
+				key.Position = Rage::Vector3( Position );
 				Bone.PositionKeys[j] = key;
 			}
 
@@ -324,13 +323,13 @@ bool msAnimation::LoadMilkshapeAsciiBones( RString sAniName, RString sPath )
 					THROW;
 
 				float fTime;
-				if (sscanf (sLine, "%f %f %f %f", &fTime, &Rotation[0], &Rotation[1], &Rotation[2]) != 4)
+				if (sscanf (sLine, "%f %f %f %f", &fTime, &Rotation.x, &Rotation.y, &Rotation.z) != 4)
 					THROW;
 				Rotation = RadianToDegree(Rotation);
 
 				msRotationKey key;
 				key.fTime = fTime;
-				Rotation = RageVector3( Rotation[0], Rotation[1], Rotation[2] );
+				Rotation = Rage::Vector3( Rotation );
 				RageQuatFromHPR( &key.Rotation, Rotation );
 				Bone.RotationKeys[j] = key;
 			}

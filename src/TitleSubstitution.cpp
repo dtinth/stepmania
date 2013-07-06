@@ -5,7 +5,6 @@
 #include "RageLog.h"
 #include "FontCharAliases.h"
 #include "RageFile.h"
-#include "Foreach.h"
 #include "XmlFile.h"
 #include "XmlFileUtil.h"
 
@@ -45,12 +44,12 @@ void TitleTrans::LoadFromNode( const XNode* pNode )
 {
 	ASSERT( pNode->GetName() == "Translation" );
 
-	FOREACH_CONST_Attr( pNode, attr )
+    for (auto const &attr : pNode->m_attrs)
 	{
 		/* Surround each regex with ^(...)$, to force all comparisons to default
 		 * to being a full-line match.  (Add ".*" manually if this isn't wanted.) */
-		const RString &sKeyName = attr->first;
-		const RString sValue = attr->second->GetValue<RString>();
+		const RString &sKeyName = attr.first;
+		const RString sValue = attr.second->GetValue<RString>();
 		if( sKeyName == "DontTransliterate" )		translit = false;
 		else if( sKeyName == "TitleFrom" )		TitleFrom			= "^(" + sValue + ")$";
 		else if( sKeyName == "ArtistFrom" )		ArtistFrom			= "^(" + sValue + ")$";
@@ -74,10 +73,8 @@ void TitleSubst::AddTrans(const TitleTrans &tr)
 
 void TitleSubst::Subst( TitleFields &tf )
 {
-	FOREACH_CONST( TitleTrans*, ttab, iter )
+    for (auto tt : ttab)
 	{
-		TitleTrans* tt = *iter;
-
 		TitleFields to;
 		if( !tt->Matches(tf,to) )
 			continue;
@@ -147,7 +144,7 @@ void TitleSubst::Load(const RString &filename, const RString &section)
 	XNode *pGroup = xml.GetChild( section );
 	if( pGroup == NULL )
 		return;
-	FOREACH_CONST_Child( pGroup, child )
+    for (auto const *child : pGroup->m_childs)
 	{
 		if( child->GetName() != "Translation" )
 			continue;
