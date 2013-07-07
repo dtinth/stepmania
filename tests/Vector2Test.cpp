@@ -18,3 +18,22 @@ TEST_F(Vector2Test, Vector2BasicMath)
 
 	ASSERT_EQ(expect, a + b);
 }
+
+TEST_F(Vector2Test, Vector2SubtractionTest)
+{
+	Vector2 a(3, 4);
+	Vector2 b(1, 2);
+
+	Vector2 expect(2, 2);
+
+	ASSERT_EQ(expect, a - b);
+}
+
+TEST_F(Vector2Test, MultiplySingle)
+{
+	Vector2 v(2, 3.5);
+
+	Vector2 expect(6, 10.5);
+
+	ASSERT_EQ(expect, v * 3);
+}
