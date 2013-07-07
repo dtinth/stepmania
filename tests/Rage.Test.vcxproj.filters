@@ -17,5 +17,8 @@
     <ClCompile Include="Vector3Test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="MatrixTest.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

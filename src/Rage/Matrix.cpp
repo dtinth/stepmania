@@ -52,6 +52,91 @@ namespace Rage
         return m[iCol][iRow];
     }
     
+	Matrix& Matrix::operator+=(Matrix const &rhs)
+	{
+		this->m00 += rhs.m00;
+		this->m01 += rhs.m01;
+		this->m02 += rhs.m02;
+		this->m03 += rhs.m03;
+		this->m10 += rhs.m10;
+		this->m11 += rhs.m11;
+		this->m12 += rhs.m12;
+		this->m13 += rhs.m13;
+		this->m20 += rhs.m20;
+		this->m21 += rhs.m21;
+		this->m22 += rhs.m22;
+		this->m23 += rhs.m23;
+		this->m30 += rhs.m30;
+		this->m31 += rhs.m31;
+		this->m32 += rhs.m32;
+		this->m33 += rhs.m33;
+		return *this;
+	}
+
+	Matrix& Matrix::operator-=(Matrix const &rhs)
+	{
+		this->m00 -= rhs.m00;
+		this->m01 -= rhs.m01;
+		this->m02 -= rhs.m02;
+		this->m03 -= rhs.m03;
+		this->m10 -= rhs.m10;
+		this->m11 -= rhs.m11;
+		this->m12 -= rhs.m12;
+		this->m13 -= rhs.m13;
+		this->m20 -= rhs.m20;
+		this->m21 -= rhs.m21;
+		this->m22 -= rhs.m22;
+		this->m23 -= rhs.m23;
+		this->m30 -= rhs.m30;
+		this->m31 -= rhs.m31;
+		this->m32 -= rhs.m32;
+		this->m33 -= rhs.m33;
+		return *this;
+	}
+
+	Matrix& Matrix::operator*=(float rhs)
+	{
+		this->m00 *= rhs;
+		this->m01 *= rhs;
+		this->m02 *= rhs;
+		this->m03 *= rhs;
+		this->m10 *= rhs;
+		this->m11 *= rhs;
+		this->m12 *= rhs;
+		this->m13 *= rhs;
+		this->m20 *= rhs;
+		this->m21 *= rhs;
+		this->m22 *= rhs;
+		this->m23 *= rhs;
+		this->m30 *= rhs;
+		this->m31 *= rhs;
+		this->m32 *= rhs;
+		this->m33 *= rhs;
+		return *this;
+	}
+
+	Matrix& Matrix::operator*=(Matrix const &rhs)
+	{
+		Matrix lhs(*this);
+		this->m00 = rhs.m00*lhs.m00+rhs.m01*lhs.m10+rhs.m02*lhs.m20+rhs.m03*lhs.m30;
+		this->m01 = rhs.m00*lhs.m01+rhs.m01*lhs.m11+rhs.m02*lhs.m21+rhs.m03*lhs.m31;
+		this->m02 = rhs.m00*lhs.m02+rhs.m01*lhs.m12+rhs.m02*lhs.m22+rhs.m03*lhs.m32;
+		this->m03 = rhs.m00*lhs.m03+rhs.m01*lhs.m13+rhs.m02*lhs.m23+rhs.m03*lhs.m33;
+		this->m10 = rhs.m10*lhs.m00+rhs.m11*lhs.m10+rhs.m12*lhs.m20+rhs.m13*lhs.m30;
+		this->m11 = rhs.m10*lhs.m01+rhs.m11*lhs.m11+rhs.m12*lhs.m21+rhs.m13*lhs.m31;
+		this->m12 = rhs.m10*lhs.m02+rhs.m11*lhs.m12+rhs.m12*lhs.m22+rhs.m13*lhs.m32;
+		this->m13 = rhs.m10*lhs.m03+rhs.m11*lhs.m13+rhs.m12*lhs.m23+rhs.m13*lhs.m33;
+		this->m20 = rhs.m20*lhs.m00+rhs.m21*lhs.m10+rhs.m22*lhs.m20+rhs.m23*lhs.m30;
+		this->m21 = rhs.m20*lhs.m01+rhs.m21*lhs.m11+rhs.m22*lhs.m21+rhs.m23*lhs.m31;
+		this->m22 = rhs.m20*lhs.m02+rhs.m21*lhs.m12+rhs.m22*lhs.m22+rhs.m23*lhs.m32;
+		this->m23 = rhs.m20*lhs.m03+rhs.m21*lhs.m13+rhs.m22*lhs.m23+rhs.m23*lhs.m33;
+		this->m30 = rhs.m30*lhs.m00+rhs.m31*lhs.m10+rhs.m32*lhs.m20+rhs.m33*lhs.m30;
+		this->m31 = rhs.m30*lhs.m01+rhs.m31*lhs.m11+rhs.m32*lhs.m21+rhs.m33*lhs.m31;
+		this->m32 = rhs.m30*lhs.m02+rhs.m31*lhs.m12+rhs.m32*lhs.m22+rhs.m33*lhs.m32;
+		this->m33 = rhs.m30*lhs.m03+rhs.m31*lhs.m13+rhs.m32*lhs.m23+rhs.m33*lhs.m33;
+
+		return *this;
+	}
     
     Matrix::operator std::array<float, 4> ()
     {
@@ -66,6 +151,16 @@ namespace Rage
     {
         return Matrix(m00,m10,m20,m30,m01,m11,m21,m31,m02,m12,m22,m32,m03,m13,m23,m33);
     }
+
+	std::ostream& operator<<(std::ostream &os, Matrix const &obj)
+	{
+		os << "Matrix["
+			<< '[' << obj.m00 << ", " << obj.m01 << ", " << obj.m02 << ", " << obj.m03 << "], "
+			<< '[' << obj.m10 << ", " << obj.m11 << ", " << obj.m12 << ", " << obj.m13 << "], "
+			<< '[' << obj.m20 << ", " << obj.m21 << ", " << obj.m22 << ", " << obj.m23 << "], "
+			<< '[' << obj.m30 << ", " << obj.m31 << ", " << obj.m32 << ", " << obj.m33 << "]]";
+		return os;
+	}
 }
 
 /*

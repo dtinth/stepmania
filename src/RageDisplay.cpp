@@ -300,14 +300,16 @@ public:
 	// (transformation is about the current world origin)
 	void MultMatrix( const Rage::Matrix& m )
 	{
-		RageMatrixMultiply( &stack.back(), &m, &stack.back() );
+		Rage::Matrix &back = stack.back();
+		back = m * back;
 	}
 
 	// Left-Multiplies the given matrix to the current matrix
 	// (transformation is about the local origin of the object)
 	void MultMatrixLocal( const Rage::Matrix& m )
 	{
-		RageMatrixMultiply( &stack.back(), &stack.back(), &m );
+		Rage::Matrix &back = stack.back();
+		back *= m;
 	}
 
 	// Right multiply the current matrix with the computed rotation
@@ -733,8 +735,7 @@ Rage::Matrix RageDisplay::GetCenteringMatrix( float fTranslateX, float fTranslat
 		fPercentScaleX, 
 		fPercentScaleY, 
 		1 );
-	Rage::Matrix mOut;
-	RageMatrixMultiply( &mOut, &m1, &m2 );
+	Rage::Matrix mOut = m1 * m2;
 	return mOut;
 }
 

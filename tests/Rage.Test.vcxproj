@@ -11,6 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="MatrixTest.cpp" />
     <ClCompile Include="Vector2Test.cpp" />
     <ClCompile Include="Vector3Test.cpp" />
   </ItemGroup>
