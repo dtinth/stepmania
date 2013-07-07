@@ -55,6 +55,7 @@ ver.cpp:
 
 RAGENS = \
 Rage/Bezier2D.hpp Rage/Bezier2D.cpp \
+Rage/Macros.hpp \
 Rage/Matrix.hpp Rage/Matrix.cpp \
 Rage/ModelVertex.hpp Rage/ModelVertex.cpp \
 Rage/Quadratic.hpp Rage/Quadratic.cpp \

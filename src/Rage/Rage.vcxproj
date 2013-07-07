@@ -12,6 +12,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Bezier2D.hpp" />
+    <ClInclude Include="Macros.hpp" />
     <ClInclude Include="Matrix.hpp" />
     <ClInclude Include="ModelVertex.hpp" />
     <ClInclude Include="Quadratic.hpp" />

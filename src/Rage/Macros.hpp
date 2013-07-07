@@ -1,30 +1,14 @@
-#ifndef RAGE_UTIL_HPP_
-#define RAGE_UTIL_HPP_
+#ifndef RAGE_MACROS_HPP_
+#define RAGE_MACROS_HPP_
 
-#include "Macros.hpp"
-
-namespace Rage
-{
-    /**
-     * @brief Scales x so that l1 corresponds to l2 and h1 corresponds to h2.
-     *
-     * Do the multiply before the divide to that integer scales have more precision.
-     *
-     * One such example: Scale(x, 0, 1, L, H); interpolate between L and H.
-     */
-    template <class T>
-    constexpr T Scale(T x, T l1, T h1, T l2, T h2)
-    {
-        return ((x - l1) * (h2 - l2) / (h1 - l1) + l2);
-    }
-}
+#if defined(_MSC_VER) && _MSC_VER <= 1700
+#define constexpr
+#endif
 
 #endif
 
-/**
- * @file
- * @author Chris Danford, Glenn Maynard (c) 2001-2013
- * @section LICENSE
+/*
+ * Copyright (c) 2013 Chris Danford, Glenn Maynard, Jason Felds
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
