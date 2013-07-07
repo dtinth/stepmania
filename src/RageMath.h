@@ -7,6 +7,7 @@
 #include "Rage/Vector3.hpp"
 #include "Rage/Vector4.hpp"
 #include "Rage/Matrix.hpp"
+#include "Rage/Quadratic.hpp"
 
 #define PI		(3.141592653589793f)
 #define DegreeToRadian( degree ) ((degree) * (PI / 180.0f))
@@ -50,25 +51,6 @@ void RageMatrixTranspose( Rage::Matrix* pOut, const Rage::Matrix* pIn );
 float RageFastSin( float x ) CONST_FUNCTION;
 float RageFastCos( float x ) CONST_FUNCTION;
 
-class RageQuadratic
-{
-public:
-	void SetFromBezier( float fC1, float fC2, float fC3, float fC4 );
-	void GetBezier( float &fC1, float &fC2, float &fC3, float &fC4 ) const;
-
-	void SetFromCubic( float fX1, float fX2, float fX3, float fX4 );
-
-	float Evaluate( float fT ) const;
-	float GetSlope( float fT ) const;
-
-	/* Equivalent to Evaluate(0.0f) and Evaluate(1.0f), but faster: */
-	float GetBezierStart() const { return m_fD; }
-	float GetBezierEnd() const { return m_fA + m_fB + m_fC + m_fD; }
-
-private:
-	float m_fA, m_fB, m_fC, m_fD;
-};
-
 class RageBezier2D
 {
 public:
@@ -79,8 +61,8 @@ public:
 	float EvaluateYFromX( float fX ) const;
 
 private:
-	RageQuadratic m_X;
-	RageQuadratic m_Y;
+    Rage::Quadratic m_X;
+    Rage::Quadratic m_Y;
 };
 
 #endif

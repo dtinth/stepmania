@@ -56,6 +56,7 @@ ver.cpp:
 RAGENS = \
 Rage/Matrix.hpp Rage/Matrix.cpp \
 Rage/ModelVertex.hpp Rage/ModelVertex.cpp \
+Rage/Quadratic.hpp Rage/Quadratic.cpp \
 Rage/Vector2.hpp Rage/Vector2.cpp \
 Rage/Vector3.hpp Rage/Vector3.cpp \
 Rage/Vector4.hpp Rage/Vector4.cpp
