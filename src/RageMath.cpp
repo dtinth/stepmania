@@ -94,37 +94,6 @@ void RageMatrixIdentity( Rage::Matrix* pOut )
 */
 }
 
-void RageMatrixMultiply( Rage::Matrix* pOut, const Rage::Matrix* pA, const Rage::Matrix* pB )
-{
-//#if defined(_WINDOWS)
-//	// <30 cycles for theirs versus >100 for ours.
-//	D3DXMatrixMultiply( (D3DMATRIX*)pOut, (D3DMATRIX*)pA, (D3DMATRIX*)pB );
-//#else
-	const Rage::Matrix &a = *pA;
-	const Rage::Matrix &b = *pB;
-
-	*pOut = Rage::Matrix(
-		b.m00*a.m00+b.m01*a.m10+b.m02*a.m20+b.m03*a.m30,
-		b.m00*a.m01+b.m01*a.m11+b.m02*a.m21+b.m03*a.m31,
-		b.m00*a.m02+b.m01*a.m12+b.m02*a.m22+b.m03*a.m32,
-		b.m00*a.m03+b.m01*a.m13+b.m02*a.m23+b.m03*a.m33,
-		b.m10*a.m00+b.m11*a.m10+b.m12*a.m20+b.m13*a.m30,
-		b.m10*a.m01+b.m11*a.m11+b.m12*a.m21+b.m13*a.m31,
-		b.m10*a.m02+b.m11*a.m12+b.m12*a.m22+b.m13*a.m32,
-		b.m10*a.m03+b.m11*a.m13+b.m12*a.m23+b.m13*a.m33,
-		b.m20*a.m00+b.m21*a.m10+b.m22*a.m20+b.m23*a.m30,
-		b.m20*a.m01+b.m21*a.m11+b.m22*a.m21+b.m23*a.m31,
-		b.m20*a.m02+b.m21*a.m12+b.m22*a.m22+b.m23*a.m32,
-		b.m20*a.m03+b.m21*a.m13+b.m22*a.m23+b.m23*a.m33,
-		b.m30*a.m00+b.m31*a.m10+b.m32*a.m20+b.m33*a.m30,
-		b.m30*a.m01+b.m31*a.m11+b.m32*a.m21+b.m33*a.m31,
-		b.m30*a.m02+b.m31*a.m12+b.m32*a.m22+b.m33*a.m32,
-		b.m30*a.m03+b.m31*a.m13+b.m32*a.m23+b.m33*a.m33 
-	);
-	// phew!
-//#endif
-}
-
 void RageMatrixTranslation( Rage::Matrix* pOut, float x, float y, float z )
 {
 	RageMatrixIdentity(pOut);
@@ -508,8 +477,7 @@ Rage::Matrix RageLookAt(
 	Rage::Matrix mat2;
 	RageMatrixTranslation(&mat2, -eyex, -eyey, -eyez);
 
-	Rage::Matrix ret;
-	RageMatrixMultiply(&ret, &mat, &mat2);
+	Rage::Matrix ret = mat * mat2;
 
 	return ret;
 }

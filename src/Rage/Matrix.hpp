@@ -2,6 +2,7 @@
 #define RAGE_MATRIX_HPP_
 
 #include <array>
+#include <ostream>
 
 // Rage::Matrix elements are specified in row-major order.  This
 // means that the translate terms are located in the fourth row and the
@@ -11,28 +12,86 @@
 // handle matrix operations in row-major form.
 namespace Rage
 {
-    struct Matrix
-    {
-    public:
-        Matrix();
-        
-        Matrix( Matrix const&);
-        Matrix( float, float, float, float,
-               float, float, float, float,
-               float, float, float, float,
-               float, float, float, float);
-        
-        // access grants
-        float& operator () ( int iRow, int iCol );
-        float  operator () ( int iRow, int iCol ) const;
-        
-        // casting operators
-        operator std::array<float, 4> ();
-        operator std::array<float, 4> const () const;
-        Matrix GetTranspose() const;
-        
-        std::array<std::array<float, 4>, 4> m;
-    };
+	struct Matrix
+	{
+	public:
+		Matrix();
+		
+		Matrix(Matrix const&);
+		Matrix(float, float, float, float,
+			   float, float, float, float,
+			   float, float, float, float,
+			   float, float, float, float);
+		
+		// access grants
+		float& operator () ( int iRow, int iCol );
+		float  operator () ( int iRow, int iCol ) const;
+		
+		// math
+		Matrix & operator +=(Matrix const &);
+		Matrix & operator -=(Matrix const &);
+		Matrix & operator *=(Matrix const &);
+		Matrix & operator *=(float);
+
+		// casting operators
+		operator std::array<float, 4> ();
+		operator std::array<float, 4> const () const;
+		Matrix GetTranspose() const;
+		
+		std::array<std::array<float, 4>, 4> m;
+	};
+
+	inline bool operator == (Matrix const &lhs, Matrix const &rhs)
+	{
+		return
+			lhs.m[0][0] == rhs.m[0][0] &&
+			lhs.m[0][1] == rhs.m[0][1] &&
+			lhs.m[0][2] == rhs.m[0][2] &&
+			lhs.m[0][3] == rhs.m[0][3] &&
+			lhs.m[1][0] == rhs.m[1][0] &&
+			lhs.m[1][1] == rhs.m[1][1] &&
+			lhs.m[1][2] == rhs.m[1][2] &&
+			lhs.m[1][3] == rhs.m[1][3] &&
+			lhs.m[2][0] == rhs.m[2][0] &&
+			lhs.m[2][1] == rhs.m[2][1] &&
+			lhs.m[2][2] == rhs.m[2][2] &&
+			lhs.m[2][3] == rhs.m[2][3] &&
+			lhs.m[3][0] == rhs.m[3][0] &&
+			lhs.m[3][1] == rhs.m[3][1] &&
+			lhs.m[3][2] == rhs.m[3][2] &&
+			lhs.m[3][3] == rhs.m[3][3];
+	}
+
+	inline bool operator != (Matrix const &lhs, Matrix const &rhs)
+	{
+		return !operator==(lhs, rhs);
+	}
+
+	inline Matrix operator + (Matrix lhs, Matrix const &rhs)
+	{
+		lhs += rhs;
+		return lhs;
+	}
+
+	inline Matrix operator - (Matrix lhs, Matrix const &rhs)
+	{
+		lhs -= rhs;
+		return lhs;
+	}
+
+	inline Matrix operator *(Matrix lhs, float const &rhs)
+	{
+		lhs *= rhs;
+		return lhs;
+	}
+
+	inline Matrix operator *(Matrix lhs, Matrix const &rhs)
+	{
+		lhs *= rhs;
+		return lhs;
+	}
+
+	std::ostream& operator<<(std::ostream &os, Matrix const &obj);
 }
 
 #endif

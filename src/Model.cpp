@@ -520,7 +520,7 @@ void Model::PlayAnimation( const RString &sAniName, float fPlayRate )
 		int nParentBone = m_pCurAnimation->FindBoneByName( pBone->sParentName );
 		if( nParentBone != -1 )
 		{
-			RageMatrixMultiply( &m_vpBones[i].m_Absolute, &m_vpBones[nParentBone].m_Absolute, &m_vpBones[i].m_Relative );
+			m_vpBones[i].m_Absolute = m_vpBones[nParentBone].m_Absolute * m_vpBones[i].m_Relative;
 		}
 		else
 		{
@@ -667,14 +667,13 @@ void Model::SetBones( const msAnimation* pAnimation, float fFrame, vector<myBone
 		m.m[3][1] = vPos.y;
 		m.m[3][2] = vPos.z;
 
-		Rage::Matrix RelativeFinal;
-		RageMatrixMultiply( &RelativeFinal, &vpBones[i].m_Relative, &m );
+		Rage::Matrix RelativeFinal = vpBones[i].m_Relative * m;
 
 		int iParentBone = pAnimation->FindBoneByName( pBone->sParentName );
 		if( iParentBone == -1 )
 			vpBones[i].m_Final = RelativeFinal;
 		else
-			RageMatrixMultiply( &vpBones[i].m_Final, &vpBones[iParentBone].m_Final, &RelativeFinal );
+			vpBones[i].m_Final = vpBones[iParentBone].m_Final * RelativeFinal;
 	}
 }
 
