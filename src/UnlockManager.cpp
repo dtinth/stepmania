@@ -126,7 +126,7 @@ int UnlockManager::CourseIsLocked( const Course *pCourse ) const
 	}
 
 	/* If a course uses a song that is disabled, disable the course too. */
-    for (auto const &ce : pCourse->m_vEntries)
+	for (auto const &ce : pCourse->m_vEntries)
 	{
 		const Song *pSong = ce.songID.ToSong();
 		if( pSong == NULL )
@@ -199,7 +199,7 @@ bool UnlockManager::ModifierIsLocked( const RString &sOneMod ) const
 
 const UnlockEntry *UnlockManager::FindSong( const Song *pSong ) const
 {
-    for (auto const &e : m_UnlockEntries)
+	for (auto const &e : m_UnlockEntries)
 		if( e.m_Song.ToSong() == pSong  &&  e.m_dc == Difficulty_Invalid )
 			return &e;
 	return NULL;
@@ -208,7 +208,7 @@ const UnlockEntry *UnlockManager::FindSong( const Song *pSong ) const
 const UnlockEntry *UnlockManager::FindSteps( const Song *pSong, const Steps *pSteps ) const
 {
 	ASSERT( pSong && pSteps );
-    for (auto const &e : m_UnlockEntries)
+	for (auto const &e : m_UnlockEntries)
 		if( e.m_Song.ToSong() == pSong  &&  e.m_dc == pSteps->GetDifficulty() )
 			return &e;
 	return NULL;
@@ -219,7 +219,7 @@ const UnlockEntry *UnlockManager::FindStepsType(const Song *pSong,
 						const StepsType *pSType ) const
 {
 	ASSERT( pSong && pSteps && pSType );
-    for (auto const &e : m_UnlockEntries)
+	for (auto const &e : m_UnlockEntries)
 	if(e.m_Song.ToSong() == pSong &&
 	   e.m_dc == pSteps->GetDifficulty() &&
 	   e.m_StepsType == pSteps->m_StepsType)
@@ -229,7 +229,7 @@ const UnlockEntry *UnlockManager::FindStepsType(const Song *pSong,
 
 const UnlockEntry *UnlockManager::FindCourse( const Course *pCourse ) const
 {
-    for (auto const &e : m_UnlockEntries)
+	for (auto const &e : m_UnlockEntries)
 		if( e.m_Course.ToCourse() == pCourse )
 			return &e;
 	return NULL;
@@ -237,7 +237,7 @@ const UnlockEntry *UnlockManager::FindCourse( const Course *pCourse ) const
 
 const UnlockEntry *UnlockManager::FindModifier( const RString &sOneMod ) const
 {
-    for (auto const &e : m_UnlockEntries)
+	for (auto const &e : m_UnlockEntries)
 		if( e.GetModifier().CompareNoCase(sOneMod) == 0 )
 			return &e;
 	return NULL;
@@ -387,11 +387,11 @@ UnlockEntryStatus UnlockEntry::GetUnlockEntryStatus() const
 			StepsType_Invalid, 
 			Difficulty_Hard
 			);
-        for (auto const *s : vp)
-        {
+		for (auto const *s : vp)
+		{
 			if( PROFILEMAN->GetMachineProfile()->HasPassedSteps(pSong, s) )
 				return UnlockEntryStatus_Unlocked;
-        }
+		}
 	}
 	
 	if (m_bRequirePassChallengeSteps && m_Song.IsValid())
@@ -402,7 +402,7 @@ UnlockEntryStatus UnlockEntry::GetUnlockEntryStatus() const
 				   vp,
 				   StepsType_Invalid,
 				   Difficulty_Challenge);
-        for (auto const *s : vp)
+		for (auto const *s : vp)
 		{
 			if (PROFILEMAN->GetMachineProfile()->HasPassedSteps(pSong, s))
 				return UnlockEntryStatus_Unlocked;
@@ -513,7 +513,7 @@ void UnlockManager::Load()
 
 	if( AUTO_LOCK_CHALLENGE_STEPS )
 	{
-        for (auto const *s : SONGMAN->GetAllSongs())
+		for (auto const *s : SONGMAN->GetAllSongs())
 		{
 			// If no hard steps to play to unlock, skip
 			if( SongUtil::GetOneSteps(s, StepsType_Invalid, Difficulty_Hard) == NULL )
@@ -538,7 +538,7 @@ void UnlockManager::Load()
 	
 	if (AUTO_LOCK_EDIT_STEPS)
 	{
-        for (auto const *s : SONGMAN->GetAllSongs())
+		for (auto const *s : SONGMAN->GetAllSongs())
 		{
 			// no challenge steps to play: skip.
 			if (SongUtil::GetOneSteps(s, StepsType_Invalid, Difficulty_Challenge) == NULL)
@@ -565,20 +565,23 @@ void UnlockManager::Load()
 
 	// Make sure that we don't have duplicate unlock IDs. This can cause problems
 	// with UnlockCelebrate and with codes.
-    unsigned size = m_UnlockEntries.size();
-    for (unsigned i = 0; i < size - 1; ++i)
+	unsigned size = m_UnlockEntries.size();
+	if (size > 1)
 	{
-		UnlockEntry const &ue1 = m_UnlockEntries[i];
-		for (unsigned j = i + 1; j < size; ++j)
+		for (unsigned i = 0; i < size - 1; ++i)
 		{
-			UnlockEntry const &ue2 = m_UnlockEntries[j];
-			// at this point, these two are definitely different. Assert.
-			ASSERT_M( ue1.m_sEntryID != ue2.m_sEntryID, ssprintf("duplicate unlock entry id %s", ue1.m_sEntryID.c_str()));
+			UnlockEntry const &ue1 = m_UnlockEntries[i];
+			for (unsigned j = i + 1; j < size; ++j)
+			{
+				UnlockEntry const &ue2 = m_UnlockEntries[j];
+				// at this point, these two are definitely different. Assert.
+				ASSERT_M( ue1.m_sEntryID != ue2.m_sEntryID, ssprintf("duplicate unlock entry id %s", ue1.m_sEntryID.c_str()));
 			
+			}
 		}
 	}
 
-    for (auto &e : m_UnlockEntries)
+	for (auto &e : m_UnlockEntries)
 	{
 		switch( e.m_Type )
 		{
@@ -641,7 +644,7 @@ void UnlockManager::Load()
 	}
 
 	// Log unlocks
-    for (auto const &e : m_UnlockEntries)
+	for (auto const &e : m_UnlockEntries)
 	{
 		RString str = ssprintf( "Unlock: %s; ", join("\n",e.m_cmd.m_vsArgs).c_str() );
 		FOREACH_ENUM( UnlockRequirement, j )
@@ -736,15 +739,15 @@ int UnlockManager::GetNumUnlocks() const
 
 int UnlockManager::GetNumUnlocked() const
 {
-    return std::count_if(std::begin(m_UnlockEntries), std::end(m_UnlockEntries), [](UnlockEntry const &ue) {
-        return !ue.IsLocked();
-    });
+	return std::count_if(std::begin(m_UnlockEntries), std::end(m_UnlockEntries), [](UnlockEntry const &ue) {
+		return !ue.IsLocked();
+	});
 }
 
 int UnlockManager::GetUnlockEntryIndexToCelebrate() const
 {
-    // use the iter version.
-    for (auto ue = std::begin(m_UnlockEntries); ue != std::end(m_UnlockEntries); ++ue)
+	// use the iter version.
+	for (auto ue = std::begin(m_UnlockEntries); ue != std::end(m_UnlockEntries); ++ue)
 	{
 		if( ue->GetUnlockEntryStatus() == UnlockEntryStatus_RequirementsMet )
 			return ue - m_UnlockEntries.begin();
@@ -821,7 +824,7 @@ public:
 		{
 			auto const &allSteps = pSong->GetAllSteps();
 			vector<Steps*> toRet;
-            for (auto *step : allSteps)
+			for (auto *step : allSteps)
 			{
 				if (step->GetDifficulty() == p->m_dc)
 				{
@@ -841,7 +844,7 @@ public:
 		if (pSong)
 		{
 			auto const &allStepsType = pSong->GetStepsByStepsType(p->m_StepsType);
-            for (auto *step : allStepsType)
+			for (auto *step : allStepsType)
 			{
 				if (step->GetDifficulty() == p->m_dc)
 				{

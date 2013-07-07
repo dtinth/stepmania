@@ -24,8 +24,8 @@ IPreference *IPreference::GetPreferenceByName( const RString &sName )
 {
     auto const &subs = *m_Subscribers.m_pSubscribers;
     auto unfound = std::end(subs);
-    auto it = std::find_if(std::begin(subs), unfound, [&](IPreference *p) {
-        return p->GetName().CompareNoCase(sName);
+    auto it = std::find_if(std::begin(subs), unfound, [&](IPreference const *p) {
+        return p->GetName().CompareNoCase(sName) == 0;
     });
     return (it == unfound) ? nullptr : *it;
 }
