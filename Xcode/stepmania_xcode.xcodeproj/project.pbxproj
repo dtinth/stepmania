@@ -67,6 +67,9 @@
 		2B17ABFD139817D6001AE57D /* libpcre-sm5.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2B17ABE013981756001AE57D /* libpcre-sm5.a */; };
 		2B24E4061789D0390029F20D /* Quadratic.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 2B24E4051789D0390029F20D /* Quadratic.hpp */; };
 		2B24E4081789D1300029F20D /* Quadratic.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2B24E4071789D1300029F20D /* Quadratic.cpp */; };
+		2B24E40A1789DD5E0029F20D /* Bezier2D.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 2B24E4091789DD5E0029F20D /* Bezier2D.hpp */; };
+		2B24E40C1789DE270029F20D /* Bezier2D.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2B24E40B1789DE270029F20D /* Bezier2D.cpp */; };
+		2B24E40E1789E1870029F20D /* Util.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 2B24E40D1789E1870029F20D /* Util.hpp */; };
 		2B30D6821315EA7E00044B68 /* MouseDevice.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2B30D6801315EA7E00044B68 /* MouseDevice.cpp */; };
 		2B30D6831315EA7E00044B68 /* MouseDevice.h in Headers */ = {isa = PBXBuildFile; fileRef = 2B30D6811315EA7E00044B68 /* MouseDevice.h */; };
 		2B43509513949F37006FA051 /* TimingSegments.h in Headers */ = {isa = PBXBuildFile; fileRef = 2B43509313949F37006FA051 /* TimingSegments.h */; };
@@ -1951,6 +1954,9 @@
 		2B17ABE013981756001AE57D /* libpcre-sm5.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libpcre-sm5.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2B24E4051789D0390029F20D /* Quadratic.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Quadratic.hpp; path = ../src/Rage/Quadratic.hpp; sourceTree = "<group>"; };
 		2B24E4071789D1300029F20D /* Quadratic.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Quadratic.cpp; path = ../src/Rage/Quadratic.cpp; sourceTree = "<group>"; };
+		2B24E4091789DD5E0029F20D /* Bezier2D.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Bezier2D.hpp; path = ../src/Rage/Bezier2D.hpp; sourceTree = "<group>"; };
+		2B24E40B1789DE270029F20D /* Bezier2D.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Bezier2D.cpp; path = ../src/Rage/Bezier2D.cpp; sourceTree = "<group>"; };
+		2B24E40D1789E1870029F20D /* Util.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Util.hpp; path = ../src/Rage/Util.hpp; sourceTree = "<group>"; };
 		2B30D6801315EA7E00044B68 /* MouseDevice.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MouseDevice.cpp; sourceTree = "<group>"; };
 		2B30D6811315EA7E00044B68 /* MouseDevice.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MouseDevice.h; sourceTree = "<group>"; };
 		2B43509313949F37006FA051 /* TimingSegments.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TimingSegments.h; path = ../src/TimingSegments.h; sourceTree = SOURCE_ROOT; };
@@ -4155,12 +4161,15 @@
 				AAF580A804B3E2DC00D02EE9 /* RageUtil_FileDB.h */,
 				AACA592D07B5E23400763545 /* RageUtil_WorkerThread.cpp */,
 				AACA592E07B5E23400763545 /* RageUtil_WorkerThread.h */,
-				2B75ED7F17812F06007CC664 /* ModelVertex.cpp */,
-				2B75ED7D17812EEA007CC664 /* ModelVertex.hpp */,
+				2B24E4091789DD5E0029F20D /* Bezier2D.hpp */,
+				2B24E40B1789DE270029F20D /* Bezier2D.cpp */,
 				2B75ED79178122AB007CC664 /* Matrix.hpp */,
 				2B75ED7B1781232C007CC664 /* Matrix.cpp */,
-				2B75ED6D1780A0F6007CC664 /* Vector2.cpp */,
+				2B75ED7D17812EEA007CC664 /* ModelVertex.hpp */,
+				2B75ED7F17812F06007CC664 /* ModelVertex.cpp */,
+				2B24E40D1789E1870029F20D /* Util.hpp */,
 				2B75ED6E1780A0F6007CC664 /* Vector2.hpp */,
+				2B75ED6D1780A0F6007CC664 /* Vector2.cpp */,
 				2B75ED711781128F007CC664 /* Vector3.hpp */,
 				2B75ED73178112A6007CC664 /* Vector3.cpp */,
 				2B75ED7517811C8E007CC664 /* Vector4.hpp */,
@@ -5485,6 +5494,8 @@
 				2B75ED7A178122AB007CC664 /* Matrix.hpp in Headers */,
 				2B75ED7E17812EEA007CC664 /* ModelVertex.hpp in Headers */,
 				2B24E4061789D0390029F20D /* Quadratic.hpp in Headers */,
+				2B24E40A1789DD5E0029F20D /* Bezier2D.hpp in Headers */,
+				2B24E40E1789E1870029F20D /* Util.hpp in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -6538,6 +6549,7 @@
 				2B75ED7C1781232C007CC664 /* Matrix.cpp in Sources */,
 				2B75ED8017812F06007CC664 /* ModelVertex.cpp in Sources */,
 				2B24E4081789D1300029F20D /* Quadratic.cpp in Sources */,
+				2B24E40C1789DE270029F20D /* Bezier2D.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

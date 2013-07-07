@@ -576,41 +576,6 @@ float RageFastCos( float x )
 	return RageFastSin( x + 0.5f*PI );
 }
 
-
-void RageBezier2D::Evaluate( float fT, float *pX, float *pY ) const
-{
-	*pX = m_X.Evaluate( fT );
-	*pY = m_Y.Evaluate( fT );
-}
-
-float RageBezier2D::EvaluateYFromX( float fX ) const
-{
-	/* Quickly approximate T using Newton-Raphelson successive optimization (see
-	 * http://www.tinaja.com/text/bezmath.html).  This usually finds T within an
-	 * acceptable error margin in a few steps. */
-	float fT = SCALE( fX, m_X.GetBezierStart(), m_X.GetBezierEnd(), 0, 1 );
-	while(1)
-	{
-		float fGuessedX = m_X.Evaluate( fT );
-		float fError = fX-fGuessedX;
-
-		/* If our guess is good enough, evaluate the result Y and return. */
-		if( unlikely(fabsf(fError) < 0.0001f) )
-			return m_Y.Evaluate( fT );
-
-		float fSlope = m_X.GetSlope( fT );
-		fT += fError/fSlope;
-	}
-}
-
-void RageBezier2D::SetFromBezier(
-		float fC1X, float fC1Y, float fC2X, float fC2Y,
-		float fC3X, float fC3Y, float fC4X, float fC4Y )
-{
-	m_X.SetFromBezier( fC1X, fC2X, fC3X, fC4X );
-	m_Y.SetFromBezier( fC1Y, fC2Y, fC3Y, fC4Y );
-}
-
 /*
  * Copyright (c) 2001-2006 Chris Danford, Glenn Maynard
  * All rights reserved.

@@ -7,7 +7,6 @@
 #include "Rage/Vector3.hpp"
 #include "Rage/Vector4.hpp"
 #include "Rage/Matrix.hpp"
-#include "Rage/Quadratic.hpp"
 
 #define PI		(3.141592653589793f)
 #define DegreeToRadian( degree ) ((degree) * (PI / 180.0f))
@@ -50,20 +49,6 @@ void RageMatrixTranspose( Rage::Matrix* pOut, const Rage::Matrix* pIn );
 
 float RageFastSin( float x ) CONST_FUNCTION;
 float RageFastCos( float x ) CONST_FUNCTION;
-
-class RageBezier2D
-{
-public:
-	void SetFromBezier( float fC1X, float fC2X, float fC3X, float fC4X,
-			    float fC1Y, float fC2Y, float fC3Y, float fC4Y );
-
-	void Evaluate( float fT, float *pX, float *pY ) const;
-	float EvaluateYFromX( float fX ) const;
-
-private:
-    Rage::Quadratic m_X;
-    Rage::Quadratic m_Y;
-};
 
 #endif
 
