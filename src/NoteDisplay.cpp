@@ -423,7 +423,7 @@ void NoteDisplay::DrawHoldPart( vector<Sprite*> &vpSpr, int iCol, int fYStep, fl
 
 	if( !bAnchorToTop )
 	{
-		float fTexCoordBottom		= SCALE( fYBottom - fYTop, 0, fFrameHeight, rect.top, rect.bottom );
+		float fTexCoordBottom		= Rage::Scale( fYBottom - fYTop, 0.f, fFrameHeight, rect.top, rect.bottom );
 		float fWantTexCoordBottom	= ceilf( fTexCoordBottom - 0.0001f );
 		fAddToTexCoord = fWantTexCoordBottom - fTexCoordBottom;
 	}
@@ -433,7 +433,7 @@ void NoteDisplay::DrawHoldPart( vector<Sprite*> &vpSpr, int iCol, int fYStep, fl
 		/* For very large hold notes, shift the texture coordinates to be near 0, so we
 		 * don't send very large values to the renderer. */
 		const float fDistFromTop	= fYStartPos - fYTop;
-		float fTexCoordTop		= SCALE( fDistFromTop, 0, fFrameHeight, rect.top, rect.bottom );
+		float fTexCoordTop		= Rage::Scale( fDistFromTop, 0.f, fFrameHeight, rect.top, rect.bottom );
 		fTexCoordTop += fAddToTexCoord;
 		fAddToTexCoord -= floorf( fTexCoordTop );
 	}
@@ -477,7 +477,7 @@ void NoteDisplay::DrawHoldPart( vector<Sprite*> &vpSpr, int iCol, int fYStep, fl
 		const float fZRight		= fZ + fRotOffsetZ;
 
 		const float fDistFromTop	= fY - fYTop;
-		float fTexCoordTop		= SCALE( fDistFromTop, 0, fFrameHeight, rect.top, rect.bottom );
+		float fTexCoordTop		= Rage::Scale( fDistFromTop, 0.f, fFrameHeight, rect.top, rect.bottom );
 		fTexCoordTop += fAddToTexCoord;
 
 		const float fAlpha		= ArrowGetAlphaOrGlow( bGlow, m_pPlayerState, iCol, fYOffset, fPercentFadeToFail, m_fYReverseOffsetPixels, fDrawDistanceBeforeTargetsPixels, fFadeInPercentOfDrawFar );
@@ -649,7 +649,7 @@ void NoteDisplay::DrawHold( const TapNote &tn, int iCol, int iRow, bool bIsBeing
 	const float fYHead		= ArrowEffects::GetYPos( m_pPlayerState, iCol, fStartYOffset, fReverseOffsetPixels );
 	const float fYTail		= ArrowEffects::GetYPos( m_pPlayerState, iCol, fEndYOffset, fReverseOffsetPixels );
 
-	const float fColorScale		= SCALE( tn.HoldResult.fLife, 0.0f, 1.0f, cache->m_fHoldLetGoGrayPercent, 1.0f );
+	const float fColorScale		= Rage::Scale( tn.HoldResult.fLife, 0.0f, 1.0f, cache->m_fHoldLetGoGrayPercent, 1.0f );
 
 	bool bFlipHeadAndTail = bReverse && cache->m_bFlipHeadAndTailWhenReverse;
 

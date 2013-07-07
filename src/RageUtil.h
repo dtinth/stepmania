@@ -5,6 +5,7 @@
 
 #include <map>
 #include <vector>
+#include "Rage/Util.hpp"
 class RageFileDriver;
 
 /** @brief Safely delete pointers. */
@@ -32,16 +33,6 @@ inline unsigned long max( unsigned long a, unsigned int b ) { return a > b? a:b;
 
 /** @brief If outside the range from low to high, bring it within range. */
 #define clamp(val,low,high)		( max( (low), min((val),(high)) ) )
-
-/**
- * @brief Scales x so that l1 corresponds to l2 and h1 corresponds to h2.
- *
- * This does not modify x, so it MUST assign the result to something!
- * Do the multiply before the divide to that integer scales have more precision.
- *
- * One such example: SCALE(x, 0, 1, L, H); interpolate between L and H.
- */
-#define SCALE(x, l1, h1, l2, h2)	(((x) - (l1)) * ((h2) - (l2)) / ((h1) - (l1)) + (l2))
 
 template<typename T, typename U>
 inline U lerp( T x, U l, U h )
@@ -286,7 +277,7 @@ inline float RandomFloat()
  */
 inline float RandomFloat( float fLow, float fHigh )
 {
-	return SCALE( RandomFloat(), 0.0f, 1.0f, fLow, fHigh );
+	return Rage::Scale( RandomFloat(), 0.0f, 1.0f, fLow, fHigh );
 }
 
 // Returns an integer between nLow and nHigh inclusive

@@ -51,7 +51,7 @@ void ScrollBar::SetPercentage( float fCenterPercent, float fSizePercent )
 
 	/* Set tick thumb */
 	{
-		float fY = SCALE( fCenterPercent, 0.0f, 1.0f, -iBarContentHeight/2.0f, iBarContentHeight/2.0f );
+		float fY = Rage::Scale( fCenterPercent, 0.0f, 1.0f, -iBarContentHeight/2.0f, iBarContentHeight/2.0f );
 		fY = roundf( fY );
 		m_sprScrollTickThumb->SetY( fY );
 	}
@@ -69,17 +69,17 @@ void ScrollBar::SetPercentage( float fCenterPercent, float fSizePercent )
 
 	if( fStartPercent < fEndPercent )	// we only need to one 1 stretch thumb part
 	{
-		fPartTopY[0]	= SCALE( fStartPercent,0.0f, 1.0f, -iBarContentHeight/2.0f, +iBarContentHeight/2.0f ); 
-		fPartBottomY[0]	= SCALE( fEndPercent,  0.0f, 1.0f, -iBarContentHeight/2.0f, +iBarContentHeight/2.0f ); 
+		fPartTopY[0]	= Rage::Scale( fStartPercent,0.0f, 1.0f, -iBarContentHeight/2.0f, +iBarContentHeight/2.0f );
+		fPartBottomY[0]	= Rage::Scale( fEndPercent,  0.0f, 1.0f, -iBarContentHeight/2.0f, +iBarContentHeight/2.0f );
 		fPartTopY[1]	= 0; 
 		fPartBottomY[1]	= 0; 
 	}
 	else	// we need two stretch thumb parts
 	{
-		fPartTopY[0]	= SCALE( 0.0f,		0.0f, 1.0f, -iBarContentHeight/2.0f, +iBarContentHeight/2.0f ); 
-		fPartBottomY[0]	= SCALE( fEndPercent,	0.0f, 1.0f, -iBarContentHeight/2.0f, +iBarContentHeight/2.0f ); 
-		fPartTopY[1]	= SCALE( fStartPercent,	0.0f, 1.0f, -iBarContentHeight/2.0f, +iBarContentHeight/2.0f ); 
-		fPartBottomY[1]	= SCALE( 1.0f,		0.0f, 1.0f, -iBarContentHeight/2.0f, +iBarContentHeight/2.0f ); 
+		fPartTopY[0]	= Rage::Scale( 0.0f,		0.0f, 1.0f, -iBarContentHeight/2.0f, +iBarContentHeight/2.0f );
+		fPartBottomY[0]	= Rage::Scale( fEndPercent,	0.0f, 1.0f, -iBarContentHeight/2.0f, +iBarContentHeight/2.0f );
+		fPartTopY[1]	= Rage::Scale( fStartPercent,	0.0f, 1.0f, -iBarContentHeight/2.0f, +iBarContentHeight/2.0f );
+		fPartBottomY[1]	= Rage::Scale( 1.0f,		0.0f, 1.0f, -iBarContentHeight/2.0f, +iBarContentHeight/2.0f );
 	}
 
 	CHECKPOINT;

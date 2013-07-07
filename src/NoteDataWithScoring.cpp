@@ -295,7 +295,7 @@ float GetActualVoltageRadarValue( const NoteData &in, float fSongSeconds, const 
 	 * length of the longest recorded combo. This is only subtly different:
 	 * it's the percent of the song the longest combo took to get. */
 	const PlayerStageStats::Combo_t MaxCombo = pss.GetMaxCombo();
-	float fComboPercent = SCALE( MaxCombo.m_fSizeSeconds, 0, pss.m_fLastSecond-pss.m_fFirstSecond, 0.0f, 1.0f );
+	float fComboPercent = Rage::Scale( MaxCombo.m_fSizeSeconds, 0.f, pss.m_fLastSecond-pss.m_fFirstSecond, 0.0f, 1.0f );
 	return clamp( fComboPercent, 0.0f, 1.0f );
 }
 

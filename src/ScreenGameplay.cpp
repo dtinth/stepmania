@@ -1141,7 +1141,7 @@ void ScreenGameplay::LoadNextSong()
 			{
 				pi->GetPlayerState()->m_PlayerController = PC_CPU;
 				int iMeter = pSteps->GetMeter();
-				int iNewSkill = SCALE( iMeter, MIN_METER, MAX_METER, 0, NUM_SKILL_LEVELS-1 );
+				int iNewSkill = Rage::Scale( iMeter, MIN_METER, MAX_METER, 0, NUM_SKILL_LEVELS-1 );
 				/* Watch out: songs aren't actually bound by MAX_METER. */
 				iNewSkill = clamp( iNewSkill, 0, NUM_SKILL_LEVELS-1 );
 				pi->GetPlayerState()->m_iCpuSkill = iNewSkill;
@@ -1929,15 +1929,19 @@ float ScreenGameplay::GetHasteRate()
                 fMaxLife = max( fMaxLife, pi->m_pLifeMeter->GetLife() );
 	}
 	if( fMaxLife < 0.5f )
-		GAMESTATE->m_fHasteRate = SCALE( fMaxLife, 0.0f, 0.5f, -1.0f, 0.0f );
+		GAMESTATE->m_fHasteRate = Rage::Scale( fMaxLife, 0.0f, 0.5f, -1.0f, 0.0f );
 
-	float fSpeed = 1.0f;
-	if( GAMESTATE->m_fHasteRate < 0 )
-		fSpeed = SCALE( GAMESTATE->m_fHasteRate, -1.0f, 0.0f, 0.5f, 1.0f );
-	else if( GAMESTATE->m_fHasteRate < 0.3f )
-		fSpeed = SCALE( GAMESTATE->m_fHasteRate, 0.0f, 0.3f, 1.0f, 1.2f );
-	else
-		fSpeed = SCALE( GAMESTATE->m_fHasteRate, 0.3f, 1.0f, 1.2f, 1.5f );
+	float fSpeed = [&](float const hasteRate) {
+        if (hasteRate < 0)
+        {
+            return Rage::Scale(hasteRate, -1.0f, 0.0f, 0.5f, 1.0f);
+        }
+        if (hasteRate < 0.3f)
+        {
+            return Rage::Scale(hasteRate, 0.0f, 0.3f, 1.0f, 1.2f);
+        }
+        return Rage::Scale(hasteRate, 0.3f, 1.0f, 1.2f, 1.5f);
+    }(GAMESTATE->m_fHasteRate);
 	fSpeed *= GAMESTATE->m_SongOptions.GetCurrent().m_fHaste;
 
 	if( GAMESTATE->m_fAccumulatedHasteSeconds <= 1 )

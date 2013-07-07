@@ -522,12 +522,14 @@ float RageFastSin( float x )
 	static float table[1024];
 
 	static bool bInited = false;
+    float const len = static_cast<float>(ARRAYLEN(table));
 	if( !bInited )
 	{
 		bInited = true;
+        
 		for( unsigned i=0; i<ARRAYLEN(table); i++ )
 		{
-			float z = SCALE(i,0,ARRAYLEN(table),0.0f,PI);
+			float z = Rage::Scale(i * 1.f,0.f,len,0.0f,PI);
 			table[i] = sinf(z);
 		}
 	}
@@ -536,7 +538,7 @@ float RageFastSin( float x )
 	if( x == 0 )
 		return 0;
 
-	float fIndex = SCALE( x, 0.0f, PI*2, 0, ARRAYLEN(table)*2 );
+	float fIndex = Rage::Scale( x, 0.0f, PI*2, 0.f, len*2 );
 
 	// lerp using samples from the table
 	int iSampleIndex[2];
@@ -568,7 +570,7 @@ float RageFastSin( float x )
 		}
 	}
 
-	return SCALE( fRemainder, 0.0f, 1.0f, fValue[0], fValue[1] );
+	return Rage::Scale( fRemainder, 0.0f, 1.0f, fValue[0], fValue[1] );
 }
 
 float RageFastCos( float x )
