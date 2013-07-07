@@ -430,18 +430,12 @@ void Actor::BeginDraw()		// set the world matrix and calculate actor properties
 				float const fZoom = Rage::Scale( fPercentOffset, 0.f, 1.f, fMinZoom, fMaxZoom );
 				tempState.scale *= fZoom;
 
-                // Don't know why a Color was used instead of a Vector3 or something else.
-                // Try this method instead.
-                float scaled = Rage::Scale(fPercentOffset, 0.f, 1.f, m_effectColor1.r, m_effectColor2.r);
-                tempState.scale *= scaled;
-                
-                /*
-				// Use the color as a Vector3 to scale the effect for added control
-				RageColor c = Rage::Scale( fPercentOffset, 0.f, 1.f, m_effectColor1.r, m_effectColor2.r );
+                // Use the color as a Vector3 to scale the effect for added control
+                // do things manually for now instead of figuring out the Scale override.
+				RageColor c = (m_effectColor2 - m_effectColor1) * (fPercentOffset / 1.f) + m_effectColor1;
 				tempState.scale.x *= c.r;
 				tempState.scale.y *= c.g;
 				tempState.scale.z *= c.b;
-                 */
 			}
 			break;
 		default:
