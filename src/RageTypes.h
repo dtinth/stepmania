@@ -258,8 +258,6 @@ struct RageSpriteVertex	// has color
 	Rage::Vector2 t; // texture coordinates
 };
 
-RageColor scale( float x, float l1, float h1, const RageColor &a, const RageColor &b );
-
 #endif
 
 /*
