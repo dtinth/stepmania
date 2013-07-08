@@ -4,6 +4,7 @@
 #include "RageMath.h"
 #include "LuaManager.h"
 #include "EnumHelper.h"
+#include "Rage/Bezier2D.hpp"
 
 static const char *TweenTypeNames[] = {
 	"Linear",
@@ -46,7 +47,7 @@ struct InterpolateBezier1D: public ITween
 	float Tween( float f ) const;
 	ITween *Copy() const { return new InterpolateBezier1D(*this); }
 
-	RageQuadratic m_Bezier;
+    Rage::Quadratic m_Bezier;
 };
 
 float InterpolateBezier1D::Tween( float f ) const
@@ -62,7 +63,7 @@ struct InterpolateBezier2D: public ITween
 	float Tween( float f ) const;
 	ITween *Copy() const { return new InterpolateBezier2D(*this); }
 
-	RageBezier2D m_Bezier;
+    Rage::Bezier2D m_Bezier;
 };
 
 float InterpolateBezier2D::Tween( float f ) const

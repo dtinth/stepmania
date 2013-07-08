@@ -848,7 +848,7 @@ static HighScore MakeRandomHighScore( float fPercentDP )
 {
 	HighScore hs;
 	hs.SetName( "FAKE" );
-	Grade g = (Grade)SCALE( RandomInt(6), 0, 4, Grade_Tier01, Grade_Tier06 );
+	Grade g = (Grade)Rage::Scale( RandomInt(6), 0, 4, (int)Grade_Tier01, (int)Grade_Tier06 );
 	if( g == Grade_Tier06 )
 		g = Grade_Failed;
 	hs.SetGrade( g );

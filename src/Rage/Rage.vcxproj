@@ -11,15 +11,21 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Bezier2D.hpp" />
+    <ClInclude Include="Macros.hpp" />
     <ClInclude Include="Matrix.hpp" />
     <ClInclude Include="ModelVertex.hpp" />
+    <ClInclude Include="Quadratic.hpp" />
+    <ClInclude Include="Util.hpp" />
     <ClInclude Include="Vector2.hpp" />
     <ClInclude Include="Vector3.hpp" />
     <ClInclude Include="Vector4.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Bezier2D.cpp" />
     <ClCompile Include="Matrix.cpp" />
     <ClCompile Include="ModelVertex.cpp" />
+    <ClCompile Include="Quadratic.cpp" />
     <ClCompile Include="Vector2.cpp" />
     <ClCompile Include="Vector3.cpp" />
     <ClCompile Include="Vector4.cpp" />

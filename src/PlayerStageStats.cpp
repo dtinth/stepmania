@@ -411,14 +411,14 @@ float PlayerStageStats::GetLifeRecordLerpAt( float fStepsSecond ) const
 		return earlier->second;
 
 	// earlier <= pos <= later
-	return SCALE( fStepsSecond, earlier->first, later->first, earlier->second, later->second );
+	return Rage::Scale( fStepsSecond, earlier->first, later->first, earlier->second, later->second );
 }
 
 void PlayerStageStats::GetLifeRecord( float *fLifeOut, int iNumSamples, float fStepsEndSecond ) const
 {
 	for( int i = 0; i < iNumSamples; ++i )
 	{
-		float from = SCALE( i, 0, (float)iNumSamples, 0.0f, fStepsEndSecond );
+		float from = Rage::Scale( i * 1.f, 0.f, (float)iNumSamples, 0.0f, fStepsEndSecond );
 		fLifeOut[i] = GetLifeRecordLerpAt( from );
 	}
 }

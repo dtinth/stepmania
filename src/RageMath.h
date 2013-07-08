@@ -50,39 +50,6 @@ void RageMatrixTranspose( Rage::Matrix* pOut, const Rage::Matrix* pIn );
 float RageFastSin( float x ) CONST_FUNCTION;
 float RageFastCos( float x ) CONST_FUNCTION;
 
-class RageQuadratic
-{
-public:
-	void SetFromBezier( float fC1, float fC2, float fC3, float fC4 );
-	void GetBezier( float &fC1, float &fC2, float &fC3, float &fC4 ) const;
-
-	void SetFromCubic( float fX1, float fX2, float fX3, float fX4 );
-
-	float Evaluate( float fT ) const;
-	float GetSlope( float fT ) const;
-
-	/* Equivalent to Evaluate(0.0f) and Evaluate(1.0f), but faster: */
-	float GetBezierStart() const { return m_fD; }
-	float GetBezierEnd() const { return m_fA + m_fB + m_fC + m_fD; }
-
-private:
-	float m_fA, m_fB, m_fC, m_fD;
-};
-
-class RageBezier2D
-{
-public:
-	void SetFromBezier( float fC1X, float fC2X, float fC3X, float fC4X,
-			    float fC1Y, float fC2Y, float fC3Y, float fC4Y );
-
-	void Evaluate( float fT, float *pX, float *pY ) const;
-	float EvaluateYFromX( float fX ) const;
-
-private:
-	RageQuadratic m_X;
-	RageQuadratic m_Y;
-};
-
 #endif
 
 /*

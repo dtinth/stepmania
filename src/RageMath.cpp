@@ -522,12 +522,14 @@ float RageFastSin( float x )
 	static float table[1024];
 
 	static bool bInited = false;
+    float const len = static_cast<float>(ARRAYLEN(table));
 	if( !bInited )
 	{
 		bInited = true;
+        
 		for( unsigned i=0; i<ARRAYLEN(table); i++ )
 		{
-			float z = SCALE(i,0,ARRAYLEN(table),0.0f,PI);
+			float z = Rage::Scale(i * 1.f,0.f,len,0.0f,PI);
 			table[i] = sinf(z);
 		}
 	}
@@ -536,7 +538,7 @@ float RageFastSin( float x )
 	if( x == 0 )
 		return 0;
 
-	float fIndex = SCALE( x, 0.0f, PI*2, 0, ARRAYLEN(table)*2 );
+	float fIndex = Rage::Scale( x, 0.0f, PI*2, 0.f, len*2 );
 
 	// lerp using samples from the table
 	int iSampleIndex[2];
@@ -568,83 +570,12 @@ float RageFastSin( float x )
 		}
 	}
 
-	return SCALE( fRemainder, 0.0f, 1.0f, fValue[0], fValue[1] );
+	return Rage::Scale( fRemainder, 0.0f, 1.0f, fValue[0], fValue[1] );
 }
 
 float RageFastCos( float x )
 {
 	return RageFastSin( x + 0.5f*PI );
-}
-
-float RageQuadratic::Evaluate( float fT ) const
-{
-	// optimized (m_fA * fT*fT*fT) + (m_fB * fT*fT) + (m_fC * fT) + m_fD;
-	return ((m_fA*fT + m_fB)*fT + m_fC)*fT + m_fD;
-}
-
-void RageQuadratic::SetFromBezier( float fX1, float fX2, float fX3, float fX4 )
-{
-	m_fD = fX1;
-	m_fC = 3.0f * (fX2 - fX1);
-	m_fB = 3.0f * (fX3 - fX2) - m_fC;
-	m_fA = fX4 - fX1 - m_fC - m_fB;
-}
-
-void RageQuadratic::GetBezier( float &fX1, float &fX2, float &fX3, float &fX4 ) const
-{
-	fX1 = m_fD;
-	fX2 = m_fD + m_fC/3.0f;
-	fX3 = m_fD + 2*m_fC/3.0f + m_fB/3.0f;
-	fX4 = m_fD + m_fC + m_fB + m_fA;
-}
-
-/* Cubic polynomial interpolation.  SetFromCubicPoly(-1, 0, 1, 2); Evaluate(p) will
- * interpolate between 0 and 1. */
-void RageQuadratic::SetFromCubic( float fX1, float fX2, float fX3, float fX4 )
-{
-	m_fA = -1.0f/6.0f*fX1 + +3.0f/6.0f*fX2 + -3.0f/6.0f*fX3 + 1.0f/6.0f*fX4;
-	m_fB =  3.0f/6.0f*fX1 + -6.0f/6.0f*fX2 +  3.0f/6.0f*fX3;
-	m_fC = -2.0f/6.0f*fX1 + -3.0f/6.0f*fX2 +            fX3 + -1.0f/6.0f*fX4;
-	m_fD =                             fX2;
-}
-
-float RageQuadratic::GetSlope( float fT ) const
-{
-	return 3*m_fA*fT*fT + 2*m_fB*fT + m_fC;
-}
-
-void RageBezier2D::Evaluate( float fT, float *pX, float *pY ) const
-{
-	*pX = m_X.Evaluate( fT );
-	*pY = m_Y.Evaluate( fT );
-}
-
-float RageBezier2D::EvaluateYFromX( float fX ) const
-{
-	/* Quickly approximate T using Newton-Raphelson successive optimization (see
-	 * http://www.tinaja.com/text/bezmath.html).  This usually finds T within an
-	 * acceptable error margin in a few steps. */
-	float fT = SCALE( fX, m_X.GetBezierStart(), m_X.GetBezierEnd(), 0, 1 );
-	while(1)
-	{
-		float fGuessedX = m_X.Evaluate( fT );
-		float fError = fX-fGuessedX;
-
-		/* If our guess is good enough, evaluate the result Y and return. */
-		if( unlikely(fabsf(fError) < 0.0001f) )
-			return m_Y.Evaluate( fT );
-
-		float fSlope = m_X.GetSlope( fT );
-		fT += fError/fSlope;
-	}
-}
-
-void RageBezier2D::SetFromBezier(
-		float fC1X, float fC1Y, float fC2X, float fC2Y,
-		float fC3X, float fC3Y, float fC4X, float fC4Y )
-{
-	m_X.SetFromBezier( fC1X, fC2X, fC3X, fC4X );
-	m_Y.SetFromBezier( fC1Y, fC2Y, fC3Y, fC4Y );
 }
 
 /*

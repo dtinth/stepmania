@@ -327,11 +327,11 @@ void NoteField::DrawBeatBar( const float fBeat, BeatBarType type, int iMeasureIn
 				iState = 1;
 				break;
 			case half_beat:
-				fAlpha = SCALE(fScrollSpeed,1.0f,2.0f,0.0f,BAR_8TH_ALPHA);
+				fAlpha = Rage::Scale(fScrollSpeed,1.0f,2.0f,0.0f,BAR_8TH_ALPHA.GetValue());
 				iState = 2;
 				break;
 			case quarter_beat:
-				fAlpha = SCALE(fScrollSpeed,2.0f,4.0f,0.0f,BAR_16TH_ALPHA);
+				fAlpha = Rage::Scale(fScrollSpeed,2.0f,4.0f,0.0f,BAR_16TH_ALPHA.GetValue());
 				iState = 3;
 				break;
 		}
@@ -345,7 +345,7 @@ void NoteField::DrawBeatBar( const float fBeat, BeatBarType type, int iMeasureIn
 	m_sprBeatBars.SetY( fYPos );
 	m_sprBeatBars.SetDiffuse( RageColor(1,1,1,fAlpha) );
 	m_sprBeatBars.SetState( iState );
-	m_sprBeatBars.SetCustomTextureRect( RectF(0,SCALE(iState,0.f,4.f,0.f,1.f), fWidth/fFrameWidth, SCALE(iState+1,0.f,4.f,0.f,1.f)) );
+	m_sprBeatBars.SetCustomTextureRect( RectF(0, Rage::Scale(iState * 1.f,0.f,4.f,0.f,1.f), fWidth/fFrameWidth, Rage::Scale(iState+1.f,0.f,4.f,0.f,1.f)) );
 	m_sprBeatBars.SetZoomX( fWidth/m_sprBeatBars.GetUnzoomedWidth() );
 	m_sprBeatBars.Draw();
 
@@ -832,7 +832,7 @@ void NoteField::DrawPrimitives()
 	float fCenteredTimesBoomerang = 
 		current_po.m_fScrolls[PlayerOptions::SCROLL_CENTERED] * 
 		current_po.m_fAccels[PlayerOptions::ACCEL_BOOMERANG];
-	iDrawDistanceAfterTargetsPixels += int(SCALE( fCenteredTimesBoomerang, 0.f, 1.f, 0.f, -SCREEN_HEIGHT/2 ));
+	iDrawDistanceAfterTargetsPixels += int(Rage::Scale( fCenteredTimesBoomerang, 0.f, 1.f, 0.f, -SCREEN_HEIGHT/2.f ));
 	int iDrawDistanceBeforeTargetsPixels = m_iDrawDistanceBeforeTargetsPixels;
 
 	float fDrawScale = 1;
@@ -1197,7 +1197,7 @@ void NoteField::DrawPrimitives()
 	// Draw the arrows in order of column. This minimizes texture switches and
 	// lets us draw in big batches.
 
-	float fSelectedRangeGlow = SCALE( RageFastCos(RageTimer::GetTimeSinceStartFast()*2), -1, 1, 0.1f, 0.3f );
+	float fSelectedRangeGlow = Rage::Scale( RageFastCos(RageTimer::GetTimeSinceStartFast()*2), -1.f, 1.f, 0.1f, 0.3f );
 
 	const Style* pStyle = GAMESTATE->GetCurrentStyle();
 	ASSERT_M(m_pNoteData->GetNumTracks() == GAMESTATE->GetCurrentStyle()->m_iColsPerPlayer, 

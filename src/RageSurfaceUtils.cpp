@@ -543,9 +543,9 @@ static bool blit_rgba_to_rgba( const RageSurface *src_surf, const RageSurface *d
 			/* Calculate a color conversion table. There are a few ways we can do
 			 * this (each list is the resulting table for 4->2 bit):
 			 *
-			 * SCALE( i, 0, max_src_val+1, 0, max_dst_val+1 );
+			 * Rage::Scale( i, 0, max_src_val+1, 0, max_dst_val+1 );
 			 * { 0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3 }
-			 * SCALE( i, 0, max_src_val, 0, max_dst_val );
+			 * Rage::Scale( i, 0, max_src_val, 0, max_dst_val );
 			 * { 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 3 }
 			 * lrintf( ((float) i / max_src_val) * max_dst_val )
 			 * { 0, 0, 0, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 3, 3, 3 }
@@ -554,9 +554,9 @@ static bool blit_rgba_to_rgba( const RageSurface *src_surf, const RageSurface *d
 			 * distribution.
 			 *
 			 * 2->4 bit:
-			 * SCALE( i, 0, max_src_val+1, 0, max_dst_val+1 );
+			 * Rage::Scale( i, 0, max_src_val+1, 0, max_dst_val+1 );
 			 * { 0, 4, 8, 12 }
-			 * SCALE( i, 0, max_src_val, 0, max_dst_val );
+			 * Rage::Scale( i, 0, max_src_val, 0, max_dst_val );
 			 * { 0, 5, 10, 15 }
 			 * lrintf( ((float) i / max_src_val) * max_dst_val )
 			 * { 0, 5, 10, 15 }
@@ -568,10 +568,10 @@ static bool blit_rgba_to_rgba( const RageSurface *src_surf, const RageSurface *d
 			 * strange; what's wrong here? */
 			if( max_src_val > max_dst_val )
 				for( uint32_t i = 0; i <= max_src_val; ++i )
-					lookup[c][i] = (uint8_t) SCALE( i, 0, max_src_val+1, 0, max_dst_val+1 );
+					lookup[c][i] = (uint8_t) Rage::Scale( i, (uint32_t)0, max_src_val+1, (uint32_t)0, max_dst_val+1 );
 			else
 				for( uint32_t i = 0; i <= max_src_val; ++i )
-					lookup[c][i] = (uint8_t) SCALE( i, 0, max_src_val, 0, max_dst_val );
+					lookup[c][i] = (uint8_t) Rage::Scale( i, (uint32_t)0, max_src_val, (uint32_t)0, max_dst_val );
 		}
 	}
 
