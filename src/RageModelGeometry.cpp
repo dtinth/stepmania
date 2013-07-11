@@ -77,13 +77,16 @@ void RageModelGeometry::MergeMeshes( int iFromIndex, int iToIndex )
 
 bool RageModelGeometry::HasAnyPerVertexBones() const
 {
-	for( unsigned i = 0; i < m_Meshes.size(); ++i )
+    for (auto const &mesh : m_Meshes)
 	{
-		const msMesh& mesh = m_Meshes[i];
-		for( unsigned j = 0; j < mesh.Vertices.size(); ++j )
-			if( mesh.Vertices[j].bone != -1 )
-				return true;
-	}
+        for (auto &vertex : mesh.Vertices)
+        {
+			if( vertex.bone != -1 )
+			{
+                return true;
+            }
+        }
+    }
 
 	return false;
 }

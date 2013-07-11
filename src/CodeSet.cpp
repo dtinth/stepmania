@@ -13,14 +13,15 @@ void InputQueueCodeSet::Load( const RString &sType )
 	//
 	split( CODE_NAMES, ",", m_asCodeNames, true );
 
-	for( unsigned c=0; c<m_asCodeNames.size(); c++ )
+    for (auto &codeName : m_asCodeNames)
 	{
 		vector<RString> asBits;
-		split( m_asCodeNames[c], "=", asBits, true );
+		split( codeName, "=", asBits, true );
 		RString sCodeName = asBits[0];
 		if( asBits.size() > 1 )
-			m_asCodeNames[c] = asBits[1];
-
+		{
+            codeName = asBits[1];
+        }
 		InputQueueCode code;
 		if( !code.Load(CODE(sCodeName)) )
 			continue;

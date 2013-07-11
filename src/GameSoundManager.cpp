@@ -324,22 +324,27 @@ static void StartQueuedSounds()
 	g_MusicsToPlay.clear();
 	g_Mutex->Unlock();
 
-	for( unsigned i = 0; i < aSoundsToPlayOnce.size(); ++i )
-		if( aSoundsToPlayOnce[i] != "" )
-			DoPlayOnce( aSoundsToPlayOnce[i] );
+    for (auto const &sound : aSoundsToPlayOnce)
+    {
+        if (sound != "")
+        {
+            DoPlayOnce(sound);
+        }
+    }
 
-	for( unsigned i = 0; i < aSoundsToPlayOnceFromDir.size(); ++i )
-		DoPlayOnceFromDir( aSoundsToPlayOnceFromDir[i] );
+    for (auto const &sound : aSoundsToPlayOnceFromDir)
+    {
+        DoPlayOnceFromDir(sound);
+    }
 
-	for( unsigned i = 0; i < aSoundsToPlayOnceFromAnnouncer.size(); ++i )
-	{
-		RString sPath = aSoundsToPlayOnceFromAnnouncer[i];
-		if( sPath != "" )
-		{
-			sPath = ANNOUNCER->GetPathTo( sPath );
-			DoPlayOnceFromDir( sPath );
-		}
-	}
+    // explicitly make a copy.
+    for (auto sound : aSoundsToPlayOnceFromAnnouncer)
+    {
+        if (sound != "")
+        {
+            DoPlayOnceFromDir(ANNOUNCER->GetPathTo(sound));
+        }
+    }
 
 	for( unsigned i = 0; i < aMusicsToPlay.size(); ++i )
 	{

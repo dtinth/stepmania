@@ -1003,16 +1003,6 @@ public:
             
 			glGetFloatv( GL_TEXTURE_MATRIX , mat );
 
-			/*
-			for( int i=0; i<4; i++ )
-			{
-				RString s;
-				for( int j=0; j<4; j++ )
-					s += ssprintf( "%f ", mat.m[i][j] );
-				LOG->Trace( s );
-			}
-			*/
-
 			mat[12] = 0;
 			mat[13] = 0;
 			mat[14] = 0;

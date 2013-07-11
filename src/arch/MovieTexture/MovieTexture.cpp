@@ -10,9 +10,13 @@
 
 void ForceToAscii( RString &str )
 {
-	for( unsigned i=0; i<str.size(); ++i )
-		if( str[i] < 0x20 || str[i] > 0x7E )
-			str[i] = '?';
+    for (auto &letter : str)
+    {
+        if (letter < 0x20 || letter > 0x7E)
+        {
+            letter = '?';
+        }
+    }
 }
 
 bool RageMovieTexture::GetFourCC( RString fn, RString &handler, RString &type )

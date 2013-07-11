@@ -248,7 +248,7 @@ void InputFilter::MakeButtonStateList( vector<DeviceInput> &aInputOut ) const
 {
 	aInputOut.clear();
 	aInputOut.reserve( g_ButtonStates.size() );
-	for( ButtonStateMap::const_iterator it = g_ButtonStates.begin(); it != g_ButtonStates.end(); ++it )
+	for( auto it = std::begin(g_ButtonStates); it != std::end(g_ButtonStates); ++it )
 	{
 		const ButtonState &bs = it->second;
 		aInputOut.push_back( bs.m_DeviceInput );
@@ -273,7 +273,7 @@ void InputFilter::Update( float fDeltaTime )
 
 	vector<ButtonStateMap::iterator> ButtonsToErase;
 
-    for( map<DeviceButtonPair, ButtonState>::iterator b = g_ButtonStates.begin(); b != g_ButtonStates.end(); ++b )
+    for( auto b = std::begin(g_ButtonStates); b != std::end(g_ButtonStates); ++b )
 	{
 		di.device = b->first.device;
 		di.button = b->first.button;

@@ -26,9 +26,11 @@ bool RandomSample::Load( RString sFilePath, int iMaxToLoad )
 
 void RandomSample::UnloadAll()
 {
-	for( unsigned i=0; i<m_pSamples.size(); i++ )
-		delete m_pSamples[i];
-	m_pSamples.clear();
+    for (auto *sample : m_pSamples)
+    {
+		delete sample;
+	}
+    m_pSamples.clear();
 }
 
 bool RandomSample::LoadSoundDir( RString sDir, int iMaxToLoad )
@@ -59,8 +61,10 @@ bool RandomSample::LoadSoundDir( RString sDir, int iMaxToLoad )
 	random_shuffle( arraySoundFiles.begin(), arraySoundFiles.end() );
 	arraySoundFiles.resize( min( arraySoundFiles.size(), (unsigned)iMaxToLoad ) );
 
-	for( unsigned i=0; i<arraySoundFiles.size(); i++ )
-		LoadSound( sDir + arraySoundFiles[i] );
+    for (auto &file : arraySoundFiles)
+    {
+        LoadSound(sDir + file);
+    }
 
 	return true;
 }

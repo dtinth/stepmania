@@ -144,8 +144,10 @@ public:
 
 	~Preference1D()
 	{
-		for( size_t i=0; i<m_v.size(); ++i )
-			SAFE_DELETE( m_v[i] );
+        for (auto *pref : m_v)
+        {
+            SAFE_DELETE(pref);
+        }
 	}
 	const Preference<T>& operator[]( size_t i ) const
 	{

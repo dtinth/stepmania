@@ -50,16 +50,18 @@ RString StepsTypeToString( StepsType st )
 	s.Replace('-','_');
 
 	bool bCapitalizeNextLetter = true;
-	for( int i=0; i<(int)s.length(); i++ )
-	{
+    for (auto &letter : s)
+    {
 		if( bCapitalizeNextLetter )
 		{
-			s[i] = toupper(s[i]);
+			letter = toupper(letter);
 			bCapitalizeNextLetter = false;
 		}
 
-		if( s[i] == '_' )
-			bCapitalizeNextLetter = true;
+		if( letter == '_' )
+        {
+            bCapitalizeNextLetter = true;
+        }
 	}
 
 	return s;

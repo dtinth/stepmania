@@ -19,8 +19,9 @@ CharacterManager::CharacterManager()
 		LUA->Release( L );
 	}
 
-	for( unsigned i=0; i<m_pCharacters.size(); i++ )
-		SAFE_DELETE( m_pCharacters[i] );
+    for (auto *character : m_pCharacters)
+    {		SAFE_DELETE( character );
+    }
 	m_pCharacters.clear();
 
 	vector<RString> as;
@@ -29,17 +30,17 @@ CharacterManager::CharacterManager()
 	StripMacResourceForks( as );
 
 	bool FoundDefault = false;
-	for( unsigned i=0; i<as.size(); i++ )
+    for (auto const &possible : as)
 	{
 		RString sCharName, sDummy;
-		splitpath(as[i], sDummy, sCharName, sDummy);
+		splitpath(possible, sDummy, sCharName, sDummy);
 		sCharName.MakeLower();
 
 		if( sCharName.CompareNoCase("default")==0 )
 			FoundDefault = true;
 
 		Character* pChar = new Character;
-		if( pChar->Load( as[i] ) )
+		if( pChar->Load( possible ) )
 			m_pCharacters.push_back( pChar );
 		else
 			delete pChar;
@@ -55,18 +56,22 @@ CharacterManager::CharacterManager()
 
 CharacterManager::~CharacterManager()
 {
-	for( unsigned i=0; i<m_pCharacters.size(); i++ )
-		SAFE_DELETE( m_pCharacters[i] );
-
+    for (auto *character : m_pCharacters)
+    {
+		SAFE_DELETE( character );
+    }
 	// Unregister with Lua.
 	LUA->UnsetGlobal( "CHARMAN" );
 }
 
 void CharacterManager::GetCharacters( vector<Character*> &apCharactersOut )
 {
-	for( unsigned i=0; i<m_pCharacters.size(); i++ )
-		if( !m_pCharacters[i]->IsDefaultCharacter() )
-			apCharactersOut.push_back( m_pCharacters[i] );
+    for (auto *character : m_pCharacters)
+	{	if( !character->IsDefaultCharacter() )
+        {
+            apCharactersOut.push_back( character );
+        }
+    }
 }
 
 Character* CharacterManager::GetRandomCharacter()
@@ -81,15 +86,15 @@ Character* CharacterManager::GetRandomCharacter()
 
 Character* CharacterManager::GetDefaultCharacter()
 {
-	for( unsigned i=0; i<m_pCharacters.size(); i++ )
+    for (auto *character : m_pCharacters)
 	{
-		if( m_pCharacters[i]->IsDefaultCharacter() )
-			return m_pCharacters[i];
+		if( character->IsDefaultCharacter() )
+			return character;
 	}
 
 	/* We always have the default character. */
 	FAIL_M("There must be a default character available!");
-	return NULL;
+	return nullptr;
 }
 
 void CharacterManager::DemandGraphics()
@@ -106,13 +111,13 @@ void CharacterManager::UndemandGraphics()
 
 Character* CharacterManager::GetCharacterFromID( RString sCharacterID )
 {
-	for( unsigned i=0; i<m_pCharacters.size(); i++ )
+    for (auto *character : m_pCharacters)
 	{
-		if( m_pCharacters[i]->m_sCharacterID == sCharacterID )
-			return m_pCharacters[i];
+		if( character->m_sCharacterID == sCharacterID )
+			return character;
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 

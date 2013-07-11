@@ -17,11 +17,10 @@ FontManager::FontManager()
 
 FontManager::~FontManager()
 {
-	for( std::map<FontName, Font*>::iterator i = g_mapPathToFont.begin();
-		i != g_mapPathToFont.end(); ++i)
+    for (auto &i : g_mapPathToFont)
 	{
-		const FontName &fn = i->first;
-		Font* pFont = i->second;
+		const FontName &fn = i.first;
+		Font* pFont = i.second;
 		if(pFont->m_iRefCount > 0) {
 			LOG->Trace( "FONT LEAK: '%s', RefCount = %d.", fn.first.c_str(), pFont->m_iRefCount );
 		}
@@ -63,8 +62,8 @@ void FontManager::UnloadFont( Font *fp )
 {
 	CHECKPOINT_M( ssprintf("FontManager::UnloadFont(%s).", fp->path.c_str()) );
 
-	for( std::map<FontName, Font*>::iterator i = g_mapPathToFont.begin();
-		i != g_mapPathToFont.end(); ++i)
+    // Use iter style.
+	for( auto i = g_mapPathToFont.begin(); i != g_mapPathToFont.end(); ++i)
 	{
 		if(i->second != fp)
 			continue;
@@ -83,21 +82,6 @@ void FontManager::UnloadFont( Font *fp )
 
 	FAIL_M( ssprintf("Unloaded an unknown font (%p)", fp) );
 }
-
-/*
-void FontManager::PruneFonts() {
-	for( std::map<FontName, Font*>::iterator i = g_mapPathToFont.begin();i != g_mapPathToFont.end();) {
-		Font *fp=i->second;
-		if(fp->m_iRefCount==0) {
-			delete fp;
-			g_mapPathToFont.erase(i);
-			i = g_mapPathToFont.end();
-		} else {
-			++i;
-		}
-	}
-}
-*/
 
 /*
  * (c) 2001-2003 Chris Danford, Glenn Maynard

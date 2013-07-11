@@ -919,11 +919,9 @@ bool Course::IsRanking() const
 
 	split(THEME->GetMetric("ScreenRanking", "CoursesToShow"), ",", rankingsongs);
 
-	for(unsigned i=0; i < rankingsongs.size(); i++)
-		if (rankingsongs[i].CompareNoCase(m_sPath))
-			return true;
-
-	return false;
+    return std::any_of(std::begin(rankingsongs), std::end(rankingsongs), [&](RString const &ranking) {
+        return ranking.CompareNoCase(m_sPath);
+    });
 }
 
 const CourseEntry *Course::FindFixedSong( const Song *pSong ) const
@@ -940,10 +938,9 @@ const CourseEntry *Course::FindFixedSong( const Song *pSong ) const
 
 void Course::GetAllCachedTrails( vector<Trail *> &out )
 {
-	TrailCache_t::iterator it;
-	for( it = m_TrailCache.begin(); it != m_TrailCache.end(); ++it )
+    for (auto &it : m_TrailCache)
 	{
-		CacheData &cd = it->second;
+		CacheData &cd = it.second;
 		if( !cd.null )
 			out.push_back( &cd.trail );
 	}
@@ -1058,9 +1055,9 @@ public:
 	static int GetCourseEntries( T* p, lua_State *L )
 	{
 		vector<CourseEntry*> v;
-		for( unsigned i = 0; i < p->m_vEntries.size(); ++i )
+        for (auto &entry : p->m_vEntries)
 		{
-			v.push_back(&p->m_vEntries[i]);
+			v.push_back(&entry);
 		}
 		LuaHelpers::CreateTableFromArray<CourseEntry*>( v, L );
 		return 1;

@@ -2880,7 +2880,8 @@ GameManager::~GameManager()
 
 void GameManager::GetStylesForGame( const Game *pGame, vector<const Style*>& aStylesAddTo, bool editor )
 {
-	for( int s=0; pGame->m_apStyles[s]; ++s ) 
+    // TODO: Find a way to range for this. the m_apStyles item is a bit stubborn.
+	for( int s=0; pGame->m_apStyles[s]; ++s )
 	{
 		const Style *style = pGame->m_apStyles[s];
 		if( !editor && !style->m_bUsedForGameplay )	

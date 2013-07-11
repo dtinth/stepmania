@@ -141,13 +141,12 @@ void BGAnimation::LoadFromAniDir( const RString &_sAniDir )
 
 		SortRStringArray( asImagePaths );
 
-		for( unsigned i=0; i<asImagePaths.size(); i++ )
+        for (auto const &sPath : asImagePaths)
 		{
-			const RString sPath = asImagePaths[i];
 			if( Basename(sPath).Left(1) == "_" )
 				continue; // don't directly load files starting with an underscore
 			BGAnimationLayer* pLayer = new BGAnimationLayer;
-			pLayer->LoadFromAniLayerFile( asImagePaths[i] );
+			pLayer->LoadFromAniLayerFile( sPath );
 			AddChild( pLayer );
 		}
 	}

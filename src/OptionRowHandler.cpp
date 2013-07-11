@@ -425,10 +425,8 @@ class OptionRowHandlerListSteps : public OptionRowHandlerList
 
 			vector<Trail*> vTrails;
 			GAMESTATE->m_pCurCourse->GetTrails( vTrails, GAMESTATE->GetCurrentStyle()->m_StepsType );
-			for( unsigned i=0; i<vTrails.size(); i++ )
+            for (auto *pTrail : vTrails)
 			{
-				Trail* pTrail = vTrails[i];
-
 				RString s = CourseDifficultyToLocalizedString( pTrail->m_CourseDifficulty );
 				s += ssprintf( " %d", pTrail->GetMeter() );
 				m_Def.m_vsChoices.push_back( s );
@@ -446,10 +444,8 @@ class OptionRowHandlerListSteps : public OptionRowHandlerList
 			SongUtil::GetSteps( pSong, vpSteps, GAMESTATE->GetCurrentStyle()->m_StepsType );
 			StepsUtil::RemoveLockedSteps( pSong, vpSteps );
 			StepsUtil::SortNotesArrayByDifficulty( vpSteps );
-			for( unsigned i=0; i<vpSteps.size(); i++ )
+            for (auto *pSteps : vpSteps)
 			{
-				Steps* pSteps = vpSteps[i];
-
 				RString s;
 				if (STEPS_USE_CHART_NAME)
 				{
@@ -677,9 +673,8 @@ class OptionRowHandlerListCharacters: public OptionRowHandlerList
 
 		vector<Character*> vpCharacters;
 		CHARMAN->GetCharacters( vpCharacters );
-		for( unsigned i=0; i<vpCharacters.size(); i++ )
+        for (auto *pCharacter : vpCharacters)
 		{
-			Character* pCharacter = vpCharacters[i];
 			RString s = pCharacter->GetDisplayName();
 			s.MakeUpper();
 
@@ -994,8 +989,7 @@ public:
 			 * array is a table representing vbSelectedOut. */
 
 			// All selections default to false.
-			for( unsigned i = 0; i < vbSelOut.size(); ++i )
-				vbSelOut[i] = false;
+            std::fill_n(std::begin(vbSelOut), vbSelOut.size(), false);
 
 			// Create the vbSelectedOut table
 			LuaHelpers::CreateTableFromArrayB( L, vbSelOut );

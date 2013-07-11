@@ -52,9 +52,12 @@ void ModIcon::Set( const RString &_sText )
 {
 	RString sText = _sText;
 
-	for( unsigned i = 0; i < m_vStopWords.size(); i++ )
-		if( sText.EqualsNoCase(m_vStopWords[i]) )
-			sText = "";
+    if (std::any_of(std::begin(m_vStopWords), std::end(m_vStopWords), [&](RString const &stopWord) {
+        return sText.EqualsNoCase(stopWord);
+    }))
+    {
+        sText = "";
+    }
 
 	sText.Replace( " ", "\n" );
 

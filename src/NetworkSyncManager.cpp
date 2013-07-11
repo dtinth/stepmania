@@ -919,6 +919,7 @@ unsigned long NetworkSyncManager::GetCurrentSMBuild( LoadingWindow* ld )
 				if( svResponse[0].find("200") != RString::npos )
 				{
 					// Iterate through every field until an X-SM-Build field is found
+                    // TODO: Look into std::find_if or implement a std::for_each_if/equal
 					for( unsigned h=1; h<svResponse.size(); h++ )
 					{
 						RString::size_type sFieldPos = svResponse[h].find(": ");

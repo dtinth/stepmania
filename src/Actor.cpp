@@ -14,6 +14,7 @@
 #include "ActorUtil.h"
 #include "Preference.h"
 #include <typeinfo>
+#include <numeric>
 
 static Preference<bool> g_bShowMasks("ShowMasks", false);
 
@@ -99,8 +100,10 @@ void Actor::InitState()
 	m_fHorizAlign = 0.5f;
 	m_fVertAlign = 0.5f;
 #if defined(SSC_FUTURES)
-	for( unsigned i = 0; i < m_Effects.size(); ++i )
-		m_Effects[i] = no_effect;
+    for (auto &effect : m_Effects)
+    {
+        effect = no_effect;
+    }
 #else
 	m_Effect =  no_effect;
 #endif
@@ -194,8 +197,10 @@ Actor::Actor( const Actor &cpy ):
 	CPY( m_size );
 	CPY( m_current );
 	CPY( m_start );
-	for( unsigned i = 0; i < cpy.m_Tweens.size(); ++i )
-		m_Tweens.push_back( new TweenStateAndInfo(*cpy.m_Tweens[i]) );
+    for (auto * tween : cpy.m_Tweens)
+    {
+        m_Tweens.push_back(new TweenStateAndInfo(*tween));
+    }
 
 	CPY( m_bFirstUpdate );
 
@@ -203,8 +208,10 @@ Actor::Actor( const Actor &cpy ):
 	CPY( m_fVertAlign );
 #if defined(SSC_FUTURES)
 	// I'm a bit worried about this -aj
-	for( unsigned i = 0; i < cpy.m_Effects.size(); ++i )
-		m_Effects.push_back( (*cpy.m_Effects[i]) );
+    for (auto * effect : cpy.m_Effects)
+    {
+        m_Effects.push_back(effect);
+    }
 #else
 	CPY( m_Effect );
 #endif
@@ -806,9 +813,11 @@ void Actor::BeginTweening( float time, TweenType tt )
 
 void Actor::StopTweening()
 {
-	for( unsigned i = 0; i < m_Tweens.size(); ++i )
-		delete m_Tweens[i];
-	m_Tweens.clear();
+    for (auto *tween : m_Tweens)
+    {
+		delete tween;
+	}
+    m_Tweens.clear();
 }
 
 void Actor::FinishTweening()
@@ -820,10 +829,10 @@ void Actor::FinishTweening()
 
 void Actor::HurryTweening( float factor )
 {
-	for( unsigned i = 0; i < m_Tweens.size(); ++i )
+    for (auto *tween : m_Tweens)
 	{
-		m_Tweens[i]->info.m_fTimeLeftInTween *= factor;
-		m_Tweens[i]->info.m_fTweenTime *= factor;
+		tween->info.m_fTimeLeftInTween *= factor;
+		tween->info.m_fTweenTime *= factor;
 	}
 }
 
@@ -1109,14 +1118,9 @@ void Actor::RunCommands( const LuaReference& cmds, const LuaReference *pParamTab
 
 float Actor::GetTweenTimeLeft() const
 {
-	float tot = 0;
-
-	tot += m_fHibernateSecondsLeft;
-
-	for( unsigned i=0; i<m_Tweens.size(); ++i )
-		tot += m_Tweens[i]->info.m_fTimeLeftInTween;
-
-	return tot;
+    return std::accumulate(std::begin(m_Tweens), std::end(m_Tweens), m_fHibernateSecondsLeft, [](float total, TweenStateAndInfo const *tween) {
+        return total + tween->info.m_fTimeLeftInTween;
+    });
 }
 
 /* This is a hack to change all tween states while leaving existing tweens alone.
@@ -1130,11 +1134,11 @@ void Actor::SetGlobalDiffuseColor( RageColor c )
 {
 	for( int i=0; i<4; i++ ) // color, not alpha
 	{
-		for( unsigned ts = 0; ts < m_Tweens.size(); ++ts )
-		{
-			m_Tweens[ts]->state.diffuse[i].r = c.r; 
-			m_Tweens[ts]->state.diffuse[i].g = c.g; 
-			m_Tweens[ts]->state.diffuse[i].b = c.b; 
+        for (auto *tween : m_Tweens)
+        {
+            tween->state.diffuse[i].r = c.r;
+			tween->state.diffuse[i].g = c.g;
+			tween->state.diffuse[i].b = c.b;
 		}
 		m_current.diffuse[i].r = c.r;
 		m_current.diffuse[i].g = c.g;

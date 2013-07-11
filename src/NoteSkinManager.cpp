@@ -83,9 +83,8 @@ void NoteSkinManager::RefreshNoteSkinData( const Game* pGame )
 	StripMacResourceForks( asNoteSkinNames );
 
 	g_mapNameToData.clear();
-	for( unsigned j=0; j<asNoteSkinNames.size(); j++ )
+    for (auto sName : asNoteSkinNames)
 	{
-		RString sName = asNoteSkinNames[j];
 		sName.MakeLower();
 		LoadNoteSkinData( sName, g_mapNameToData[sName] );
 	}
@@ -155,7 +154,7 @@ void NoteSkinManager::LoadNoteSkinDataRecursive( const RString &sNoteSkinName_, 
 	}
 
 	LuaReference refScript;
-	for( vector<RString>::reverse_iterator dir = data_out.vsDirSearchOrder.rbegin(); dir != data_out.vsDirSearchOrder.rend(); ++dir )
+	for( auto dir = data_out.vsDirSearchOrder.rbegin(); dir != data_out.vsDirSearchOrder.rend(); ++dir )
 	{
 		RString sFile = *dir + "NoteSkin.lua";
 		RString sScript;
@@ -199,10 +198,9 @@ bool NoteSkinManager::DoesNoteSkinExist( const RString &sSkinName )
 {
 	vector<RString> asSkinNames;
 	GetAllNoteSkinNamesForGame( GAMESTATE->m_pCurGame, asSkinNames );
-	for( unsigned i=0; i<asSkinNames.size(); i++ )
-		if( 0==stricmp(sSkinName, asSkinNames[i]) )
-			return true;
-	return false;
+    return std::any_of(std::begin(asSkinNames), std::end(asSkinNames), [&](RString const &skin){
+        return stricmp(sSkinName, skin) == 0;
+    });
 }
 
 bool NoteSkinManager::DoNoteSkinsExistForGame( const Game *pGame )
@@ -217,10 +215,9 @@ void NoteSkinManager::GetAllNoteSkinNamesForGame( const Game *pGame, vector<RStr
 	if( pGame == m_pCurGame )
 	{
 		// Faster:
-		for( map<RString,NoteSkinData>::const_iterator iter = g_mapNameToData.begin();
-		     iter != g_mapNameToData.end(); ++iter )
+        for (auto &iter : g_mapNameToData)
 		{
-			AddTo.push_back( iter->second.sName );
+			AddTo.push_back( iter.second.sName );
 		}
 	}
 	else

@@ -70,8 +70,10 @@ ScreenTestSound::~ScreenTestSound()
 	{
 		/* Delete copied sounds. */
 		vector<RageSound *> &snds = m_sSoundCopies[i];
-		for( unsigned j = 0; j < snds.size(); ++j )
-			delete snds[j];
+        for (auto *sound : snds)
+        {
+            delete sound;
+        }
 	}
 }
 
@@ -158,8 +160,10 @@ bool ScreenTestSound::Input( const InputEventPlus &input )
 				{
 					/* Stop copied sounds. */
 					vector<RageSound *> &snds = m_sSoundCopies[i];
-					for( unsigned j = 0; j < snds.size(); ++j )
-						snds[j]->Stop();
+                    for (auto *sound : snds)
+                    {
+                        sound->Stop();
+                    }
 				}
 				break;
 			}

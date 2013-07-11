@@ -189,10 +189,10 @@ void ScreenSelectMaster::Init()
 		vector<RString> parts;
 		split( order, ",", parts, true );
 
-		for( unsigned part = 0; part < parts.size(); ++part )
+        for (auto &part : parts)
 		{
 			int from, to;
-			if( sscanf( parts[part], "%d:%d", &from, &to ) != 2 )
+			if( sscanf( part, "%d:%d", &from, &to ) != 2 )
 			{
 				LOG->Warn( "%s::OptionOrder%s parse error", m_sName.c_str(), MenuDirToString(dir).c_str() );
 				continue;
@@ -375,11 +375,9 @@ void ScreenSelectMaster::UpdateSelectableChoices()
 
 bool ScreenSelectMaster::AnyOptionsArePlayable() const
 {
-	for( unsigned i = 0; i < m_aGameCommands.size(); ++i )
-		if( m_aGameCommands[i].IsPlayable() )
-			return true;
-
-	return false;
+    return std::any_of(std::begin(m_aGameCommands), std::end(m_aGameCommands), [](GameCommand const &command) {
+        return command.IsPlayable();
+    });
 }
 
 bool ScreenSelectMaster::Move( PlayerNumber pn, MenuDir dir )

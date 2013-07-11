@@ -249,9 +249,9 @@ void RageSoundReader_Chain::ReleaseSound( Sound *s )
 bool RageSoundReader_Chain::SetProperty( const RString &sProperty, float fValue )
 {
 	bool bRet = false;
-	for( unsigned i = 0; i < m_apActiveSounds.size(); ++i )
+    for (auto *sound : m_apActiveSounds)
 	{
-		if( m_apActiveSounds[i]->pSound->SetProperty(sProperty, fValue) )
+		if( sound->pSound->SetProperty(sProperty, fValue) )
 			bRet = true;
 	}
 	return bRet;
@@ -260,22 +260,6 @@ bool RageSoundReader_Chain::SetProperty( const RString &sProperty, float fValue 
 int RageSoundReader_Chain::GetNextSourceFrame() const
 {
 	return m_iCurrentFrame;
-/*	if( m_apActiveSounds.empty() )
-		return m_iCurrentFrame;
-
-	int iPosition = m_apActiveSounds[0]->pSound->GetNextSourceFrame();
-	iPosition += m_apActiveSounds[0]->GetOffsetFrame( GetSampleRate() );
-
-	for( unsigned i = 1; i < m_apActiveSounds.size(); ++i )
-	{
-		int iThisPosition = m_apActiveSounds[i]->pSound->GetNextSourceFrame();
-		iThisPosition += m_apActiveSounds[i]->GetOffsetFrame( GetSampleRate() );
-		if( iThisPosition != iPosition )
-			LOG->Warn( "RageSoundReader_Chain: sound positions moving at different rates" );
-	}
-
-	return iPosition;
-*/
 }
 
 float RageSoundReader_Chain::GetStreamToSourceRatio() const
@@ -385,9 +369,8 @@ int RageSoundReader_Chain::Read( float *pBuffer, int iFrames )
 int RageSoundReader_Chain::GetLength() const
 {
 	int iLength = 0;
-	for( unsigned i = 0; i < m_aSounds.size(); ++i )
+    for (auto const &sound : m_aSounds)
 	{
-		const Sound &sound = m_aSounds[i];
 		const RageSoundReader *pSound = m_apLoadedSounds[sound.iIndex];
 		int iThisLength = pSound->GetLength();
 		if( iThisLength )
@@ -399,9 +382,8 @@ int RageSoundReader_Chain::GetLength() const
 int RageSoundReader_Chain::GetLength_Fast() const
 {
 	int iLength = 0;
-	for( unsigned i = 0; i < m_aSounds.size(); ++i )
+    for (auto const &sound : m_aSounds)
 	{
-		const Sound &sound = m_aSounds[i];
 		const RageSoundReader *pSound = m_apLoadedSounds[sound.iIndex];
 		int iThisLength = pSound->GetLength_Fast();
 		if( iThisLength )

@@ -93,15 +93,19 @@ void CourseUtil::SortCoursePointerArrayByDifficulty( vector<Course*> &vpCoursesI
 
 void CourseUtil::SortCoursePointerArrayByRanking( vector<Course*> &vpCoursesInOut )
 {
-	for( unsigned i=0; i<vpCoursesInOut.size(); i++ )
-		vpCoursesInOut[i]->UpdateCourseStats( GAMESTATE->GetCurrentStyle()->m_StepsType );
+    for (auto *course : vpCoursesInOut)
+    {
+        course->UpdateCourseStats(GAMESTATE->GetCurrentStyle()->m_StepsType);
+    }
 	sort( vpCoursesInOut.begin(), vpCoursesInOut.end(), CompareCoursePointersByRanking );
 }
 
 void CourseUtil::SortCoursePointerArrayByTotalDifficulty( vector<Course*> &vpCoursesInOut )
 {
-	for( unsigned i=0; i<vpCoursesInOut.size(); i++ )
-		vpCoursesInOut[i]->UpdateCourseStats( GAMESTATE->GetCurrentStyle()->m_StepsType );
+	for (auto *course : vpCoursesInOut)
+    {
+        course->UpdateCourseStats(GAMESTATE->GetCurrentStyle()->m_StepsType);
+    }
 	sort( vpCoursesInOut.begin(), vpCoursesInOut.end(), CompareCoursePointersByTotalDifficulty );
 }
 
@@ -173,10 +177,10 @@ void CourseUtil::SortCoursePointerArrayByAvgDifficulty( vector<Course*> &vpCours
 {
 	RageTimer foo;
 	course_sort_val.clear();
-	for( unsigned i = 0; i < vpCoursesInOut.size(); ++i )
+    for (auto *course : vpCoursesInOut)
 	{
-		int iMeter = vpCoursesInOut[i]->GetMeter( GAMESTATE->GetCurrentStyle()->m_StepsType, Difficulty_Medium );
-		course_sort_val[vpCoursesInOut[i]] = ssprintf( "%06i", iMeter );
+		int iMeter = course->GetMeter( GAMESTATE->GetCurrentStyle()->m_StepsType, Difficulty_Medium );
+		course_sort_val[course] = ssprintf( "%06i", iMeter );
 	}
 	sort( vpCoursesInOut.begin(), vpCoursesInOut.end(), CompareCoursePointersByTitle );
 	stable_sort( vpCoursesInOut.begin(), vpCoursesInOut.end(), CompareCoursePointersBySortValueAscending );
@@ -313,9 +317,9 @@ void CourseUtil::AutogenOniFromArtist( const RString &sArtistName, RString sArti
 	CourseEntry e;
 	e.stepsCriteria.m_difficulty = dc;
 
-	for( unsigned i = 0; i < aSongs.size(); ++i )
+    for (auto *song : aSongs)
 	{
-		e.songID.FromSong( aSongs[i] );
+		e.songID.FromSong( song );
 		out.m_vEntries.push_back( e );
 	}
 }

@@ -108,10 +108,8 @@ static void SlideDuplicateDifficulties( Song &p )
 			SongUtil::GetSteps( &p, vSteps, st, dc );
 
 			StepsUtil::SortNotesArrayByDifficulty( vSteps );
-			for( unsigned k=1; k<vSteps.size(); k++ )
+            for (auto *pSteps : vSteps)
 			{
-				Steps* pSteps = vSteps[k];
-
 				Difficulty dc2 = min( (Difficulty)(dc+1), Difficulty_Challenge );
 				pSteps->SetDifficulty( dc2 );
 			}
@@ -291,10 +289,11 @@ BMSSong::BMSSong( Song *song )
 	backgroundsPrecached = false;
 
 	// import existing keysounds from song
-	for( unsigned i = 0; i < out->m_vsKeysoundFile.size(); i ++ )
-	{
-		mapKeysoundToIndex[out->m_vsKeysoundFile[i]] = i;
-	}
+    unsigned i = 0;
+    for (auto const &file : out->m_vsKeysoundFile)
+    {
+        mapKeysoundToIndex[file] = i++;
+    }
 }
 
 Song *BMSSong::GetSong()
@@ -431,14 +430,14 @@ void BMSSong::PrecacheBackgrounds(const RString &dir)
 		GetDirListing( dir + RString("*.") + RString(exts[i]), arrayPossibleFiles );
 	}
 	
-	for( unsigned i = 0; i < arrayPossibleFiles.size(); i++ )
+    for (auto const &file : arrayPossibleFiles)
 	{
 		for( unsigned j = 0; exts[j] != NULL; ++j )
 		{
-			RString fn = SetExtension( arrayPossibleFiles[i], exts[j] );
-			mapBackground[fn] = arrayPossibleFiles[i];
+			RString fn = SetExtension( file, exts[j] );
+			mapBackground[fn] = file;
 		}
-		mapBackground[arrayPossibleFiles[i]] = arrayPossibleFiles[i];
+		mapBackground[file] = file;
 	}
 }
 
@@ -508,73 +507,72 @@ void BMSChartReader::ReadHeaders()
 {
 	lntype = 1;
 	player = 1;
-	for( BMSHeaders::iterator it = in->headers.begin(); it != in->headers.end(); it ++ )
+    for (auto const &it : in->headers)
 	{
-		if( it->first == "#player" )
+		if( it.first == "#player" )
 		{
-			player = atoi(it->second.c_str());
+			player = atoi(it.second.c_str());
 		}
-		else if( it->first == "#title" )
+		else if( it.first == "#title" )
 		{
-			info.title = it->second;
+			info.title = it.second;
 		}
-		else if( it->first == "#artist" )
+		else if( it.first == "#artist" )
 		{
-			info.artist = it->second;
+			info.artist = it.second;
 		}
-		else if( it->first == "#genre" )
+		else if( it.first == "#genre" )
 		{
-			info.genre = it->second;
+			info.genre = it.second;
 		}
-		else if( it->first == "#banner" )
+		else if( it.first == "#banner" )
 		{
-			info.bannerFile = it->second;
+			info.bannerFile = it.second;
 		}
-		else if( it->first == "#backbmp" )
+		else if( it.first == "#backbmp" )
 		{
 			/* XXX: don't use #backbmp if StepsType is beat-*.
 			 * incorrectly used in other simulators; see
 			 * http://www.geocities.jp/red_without_right_stick/backbmp/ */
-			info.backgroundFile = it->second;
+			info.backgroundFile = it.second;
 		}
-		else if( it->first == "#stagefile" )
+		else if( it.first == "#stagefile" )
 		{
-			info.stageFile = it->second;
+			info.stageFile = it.second;
 		}
-		else if( it->first == "#wav" )
+		else if( it.first == "#wav" )
 		{
-			info.musicFile = it->second;
+			info.musicFile = it.second;
 		}
-		else if( it->first == "#bpm" )
+		else if( it.first == "#bpm" )
 		{
-			initialBPM = StringToFloat(it->second);
+			initialBPM = StringToFloat(it.second);
 		}
-		else if( it->first == "#lntype" )
+		else if( it.first == "#lntype" )
 		{
-			int myLntype = atoi(it->second.c_str());
+			int myLntype = atoi(it.second.c_str());
 			if( myLntype == 1 )
 			{
 				lntype = myLntype;
 				// XXX: we only support #LNTYPE 1 for now.
 			}
 		}
-		else if( it->first == "#lnobj" )
+		else if( it.first == "#lnobj" )
 		{
-			lnobj = it->second;
+			lnobj = it.second;
 			lnobj.MakeLower();
 		}
-		else if( it->first == "#playlevel" )
+		else if( it.first == "#playlevel" )
 		{
-			out->SetMeter( StringToInt(it->second) );
+			out->SetMeter( StringToInt(it.second) );
 		}
 	}
 }
 
 void BMSChartReader::CalculateStepsType()
 {
-	for( unsigned i = 0; i < in->objects.size(); i ++ )
+    for (auto &obj : in->objects)
 	{
-		BMSObject &obj = in->objects[i];
 		int channel = obj.channel;
 		if( (11 <= channel && channel <= 19) || (21 <= channel && channel <= 29) )
 		{
@@ -825,9 +823,8 @@ bool BMSChartReader::ReadNoteData()
 	float measureAdjust = 1.0f;
 	int firstNoteMeasure = 0;
 
-	for( unsigned i = 0; i < in->objects.size(); i ++ )
+    for (auto &obj : in->objects)
 	{
-		BMSObject &obj = in->objects[i];
 		int channel = obj.channel;
 		firstNoteMeasure = obj.measure;
 		if( channel == 3 || channel == 8 || channel == 9 ||  channel == 1 || (11 <= channel && channel <= 19) || (21 <= channel && channel <= 29) )
@@ -838,9 +835,8 @@ bool BMSChartReader::ReadNoteData()
 	
 	vector<BMSAutoKeysound> autos;
 
-	for( unsigned i = 0; i < in->objects.size(); i ++ )
+    for (auto &obj : in->objects)
 	{
-		BMSObject &obj = in->objects[i];
 		while( trackMeasure < obj.measure )
 		{
 			trackMeasure ++;
@@ -976,9 +972,8 @@ bool BMSChartReader::ReadNoteData()
 	}
 	
 	int rowsToLook[3] = { 0, -1, 1 };
-	for( unsigned i = 0; i < autos.size(); i ++ )
+    for (auto &ak : autos)
 	{
-		BMSAutoKeysound &ak = autos[i];
 		bool found = false;
 		for( int j = 0; j < 3; j ++ )
 		{
@@ -1075,17 +1070,17 @@ void BMSSongLoader::AddToSong()
     
 	{
 		bool found = false;
-		for( unsigned i = 0; i < loadedSteps.size(); i ++ )
+        for (auto &step : loadedSteps)
 		{
-			if( loadedSteps[i].info.title == "" ) continue;
+			if( step.info.title == "" ) continue;
 			if( !found )
 			{
-				commonSubstring = loadedSteps[i].info.title;
+				commonSubstring = step.info.title;
 				found = true;
 			}
 			else
 			{
-				commonSubstring = FindLargestInitialSubstring( commonSubstring, loadedSteps[i].info.title );
+				commonSubstring = FindLargestInitialSubstring( commonSubstring, step.info.title );
 			}
 		}
 		if( commonSubstring == "" )
@@ -1102,12 +1097,12 @@ void BMSSongLoader::AddToSong()
 		// From here on in, it's nothing but guesswork.
 
 		// Try to figure out the difficulty of each file.
-		for( unsigned i = 0; i < loadedSteps.size(); i ++ )
+        for (auto const &loaded : loadedSteps)
 		{
-			Steps *steps = loadedSteps[i].steps;
+			Steps *steps = loaded.steps;
 			steps->SetDifficulty( Difficulty_Medium );
 
-			RString title = loadedSteps[i].info.title;
+			RString title = loaded.info.title;
 
 			// XXX: Is this really effective if Common Substring parsing failed?
 			if( title != "" ) SearchForDifficulty( title, steps );
@@ -1116,13 +1111,13 @@ void BMSSongLoader::AddToSong()
 	else
 	{
 		// Now, with our fancy little substring, trim the titles and
-		// figure out where each goes.	
-		for( unsigned i = 0; i < loadedSteps.size(); i ++ )
+		// figure out where each goes.
+        for (auto const &loaded: loadedSteps)
 		{
-			Steps *steps = loadedSteps[i].steps;
+			Steps *steps = loaded.steps;
 			steps->SetDifficulty( Difficulty_Medium );
 
-			RString title = loadedSteps[i].info.title;
+			RString title = loaded.info.title;
 
 			if( title != "" && title.size() != commonSubstring.size() )
 			{
@@ -1271,9 +1266,9 @@ bool BMSLoader::LoadFromDir( const RString &sDir, Song &out )
 	ASSERT( arrayBMSFileNames.size() != 0 );
 
 	BMSSongLoader loader( sDir, &out );
-	for( unsigned i=0; i<arrayBMSFileNames.size(); i++ )
+    for (auto const &file : arrayBMSFileNames)
 	{
-		loader.Load( arrayBMSFileNames[i] );
+		loader.Load( file );
 	}
 	loader.AddToSong();
 

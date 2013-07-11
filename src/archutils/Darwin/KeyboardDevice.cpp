@@ -162,10 +162,10 @@ void KeyboardDevice::AddElement( int usagePage, int usage, IOHIDElementCookie co
 
 void KeyboardDevice::Open()
 {
-	for( hash_map<IOHIDElementCookie,DeviceButton>::const_iterator i = m_Mapping.begin(); i != m_Mapping.end(); ++i )
+	for( auto &i : m_Mapping )
 	{
-		//LOG->Trace( "Adding %s to queue, cookie %p", DeviceButtonToString(i->second).c_str(), i->first );
-		AddElementToQueue( i->first );
+		//LOG->Trace( "Adding %s to queue, cookie %p", DeviceButtonToString(i.second).c_str(), i.first );
+		AddElementToQueue( i.first );
 	}
 }
 

@@ -207,7 +207,7 @@ void RageTextureManager::DeleteTexture( RageTexture *t )
 	ASSERT( t->m_iRefCount == 0 );
 	LOG->Trace( "RageTextureManager: deleting '%s'.", t->GetID().filename.c_str() );
 
-    for( map<RageTextureID, RageTexture *>::iterator i = m_mapPathToTexture.begin(); i != m_mapPathToTexture.end(); ++i )
+    for( auto i = m_mapPathToTexture.begin(); i != m_mapPathToTexture.end(); ++i )
 	{
 		if( i->second == t )
 		{
@@ -225,8 +225,7 @@ void RageTextureManager::GarbageCollect( GCType type )
 	// Search for old textures with refcount==0 to unload
 	LOG->Trace("Performing texture garbage collection.");
 
-	for( std::map<RageTextureID, RageTexture*>::iterator i = m_mapPathToTexture.begin();
-		i != m_mapPathToTexture.end(); )
+	for( auto i = m_mapPathToTexture.begin(); i != m_mapPathToTexture.end(); )
 	{
 		std::map<RageTextureID, RageTexture*>::iterator j = i;
 		i++;

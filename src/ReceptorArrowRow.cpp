@@ -32,8 +32,10 @@ void ReceptorArrowRow::Load( const PlayerState* pPlayerState, float fYReverseOff
 
 ReceptorArrowRow::~ReceptorArrowRow()
 {
-	for( unsigned i = 0; i < m_ReceptorArrow.size(); ++i )
-		delete m_ReceptorArrow[i];
+    for (auto *arrow : m_ReceptorArrow)
+    {
+        delete arrow;
+    }
 }
 
 void ReceptorArrowRow::Update( float fDeltaTime )

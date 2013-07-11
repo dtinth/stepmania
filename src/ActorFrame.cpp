@@ -71,9 +71,9 @@ ActorFrame::ActorFrame( const ActorFrame &cpy ):
 	 * the current order of m_SubActors. */
 	if( m_bDeleteChildren )
 	{
-		for( unsigned i = 0; i < cpy.m_SubActors.size(); ++i )
+        for (auto *cpyActor : cpy.m_SubActors)
 		{
-			Actor *pActor = cpy.m_SubActors[i]->Copy();
+			Actor *pActor = cpyActor->Copy();
 			this->AddChild( pActor );
 		}
 	}
@@ -245,20 +245,20 @@ void ActorFrame::DrawPrimitives()
 	{
 		vector<Actor*> subs = m_SubActors;
 		ActorUtil::SortByZPosition( subs );
-		for( unsigned i=0; i<subs.size(); i++ )
+        for (auto *sub : subs)
 		{
-			subs[i]->SetInternalDiffuse(m_pTempState->diffuse[0]);
-			subs[i]->SetInternalGlow(m_pTempState->glow);
-			subs[i]->Draw();
+			sub->SetInternalDiffuse(m_pTempState->diffuse[0]);
+			sub->SetInternalGlow(m_pTempState->glow);
+			sub->Draw();
 		}
 	}
 	else
 	{
-		for( unsigned i=0; i<m_SubActors.size(); i++ )
+        for (auto *actor : m_SubActors)
 		{
-			m_SubActors[i]->SetInternalDiffuse(m_pTempState->diffuse[0]);
-			m_SubActors[i]->SetInternalGlow(m_pTempState->glow);
-			m_SubActors[i]->Draw();
+			actor->SetInternalDiffuse(m_pTempState->diffuse[0]);
+			actor->SetInternalGlow(m_pTempState->glow);
+			actor->Draw();
 		}
 	}
 }
@@ -307,21 +307,27 @@ void ActorFrame::PlayCommandOnLeaves( const RString &sCommandName, const LuaRefe
 
 void ActorFrame::RunCommandsRecursively( const LuaReference& cmds, const LuaReference *pParamTable )
 {
-	for( unsigned i=0; i<m_SubActors.size(); i++ )
-		m_SubActors[i]->RunCommandsRecursively( cmds, pParamTable );
-	Actor::RunCommandsRecursively( cmds, pParamTable );
+    for (auto *actor : m_SubActors)
+	{
+        actor->RunCommandsRecursively( cmds, pParamTable );
+	}
+    Actor::RunCommandsRecursively( cmds, pParamTable );
 }
 
 void ActorFrame::RunCommandsOnChildren( const LuaReference& cmds, const LuaReference *pParamTable )
 {
-	for( unsigned i=0; i<m_SubActors.size(); i++ )
-		m_SubActors[i]->RunCommands( cmds, pParamTable );
+    for (auto *actor : m_SubActors)
+    {
+		actor->RunCommands( cmds, pParamTable );
+    }
 }
 
 void ActorFrame::RunCommandsOnLeaves( const LuaReference& cmds, const LuaReference *pParamTable )
 {
-	for( unsigned i=0; i<m_SubActors.size(); i++ )
-		m_SubActors[i]->RunCommandsOnLeaves( cmds, pParamTable );
+    for (auto *actor : m_SubActors)
+	{
+        actor->RunCommandsOnLeaves( cmds, pParamTable );
+    }
 }
 
 void ActorFrame::UpdateInternal( float fDeltaTime )
@@ -333,9 +339,8 @@ void ActorFrame::UpdateInternal( float fDeltaTime )
 	Actor::UpdateInternal( fDeltaTime );
 
 	// update all sub-Actors
-	for( vector<Actor*>::iterator it=m_SubActors.begin(); it!=m_SubActors.end(); it++ )
+    for (auto pActor : m_SubActors)
 	{
-		Actor *pActor = *it;
 		pActor->Update(fDeltaTime);
 	}
 
@@ -360,9 +365,11 @@ void ActorFrame::UpdateInternal( float fDeltaTime )
 		Actor::cmd();					\
 										\
 		/* set all sub-Actors */		\
-		for( unsigned i=0; i<m_SubActors.size(); i++ ) \
-			m_SubActors[i]->cmd();		\
-	}
+		for (auto *actor : m_SubActors) \
+        { \
+			actor->cmd();		\
+	    } \
+    }
 
 #define PropagateActorFrameCommand1Param( cmd, type ) \
 	void ActorFrame::cmd( type f )		\
@@ -370,9 +377,11 @@ void ActorFrame::UpdateInternal( float fDeltaTime )
 		Actor::cmd( f );				\
 										\
 		/* set all sub-Actors */		\
-		for( unsigned i=0; i<m_SubActors.size(); i++ ) \
-			m_SubActors[i]->cmd( f );	\
-	}
+        for (auto *actor : m_SubActors) \
+		{ \
+            actor->cmd( f );	\
+	    } \
+    }
 
 PropagateActorFrameCommand( FinishTweening )
 PropagateActorFrameCommand1Param( SetZTestMode,		ZTestMode )
@@ -384,9 +393,8 @@ float ActorFrame::GetTweenTimeLeft() const
 {
 	float m = Actor::GetTweenTimeLeft();
 
-	for( unsigned i=0; i<m_SubActors.size(); i++ )
+    for (auto const *pActor : m_SubActors)
 	{
-		const Actor* pActor = m_SubActors[i];
 		m = max(m, m_fHibernateSecondsLeft + pActor->GetTweenTimeLeft());
 	}
 
@@ -407,9 +415,11 @@ void ActorFrame::SortByDrawOrder()
 
 void ActorFrame::DeleteAllChildren()
 {
-	for( unsigned i=0; i<m_SubActors.size(); i++ )
-		delete m_SubActors[i];
-	m_SubActors.clear();
+    for (auto *actor : m_SubActors)
+	{
+        delete actor;
+	}
+    m_SubActors.clear();
 }
 
 void ActorFrame::RunCommands( const LuaReference& cmds, const LuaReference *pParamTable )
@@ -433,9 +443,8 @@ void ActorFrame::HandleMessage( const Message &msg )
 	if( msg.IsBroadcast() )
 		return;
 
-	for( unsigned i=0; i<m_SubActors.size(); i++ ) 
+    for (auto *pActor : m_SubActors)
 	{
-		Actor* pActor = m_SubActors[i];
 		pActor->HandleMessage( msg );
 	}
 }

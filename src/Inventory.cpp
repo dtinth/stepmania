@@ -58,8 +58,8 @@ Inventory::Inventory()
 
 Inventory::~Inventory()
 {
-	for( unsigned i=0; i<m_vpSoundUseItem.size(); i++ )
-		delete m_vpSoundUseItem[i];
+    for (auto *item : m_vpSoundUseItem)
+		delete item;
 	m_vpSoundUseItem.clear();
 }
 

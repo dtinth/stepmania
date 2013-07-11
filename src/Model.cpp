@@ -83,13 +83,11 @@ void Model::LoadPieces( const RString &sMeshesPath, const RString &sMaterialsPat
 	m_pGeometry = MODELMAN->LoadMilkshapeAscii( sMeshesPath, this->MaterialsNeedNormals() );
 
 	// Validate material indices.
-	for( unsigned i = 0; i < m_pGeometry->m_Meshes.size(); ++i )
+    for (auto const &pMesh : m_pGeometry->m_Meshes)
 	{
-		const msMesh *pMesh = &m_pGeometry->m_Meshes[i];
-
-		if( pMesh->nMaterialIndex >= (int) m_Materials.size() )
+		if( pMesh.nMaterialIndex >= (int) m_Materials.size() )
 			RageException::Throw( "Model \"%s\" mesh \"%s\" references material index %i, but there are only %i materials.",
-				sMeshesPath.c_str(), pMesh->sName.c_str(), pMesh->nMaterialIndex, (int)m_Materials.size() );
+				sMeshesPath.c_str(), pMesh.sName.c_str(), pMesh.nMaterialIndex, (int)m_Materials.size() );
 	}
 
 	if( LoadMilkshapeAsciiBones( DEFAULT_ANIMATION_NAME, sBonesPath ) )
@@ -451,10 +449,6 @@ void Model::DrawPrimitives()
 				DISPLAY->SetTexture( TextureUnit_1, mat.diffuse.GetCurrentTexture() ? mat.diffuse.GetCurrentTexture()->GetTexHandle() : 0 );
 				Actor::SetTextureRenderStates();	// set Actor-specified render states
 			}
-			else
-			{
-				// hey why is this otherwise empty else block here? -aj
-			}
 
 			DrawMesh( i );
 		}
@@ -530,15 +524,13 @@ void Model::PlayAnimation( const RString &sAniName, float fPlayRate )
 	}
 
 	// subtract out the bone's resting position
-	for( unsigned i = 0; i < m_pGeometry->m_Meshes.size(); ++i )
+    for (auto &mesh : m_pGeometry->m_Meshes)
 	{
-		msMesh *pMesh = &m_pGeometry->m_Meshes[i];
-		vector<Rage::ModelVertex> &Vertices = pMesh->Vertices;
-		for( unsigned j = 0; j < Vertices.size(); j++ )
+		vector<Rage::ModelVertex> &Vertices = mesh.Vertices;
+		for (auto &vertex : Vertices)
 		{
-			// int iBoneIndex = (pMesh->m_iBoneIndex!=-1) ? pMesh->m_iBoneIndex : bone;
-			Rage::Vector3 &pos = Vertices[j].p;
-			int8_t bone = Vertices[j].bone;
+			Rage::Vector3 &pos = vertex.p;
+			int8_t bone = vertex.bone;
 			if( bone != -1 )
 			{
 				pos.x -= m_vpBones[bone].m_Absolute.m[3][0];
@@ -610,15 +602,14 @@ void Model::SetBones( const msAnimation* pAnimation, float fFrame, vector<myBone
 
 		// search for the adjacent position keys
 		const msPositionKey *pLastPositionKey = NULL, *pThisPositionKey = NULL;
-		for( size_t j = 0; j < pBone->PositionKeys.size(); ++j )
+        for (auto const &positionKey : pBone->PositionKeys)
 		{
-			const msPositionKey *pPositionKey = &pBone->PositionKeys[j];
-			if( pPositionKey->fTime >= fFrame )
+			if( positionKey.fTime >= fFrame )
 			{
-				pThisPositionKey = pPositionKey;
+				pThisPositionKey = &positionKey;
 				break;
 			}
-			pLastPositionKey = pPositionKey;
+			pLastPositionKey = &positionKey;
 		}
 
 		Rage::Vector3 vPos;
@@ -634,15 +625,14 @@ void Model::SetBones( const msAnimation* pAnimation, float fFrame, vector<myBone
 
 		// search for the adjacent rotation keys
 		const msRotationKey *pLastRotationKey = NULL, *pThisRotationKey = NULL;
-		for( size_t j = 0; j < pBone->RotationKeys.size(); ++j )
+        for (auto const &rotationKey : pBone->RotationKeys)
 		{
-			const msRotationKey *pRotationKey = &pBone->RotationKeys[j];
-			if( pRotationKey->fTime >= fFrame )
+			if( rotationKey.fTime >= fFrame )
 			{
-				pThisRotationKey = pRotationKey;
+				pThisRotationKey = &rotationKey;
 				break;
 			}
-			pLastRotationKey = pRotationKey;
+			pLastRotationKey = &rotationKey;
 		}
 
 		Rage::Vector4 vRot;
@@ -718,10 +708,10 @@ void Model::Update( float fDelta )
 	Actor::Update( fDelta );
 	AdvanceFrame( fDelta );
 
-	for( unsigned i = 0; i < m_Materials.size(); ++i )
+    for (auto &material : m_Materials)
 	{
-		m_Materials[i].diffuse.Update( fDelta );
-		m_Materials[i].alpha.Update( fDelta );
+		material.diffuse.Update( fDelta );
+		material.alpha.Update( fDelta );
 	}
 }
 

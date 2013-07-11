@@ -39,8 +39,10 @@ RageInput::RageInput()
 RageInput::~RageInput()
 {
 	// Delete optional devices.
-	for( unsigned i = 0; i < m_InputHandlers.size(); ++i )
-		delete m_InputHandlers[i].m_pDevice;
+    for (auto &handler : m_InputHandlers)
+    {
+        delete handler.m_pDevice;
+    }
 	m_InputHandlers.clear();
 	g_mapDeviceToHandler.clear();
 
@@ -51,8 +53,10 @@ RageInput::~RageInput()
 static LocalizedString NO_INPUT_DEVICES_LOADED ( "RageInput", "No input devices were loaded." );
 void RageInput::LoadDrivers()
 {
-	for( unsigned i = 0; i < m_InputHandlers.size(); ++i )
-		delete m_InputHandlers[i].m_pDevice;
+	for (auto &handler : m_InputHandlers)
+    {
+        delete handler.m_pDevice;
+    }
 	m_InputHandlers.clear();
 	g_mapDeviceToHandler.clear();
 
@@ -60,8 +64,10 @@ void RageInput::LoadDrivers()
 	vector<InputHandler *> apDevices;
 
 	InputHandler::Create( g_sInputDrivers, apDevices );
-	for( unsigned i = 0; i < apDevices.size(); ++i )
-		AddHandler( apDevices[i] );
+    for (auto *device : apDevices)
+    {
+        AddHandler(device);
+    }
 
 	// If no input devices are loaded, the user won't be able to input anything.
 	if( apDevices.size() == 0 )
@@ -71,31 +77,34 @@ void RageInput::LoadDrivers()
 void RageInput::Update()
 {
 	// Update optional devices.
-	for( unsigned i = 0; i < m_InputHandlers.size(); ++i )
-		m_InputHandlers[i].m_pDevice->Update();
+    for (auto &handler : m_InputHandlers)
+    {
+        handler.m_pDevice->Update();
+    }
 }
 
 bool RageInput::DevicesChanged()
 {
 	// Update optional devices.
-	for( unsigned i = 0; i < m_InputHandlers.size(); ++i )
-	{
-		if( m_InputHandlers[i].m_pDevice->DevicesChanged() )
-			return true;
-	}
-	return false;
+    return std::any_of(std::begin(m_InputHandlers), std::end(m_InputHandlers), [](LoadedInputHandler const &handler) {
+        return handler.m_pDevice->DevicesChanged();
+    });
 }
 
 void RageInput::GetDevicesAndDescriptions( vector<InputDeviceInfo>& vDevicesOut ) const
 {
-	for( unsigned i = 0; i < m_InputHandlers.size(); ++i )
-		m_InputHandlers[i].m_pDevice->GetDevicesAndDescriptions( vDevicesOut );
+    for (auto &handler : m_InputHandlers)
+    {
+        handler.m_pDevice->GetDevicesAndDescriptions(vDevicesOut);
+    }
 }
 
 void RageInput::WindowReset()
 {
-	for( unsigned i = 0; i < m_InputHandlers.size(); ++i )
-		m_InputHandlers[i].m_pDevice->WindowReset();
+    for (auto &handler : m_InputHandlers)
+    {
+        handler.m_pDevice->WindowReset();
+    }
 }
 
 void RageInput::AddHandler( InputHandler *pHandler )
@@ -163,10 +172,10 @@ RString RageInput::GetDisplayDevicesString() const
 	GetDevicesAndDescriptions( vDevices );
 
 	vector<RString> vs;
-	for( unsigned i=0; i<vDevices.size(); ++i )
+    for (auto &device : vDevices)
 	{
-		const RString &sDescription = vDevices[i].sDesc;
-		InputDevice id = vDevices[i].id;
+		const RString &sDescription = device.sDesc;
+		InputDevice id = device.id;
 		if( sDescription == "MonkeyKeyboard" )
 			continue;	// hide this
 		vs.push_back( ssprintf("%s (%s)", sDescription.c_str(), InputDeviceToString(id).c_str()) );

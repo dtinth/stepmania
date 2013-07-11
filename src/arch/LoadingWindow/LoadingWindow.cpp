@@ -19,9 +19,9 @@ LoadingWindow *LoadingWindow::Create()
 	ASSERT( DriversToTry.size() != 0 );
 
 	RString Driver;
-	LoadingWindow *ret = NULL;
+	LoadingWindow *ret = nullptr;
 
-	for( unsigned i = 0; ret == NULL && i < DriversToTry.size(); ++i )
+	for( unsigned i = 0; ret == nullptr && i < DriversToTry.size(); ++i )
 	{
 		Driver = DriversToTry[i];
 

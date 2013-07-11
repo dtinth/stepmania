@@ -19,16 +19,16 @@ void SSCLoader::ProcessBPMs( TimingData &out, const RString sParam )
 	vector<RString> arrayBPMExpressions;
 	split( sParam, ",", arrayBPMExpressions );
 	
-	for( unsigned b=0; b<arrayBPMExpressions.size(); b++ )
+    for (auto const &bpm : arrayBPMExpressions)
 	{
 		vector<RString> arrayBPMValues;
-		split( arrayBPMExpressions[b], "=", arrayBPMValues );
+		split( bpm, "=", arrayBPMValues );
 		if( arrayBPMValues.size() != 2 )
 		{
 			LOG->UserLog("Song file",
 				     this->GetSongTitle(),
 				     "has an invalid #BPMS value \"%s\" (must have exactly one '='), ignored.",
-				     arrayBPMExpressions[b].c_str() );
+				     bpm.c_str() );
 			continue;
 		}
 		
@@ -53,16 +53,16 @@ void SSCLoader::ProcessStops( TimingData &out, const RString sParam )
 	vector<RString> arrayStopExpressions;
 	split( sParam, ",", arrayStopExpressions );
 	
-	for( unsigned b=0; b<arrayStopExpressions.size(); b++ )
+    for (auto const &stop : arrayStopExpressions)
 	{
 		vector<RString> arrayStopValues;
-		split( arrayStopExpressions[b], "=", arrayStopValues );
+		split( stop, "=", arrayStopValues );
 		if( arrayStopValues.size() != 2 )
 		{
 			LOG->UserLog("Song file",
 				     this->GetSongTitle(),
 				     "has an invalid #STOPS value \"%s\" (must have exactly one '='), ignored.",
-				     arrayStopExpressions[b].c_str() );
+				     stop.c_str() );
 			continue;
 		}
 		
@@ -85,16 +85,16 @@ void SSCLoader::ProcessWarps( TimingData &out, const RString sParam, const float
 	vector<RString> arrayWarpExpressions;
 	split( sParam, ",", arrayWarpExpressions );
 	
-	for( unsigned b=0; b<arrayWarpExpressions.size(); b++ )
+    for (auto const &warp : arrayWarpExpressions)
 	{
 		vector<RString> arrayWarpValues;
-		split( arrayWarpExpressions[b], "=", arrayWarpValues );
+		split( warp, "=", arrayWarpValues );
 		if( arrayWarpValues.size() != 2 )
 		{
 			LOG->UserLog("Song file",
 				     this->GetSongTitle(),
 				     "has an invalid #WARPS value \"%s\" (must have exactly one '='), ignored.",
-				     arrayWarpExpressions[b].c_str() );
+				     warp.c_str() );
 			continue;
 		}
 		
@@ -122,16 +122,16 @@ void SSCLoader::ProcessLabels( TimingData &out, const RString sParam )
 	vector<RString> arrayLabelExpressions;
 	split( sParam, ",", arrayLabelExpressions );
 	
-	for( unsigned b=0; b<arrayLabelExpressions.size(); b++ )
+    for (auto const &label : arrayLabelExpressions)
 	{
 		vector<RString> arrayLabelValues;
-		split( arrayLabelExpressions[b], "=", arrayLabelValues );
+		split( label, "=", arrayLabelValues );
 		if( arrayLabelValues.size() != 2 )
 		{
 			LOG->UserLog("Song file",
 				     this->GetSongTitle(),
 				     "has an invalid #LABELS value \"%s\" (must have exactly one '='), ignored.",
-				     arrayLabelExpressions[b].c_str() );
+				     label.c_str() );
 			continue;
 		}
 		
@@ -156,17 +156,17 @@ void SSCLoader::ProcessCombos( TimingData &out, const RString line, const int ro
 	vector<RString> arrayComboExpressions;
 	split( line, ",", arrayComboExpressions );
 	
-	for( unsigned f=0; f<arrayComboExpressions.size(); f++ )
+    for (auto const &combo : arrayComboExpressions)
 	{
 		vector<RString> arrayComboValues;
-		split( arrayComboExpressions[f], "=", arrayComboValues );
+		split( combo, "=", arrayComboValues );
 		unsigned size = arrayComboValues.size();
 		if( size < 2 )
 		{
 			LOG->UserLog("Song file",
 				     this->GetSongTitle(),
 				     "has an invalid #COMBOS value \"%s\" (must have at least one '='), ignored.",
-				     arrayComboExpressions[f].c_str() );
+				     combo.c_str() );
 			continue;
 		}
 		const float fComboBeat = StringToFloat( arrayComboValues[0] );
@@ -508,10 +508,10 @@ bool SSCLoader::LoadFromSimfile( const RString &sPath, Song &out, bool bFromCach
 					vector<RString> aFGChangeExpressions;
 					split( sParams[1], ",", aFGChangeExpressions );
 
-					for( unsigned b=0; b<aFGChangeExpressions.size(); b++ )
+                    for (auto const &expression : aFGChangeExpressions)
 					{
 						BackgroundChange change;
-						if( LoadFromBGChangesString( change, aFGChangeExpressions[b] ) )
+						if( LoadFromBGChangesString( change, expression ) )
 							out.AddForegroundChange( change );
 					}
 				}

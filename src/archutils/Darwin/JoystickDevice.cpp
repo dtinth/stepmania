@@ -134,8 +134,10 @@ void JoystickDevice::Open()
 		ADD( x_rot );	ADD( y_rot );	ADD( z_rot );
 		ADD( hat );
 #undef ADD
-		for( hash_map<IOHIDElementCookie,DeviceButton>::const_iterator j = js.mapping.begin(); j != js.mapping.end(); ++j )
-			AddElementToQueue( j->first );
+		for( auto j : js.mapping )
+        {
+			AddElementToQueue( j.first );
+        }
 	}
 }
 

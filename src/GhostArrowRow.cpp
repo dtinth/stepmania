@@ -37,8 +37,8 @@ void GhostArrowRow::Load( const PlayerState* pPlayerState, float fYReverseOffset
 
 GhostArrowRow::~GhostArrowRow()
 {
-	for( unsigned i = 0; i < m_Ghost.size(); ++i )
-		delete m_Ghost[i];
+    for (auto *arrow : m_Ghost)
+		delete arrow;
 }
 
 

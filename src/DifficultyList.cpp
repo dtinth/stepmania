@@ -67,12 +67,12 @@ void StepsDisplayList::LoadFromNode( const XNode* pNode )
 		this->AddChild( &m_CursorFrames[pn] );
 	}
 
-	for( unsigned m = 0; m < m_Lines.size(); ++m )
+    for (auto &line : m_Lines)
 	{
 		// todo: Use Row1, Row2 for names? also m_sName+"Row" -aj
-		m_Lines[m].m_Meter.SetName( "Row" );
-		m_Lines[m].m_Meter.Load( "StepsDisplayListRow", NULL );
-		this->AddChild( &m_Lines[m].m_Meter );
+		line.m_Meter.SetName( "Row" );
+		line.m_Meter.Load( "StepsDisplayListRow", NULL );
+		this->AddChild( &line.m_Meter );
 	}
 
 	UpdatePositions();
@@ -83,10 +83,9 @@ int StepsDisplayList::GetCurrentRowIndex( PlayerNumber pn ) const
 {
 	Difficulty ClosestDifficulty = GAMESTATE->GetClosestShownDifficulty(pn);
 
-	for( unsigned i=0; i<m_Rows.size(); i++ )
+    int i = 0;
+    for (auto const &row : m_Rows)
 	{
-		const Row &row = m_Rows[i];
-
 		if( GAMESTATE->m_pCurSteps[pn] == NULL )
 		{
 			if( row.m_dc == ClosestDifficulty )
@@ -97,6 +96,7 @@ int StepsDisplayList::GetCurrentRowIndex( PlayerNumber pn ) const
 			if( GAMESTATE->m_pCurSteps[pn].Get() == row.m_Steps )
 				return i;
 		}
+        ++i;
 	}
 
 	return 0;
@@ -173,17 +173,25 @@ void StepsDisplayList::UpdatePositions()
 	int pos = 0;
 	for( int i=0; i<(int) Rows.size(); i++ ) // foreach row
 	{
-		float ItemPosition;
-		if( i < first_start )
-			ItemPosition = -0.5f;
-		else if( i < first_end )
-			ItemPosition = (float) pos++;
-		else if( i < second_start )
-			ItemPosition = halfsize - 0.5f;
-		else if( i < second_end )
-			ItemPosition = (float) pos++;
-		else
-			ItemPosition = (float) total - 0.5f;
+		float const ItemPosition = [&]() {
+            if (i < first_start)
+            {
+                return -0.5f;
+            }
+            if (i < first_end)
+            {
+                return static_cast<float>(pos++);
+            }
+            if (i < second_start)
+            {
+                return halfsize - 0.5f;
+            }
+            if (i < second_end)
+            {
+                return static_cast<float>(pos++);
+            }
+            return total - 0.5f;
+        }();
 
 		Row &row = Rows[i];
 

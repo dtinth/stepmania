@@ -105,7 +105,7 @@ RageSurface *RageSurfaceUtils::LoadFile( const RString &sPath, RString &error, b
 		FileTypes.erase( format );
 	}
 
-	for( set<RString>::iterator it = FileTypes.begin(); bKeepTrying && it != FileTypes.end(); ++it )
+	for( auto it = FileTypes.begin(); bKeepTrying && it != FileTypes.end(); ++it )
 	{
 		RageSurface *ret = TryOpenFile( sPath, bHeaderOnly, error, *it, bKeepTrying );
 		if( ret )

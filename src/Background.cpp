@@ -273,16 +273,19 @@ bool BackgroundImpl::Layer::CreateBackground( const Song *pSong, const Backgroun
 	vector<LuaThreadVariable *> vsResolvedRef;
 	vsResolvedRef.resize( vsToResolve.size() );
 
+    if (vsToResolve.size() > 0 && vsToResolve[0].empty())
+    {
+        return false;
+    }
+    
 	for( unsigned i=0; i<vsToResolve.size(); i++ )
 	{
 		const RString &sToResolve = vsToResolve[i];
 
 		if( sToResolve.empty() )
 		{
-			if( i == 0 )
-				return false;
-			else
-				continue;
+            // we already handled the ToResolve case above.
+			continue;
 		}
 
 		/* Look for vsFileToResolve[i] in:
@@ -376,9 +379,10 @@ bool BackgroundImpl::Layer::CreateBackground( const Song *pSong, const Backgroun
 	ASSERT( pActor != NULL );
 	m_BGAnimations[bd] = pActor;
 
-	for( unsigned i=0; i<vsResolvedRef.size(); i++ )
-		delete vsResolvedRef[i];
-
+    for (auto *resolved : vsResolvedRef)
+    {
+		delete resolved;
+    }
 	return true;
 }
 
@@ -663,9 +667,10 @@ void BackgroundImpl::LoadFromSong( const Song* pSong )
 	}
 
 	// At this point, we shouldn't have any BGChanges to "".  "" is an invalid name.
-	for( unsigned i=0; i<mainlayer.m_aBGChanges.size(); i++ )
-		ASSERT( !mainlayer.m_aBGChanges[i].m_def.m_sFile1.empty() );
-
+    for (auto const &change : mainlayer.m_aBGChanges)
+    {
+		ASSERT_M( !change.m_def.m_sFile1.empty(), "No background change should be empty at this point." );
+    }
 	// Re-sort.
 	BackgroundUtil::SortBackgroundChangesArray( mainlayer.m_aBGChanges );
 

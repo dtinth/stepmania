@@ -119,9 +119,8 @@ RageFileDriverMem::RageFileDriverMem():
 
 RageFileDriverMem::~RageFileDriverMem()
 {
-	for( unsigned i = 0; i < m_Files.size(); ++i )
+    for (auto *pFile : m_Files)
 	{
-		RageFileObjMemFile *pFile = m_Files[i];
 		RageFileObjMemFile::ReleaseReference( pFile );
 	}
 }

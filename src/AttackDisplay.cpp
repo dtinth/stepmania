@@ -52,12 +52,12 @@ void AttackDisplay::Init( const PlayerState* pPlayerState )
 			attacks.insert( asAttacks[att] );
 	}
 
-	for( set<RString>::const_iterator it = attacks.begin(); it != attacks.end(); ++it )
+    for (auto const &it : attacks)
 	{
-		const RString path = THEME->GetPathG( "AttackDisplay", GetAttackPieceName( *it ), true );
+		const RString path = THEME->GetPathG( "AttackDisplay", GetAttackPieceName( it ), true );
 		if( path == "" )
 		{
-			LOG->Trace( "Couldn't find \"%s\"", GetAttackPieceName( *it ).c_str() );
+			LOG->Trace( "Couldn't find \"%s\"", GetAttackPieceName( it ).c_str() );
 			continue;
 		}
 
@@ -78,10 +78,8 @@ void AttackDisplay::Update( float fDelta )
 		return;
 	// don't handle this again
 
-	for( unsigned s=0; s<m_pPlayerState->m_ActiveAttacks.size(); s++ )
+    for (auto const &attack : m_pPlayerState->m_ActiveAttacks)
 	{
-		const Attack& attack = m_pPlayerState->m_ActiveAttacks[s];
-
 		if( attack.fStartSecond >= 0 )
 			continue; /* hasn't started yet */
 

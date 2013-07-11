@@ -1566,16 +1566,17 @@ void GameState::GetRankingFeats( PlayerNumber pn, vector<RankingFeat> &asFeatsOu
 			// high score markers.
 			vector<SongAndSteps> vSongAndSteps;
 
-			for( unsigned i=0; i<STATSMAN->m_vPlayedStageStats.size(); i++ )
+            unsigned i = 0;
+            for (auto const &stat : STATSMAN->m_vPlayedStageStats)
 			{
-				CHECKPOINT_M( ssprintf("%u/%i", i, (int)STATSMAN->m_vPlayedStageStats.size() ) );
+				CHECKPOINT_M( ssprintf("%u/%i", i++, (int)STATSMAN->m_vPlayedStageStats.size() ) );
 				SongAndSteps sas;
-				ASSERT( !STATSMAN->m_vPlayedStageStats[i].m_vpPlayedSongs.empty() );
-				sas.pSong = STATSMAN->m_vPlayedStageStats[i].m_vpPlayedSongs[0];
+				ASSERT( !stat.m_vpPlayedSongs.empty() );
+				sas.pSong = stat.m_vpPlayedSongs[0];
 				ASSERT( sas.pSong != NULL );
-				if( STATSMAN->m_vPlayedStageStats[i].m_player[pn].m_vpPossibleSteps.empty() )
+				if( stat.m_player[pn].m_vpPossibleSteps.empty() )
 					continue;
-				sas.pSteps = STATSMAN->m_vPlayedStageStats[i].m_player[pn].m_vpPossibleSteps[0];
+				sas.pSteps = stat.m_player[pn].m_vpPossibleSteps[0];
 				ASSERT( sas.pSteps != NULL );
 				vSongAndSteps.push_back( sas );
 			}
@@ -1587,10 +1588,10 @@ void GameState::GetRankingFeats( PlayerNumber pn, vector<RankingFeat> &asFeatsOu
 			vSongAndSteps.erase(toDelete, vSongAndSteps.end());
 
 			CHECKPOINT;
-			for( unsigned i=0; i<vSongAndSteps.size(); i++ )
+            for (auto &songStepPair : vSongAndSteps)
 			{
-				Song* pSong = vSongAndSteps[i].pSong;
-				Steps* pSteps = vSongAndSteps[i].pSteps;
+				Song* pSong = songStepPair.pSong;
+				Steps* pSteps = songStepPair.pSteps;
 
 				// Find Machine Records
 				{
@@ -2404,9 +2405,8 @@ public:
 				vpStepsToShow.push_back( pSteps );
 		}
 
-		for( unsigned i=0; i<vpStepsToShow.size(); i++ )
+        for (auto const *pSteps : vpStepsToShow)
 		{
-			const Steps* pSteps = vpStepsToShow[i];
 			RString sDifficulty = CustomDifficultyToLocalizedString( GetCustomDifficulty( pSteps->m_StepsType, pSteps->GetDifficulty(), CourseType_Invalid ) );
 
 			lua_pushstring( L, sDifficulty );

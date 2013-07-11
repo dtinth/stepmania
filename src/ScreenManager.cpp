@@ -260,16 +260,20 @@ ScreenManager::~ScreenManager()
 	LOG->UnmapLog( "ScreenManager::TopScreen" );
 
 	SAFE_DELETE( g_pSharedBGA );
-	for( unsigned i=0; i<g_ScreenStack.size(); i++ )
+    for (auto &screen : g_ScreenStack)
 	{
-		if( g_ScreenStack[i].m_bDeleteWhenDone )
-			SAFE_DELETE( g_ScreenStack[i].m_pScreen );
-	}
+		if( screen.m_bDeleteWhenDone )
+        {
+			SAFE_DELETE( screen.m_pScreen );
+        }
+    }
 	g_ScreenStack.clear();
 	DeletePreparedScreens();
-	for( unsigned i=0; i<g_OverlayScreens.size(); i++ )
-		SAFE_DELETE( g_OverlayScreens[i] );
-	g_OverlayScreens.clear();
+    for (auto *screen : g_OverlayScreens)
+    {
+		SAFE_DELETE( screen );
+	}
+    g_OverlayScreens.clear();
 
 	// Unregister with Lua.
 	LUA->UnsetGlobal( "SCREENMAN" );
@@ -288,17 +292,19 @@ void ScreenManager::ThemeChanged()
 	m_soundScreenshot.Load( THEME->GetPathS("Common","screenshot") );
 
 	// unload overlay screens
-	for( unsigned i=0; i<g_OverlayScreens.size(); i++ )
-		SAFE_DELETE( g_OverlayScreens[i] );
+	for (auto *screen : g_OverlayScreens)
+    {
+		SAFE_DELETE( screen );
+	}
 	g_OverlayScreens.clear();
 
 	// reload overlay screens
 	RString sOverlays = THEME->GetMetric( "Common","OverlayScreens" );
 	vector<RString> asOverlays;
 	split( sOverlays, ",", asOverlays );
-	for( unsigned i=0; i<asOverlays.size(); i++ )
+    for (auto &overlay : asOverlays)
 	{
-		Screen *pScreen = MakeNewScreen( asOverlays[i] );
+		Screen *pScreen = MakeNewScreen( overlay );
 		LuaThreadVariable var2( "LoadingScreen", pScreen->GetName() );
 		pScreen->BeginScreen();
 		g_OverlayScreens.push_back( pScreen );
@@ -317,17 +323,19 @@ void ScreenManager::ThemeChanged()
 void ScreenManager::ReloadOverlayScreens()
 {
 	// unload overlay screens
-	for( unsigned i=0; i<g_OverlayScreens.size(); i++ )
-		SAFE_DELETE( g_OverlayScreens[i] );
+    for (auto *screen : g_OverlayScreens)
+    {
+        SAFE_DELETE(screen);
+    }
 	g_OverlayScreens.clear();
 
 	// reload overlay screens
 	RString sOverlays = THEME->GetMetric( "Common","OverlayScreens" );
 	vector<RString> asOverlays;
 	split( sOverlays, ",", asOverlays );
-	for( unsigned i=0; i<asOverlays.size(); i++ )
+    for (auto &overlay : asOverlays)
 	{
-		Screen *pScreen = MakeNewScreen( asOverlays[i] );
+		Screen *pScreen = MakeNewScreen( overlay );
 		LuaThreadVariable var2( "LoadingScreen", pScreen->GetName() );
 		pScreen->BeginScreen();
 		g_OverlayScreens.push_back( pScreen );
@@ -449,13 +457,17 @@ void ScreenManager::Update( float fDeltaTime )
 
 	// Update screens.
 	{
-		for( unsigned i=0; i<g_ScreenStack.size(); i++ )
-			g_ScreenStack[i].m_pScreen->Update( fDeltaTime );
+        for (auto &screen : g_ScreenStack)
+        {
+            screen.m_pScreen->Update(fDeltaTime);
+        }
 
 		g_pSharedBGA->Update( fDeltaTime );
 
-		for( unsigned i=0; i<g_OverlayScreens.size(); i++ )
-			g_OverlayScreens[i]->Update( fDeltaTime );	
+        for (auto *screen : g_OverlayScreens)
+        {
+            screen->Update(fDeltaTime);
+        }
 	}
 
 	/* The music may be started on the first update. If we're reading from a CD,
@@ -490,12 +502,15 @@ void ScreenManager::Draw()
 	g_pSharedBGA->Draw();
 	DISPLAY->CameraPopMatrix();
 
-	for( unsigned i=0; i<g_ScreenStack.size(); i++ )	// Draw all screens bottom to top
-		g_ScreenStack[i].m_pScreen->Draw();
-
-	for( unsigned i=0; i<g_OverlayScreens.size(); i++ )
-		g_OverlayScreens[i]->Draw();
-
+    for (auto &screen : g_ScreenStack) // Draw all screens bottom to top.
+    {
+        screen.m_pScreen->Draw();
+    }
+    
+    for (auto *screen : g_OverlayScreens)
+    {
+		screen->Draw();
+    }
 
 	DISPLAY->EndFrame();
 }
@@ -508,9 +523,8 @@ void ScreenManager::Input( const InputEventPlus &input )
 
 	// First, give overlay screens a shot at the input.  If Input returns
 	// true, it handled the input, so don't pass it further.
-	for( unsigned i = 0; i < g_OverlayScreens.size(); ++i )
+    for (auto *pScreen : g_OverlayScreens)
 	{
-		Screen *pScreen = g_OverlayScreens[i];
 		if( pScreen->Input(input) )
 			return;
 	}

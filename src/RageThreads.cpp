@@ -477,10 +477,8 @@ void RageMutex::MarkLockedMutex()
 	vector<const RageMutex *> before;
 
 	/* Iterate over all locked mutexes that are locked by this thread. */
-	for( unsigned i = 0; i < g_MutexList->size(); ++i )
+    for (auto const *mutex : *g_MutexList)
 	{
-		const RageMutex *mutex = (*g_MutexList)[i];
-		
 		if( mutex->m_UniqueID == this->m_UniqueID )
 			continue;
 
@@ -511,9 +509,8 @@ void RageMutex::MarkLockedMutex()
 
 		/* All IDs which must be locked before mutex must also be locked before
 		 * this.  That is, if A < mutex, because mutex < this, mark A < this. */
-		for( i = 0; i < g_MutexList->size(); ++i )
+        for (auto const *mutex2 : *g_MutexList)
 		{
-			const RageMutex *mutex2 = (*g_MutexList)[i];
 			if( g_MutexesBefore[mutex->m_UniqueID][mutex2->m_UniqueID] )
 				before.push_back( mutex2 );
 		}
@@ -529,55 +526,11 @@ RageMutex::RageMutex( const RString &name ):
 	m_LockedBy(GetInvalidThreadId()), m_LockCnt(0)
 {
 
-/*	if( g_FreeMutexIDs == NULL )
-	{
-		g_FreeMutexIDs = new set<int>;
-		for( int i = 0; i < MAX_MUTEXES; ++i )
-			g_FreeMutexIDs->insert( i );
-	}
-
-	if( g_FreeMutexIDs->empty() )
-	{
-		ASSERT_M( g_MutexList, "!g_FreeMutexIDs but !g_MutexList?" ); // doesn't make sense to be out of mutexes yet never created any
-		RString s;
-		for( unsigned i = 0; i < g_MutexList->size(); ++i )
-		{
-			if( i )
-				s += ", ";
-			s += ssprintf( "\"%s\"", (*g_MutexList)[i]->GetName().c_str() );
-		}
-		LOG->Trace( "%s", s.c_str() );
-		FAIL_M( ssprintf("MAX_MUTEXES exceeded creating \"%s\"", name.c_str() ) );
-	}
-
-	m_UniqueID = *g_FreeMutexIDs->begin();
-
-	g_FreeMutexIDs->erase( g_FreeMutexIDs->begin() );
-
-	if( g_MutexList == NULL )
-		g_MutexList = new vector<RageMutex*>;
-
-	g_MutexList->push_back( this );
-*/
 }
 
 RageMutex::~RageMutex()
 {
 	delete m_pMutex;
-/*
-	vector<RageMutex*>::iterator it = find( g_MutexList->begin(), g_MutexList->end(), this );
-	ASSERT( it != g_MutexList->end() );
-	g_MutexList->erase( it );
-	if( g_MutexList->empty() )
-	{
-		delete g_MutexList;
-		g_MutexList = NULL;
-	}
-
-	delete m_pMutex;
-
-	g_FreeMutexIDs->insert( m_UniqueID );
-*/
 }
 
 void RageMutex::Lock()

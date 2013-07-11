@@ -105,9 +105,9 @@ void BPMDisplay::SetBPMRange( const DisplayBpms &bpms )
 	const vector<float> &BPMS = bpms.vfBpms;
 
 	bool AllIdentical = true;
-	for( unsigned i = 0; i < BPMS.size(); ++i )
+	for( unsigned i = 1; i < BPMS.size(); ++i )
 	{
-		if( i > 0 && BPMS[i] != BPMS[i-1] )
+		if( BPMS[i] != BPMS[i-1] )
 			AllIdentical = false;
 	}
 
@@ -115,10 +115,10 @@ void BPMDisplay::SetBPMRange( const DisplayBpms &bpms )
 	{
 		int MinBPM = INT_MAX;
 		int MaxBPM = INT_MIN;
-		for( unsigned i = 0; i < BPMS.size(); ++i )
+        for (auto const &curBPM : BPMS)
 		{
-			MinBPM = min( MinBPM, (int)lrintf(BPMS[i]) );
-			MaxBPM = max( MaxBPM, (int)lrintf(BPMS[i]) );
+			MinBPM = min( MinBPM, (int)lrintf(curBPM) );
+			MaxBPM = max( MaxBPM, (int)lrintf(curBPM) );
 		}
 		if( MinBPM == MaxBPM )
 		{
@@ -134,11 +134,11 @@ void BPMDisplay::SetBPMRange( const DisplayBpms &bpms )
 	}
 	else
 	{
-		for( unsigned i = 0; i < BPMS.size(); ++i )
+        for (auto & curBPM : BPMS)
 		{
-			m_BPMS.push_back(BPMS[i]);
-			if( BPMS[i] != -1 )
-				m_BPMS.push_back(BPMS[i]); // hold
+			m_BPMS.push_back(curBPM);
+			if( curBPM != -1 )
+				m_BPMS.push_back(curBPM); // hold
 		}
 
 		m_iCurrentBPM = min(1u, m_BPMS.size()); // start on the first hold

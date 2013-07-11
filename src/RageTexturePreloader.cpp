@@ -16,9 +16,9 @@ RageTexturePreloader &RageTexturePreloader::operator=( const RageTexturePreloade
 
 	UnloadAll();
 
-	for( unsigned i = 0; i < rhs.m_apTextures.size(); ++i )
+    for (auto *other : rhs.m_apTextures)
 	{
-		RageTexture *pTexture = TEXTUREMAN->CopyTexture( rhs.m_apTextures[i] );
+		RageTexture *pTexture = TEXTUREMAN->CopyTexture( other );
 		m_apTextures.push_back( pTexture );
 	}
 
@@ -38,8 +38,10 @@ void RageTexturePreloader::UnloadAll()
 	if( TEXTUREMAN == NULL )
 		return;
 
-	for( unsigned i = 0; i < m_apTextures.size(); ++i )
-		TEXTUREMAN->UnloadTexture( m_apTextures[i] );
+    for (auto *tex : m_apTextures)
+    {
+        TEXTUREMAN->UnloadTexture(tex);
+    }
 	m_apTextures.clear();
 }
 

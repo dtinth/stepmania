@@ -702,12 +702,12 @@ void GameCommand::ApplySelf( const vector<PlayerNumber> &vpns ) const
 	if( m_pCharacter )
 		for (auto const &pn : vpns)
 			GAMESTATE->m_pCurCharacters[pn] = m_pCharacter;
-	for( map<RString,RString>::const_iterator i = m_SetEnv.begin(); i != m_SetEnv.end(); i++ )
+	for (auto const &i : m_SetEnv)
 	{
 		Lua *L = LUA->Get();
 		GAMESTATE->m_Environment->PushSelf(L);
-		lua_pushstring( L, i->first );
-		lua_pushstring( L, i->second );
+		lua_pushstring( L, i.first );
+		lua_pushstring( L, i.second );
 		lua_settable( L, -3 );
 		lua_pop( L, 1 );
 		LUA->Release(L);

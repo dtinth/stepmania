@@ -202,14 +202,14 @@ void ScreenOptions::InitMenu( const vector<OptionRowHandler*> &vHands )
 {
 	LOG->Trace( "ScreenOptions::InitMenu()" );
 
-	for( unsigned i=0; i<m_pRows.size(); i++ )
-	{
-		m_frameContainer.RemoveChild( m_pRows[i] );
-		SAFE_DELETE( m_pRows[i] );
-	}
+    for (auto *row : m_pRows)
+    {
+        m_frameContainer.RemoveChild(row);
+        SAFE_DELETE(row);
+    }
 	m_pRows.clear();
 
-	for( unsigned r=0; r<vHands.size(); r++ )		// foreach row
+    for (auto *handler : vHands) // foreach row
 	{
 		m_pRows.push_back( new OptionRow(&m_OptionRowTypeNormal) );
 		OptionRow &row = *m_pRows.back();
@@ -218,7 +218,7 @@ void ScreenOptions::InitMenu( const vector<OptionRowHandler*> &vHands )
 
 		bool bFirstRowGoesDown = m_OptionsNavigation==NAV_TOGGLE_THREE_KEY;
 
-		row.LoadNormal( vHands[r], bFirstRowGoesDown );
+		row.LoadNormal( handler, bFirstRowGoesDown );
 	}
 
 	if( SHOW_EXIT_ROW )
@@ -352,8 +352,10 @@ void ScreenOptions::TweenOffScreen()
 ScreenOptions::~ScreenOptions()
 {
 	LOG->Trace( "ScreenOptions::~ScreenOptions()" );
-	for( unsigned i=0; i<m_pRows.size(); i++ )
-		SAFE_DELETE( m_pRows[i] );
+    for (auto *row : m_pRows)
+    {
+        SAFE_DELETE(row);
+    }
 }
 
 RString ScreenOptions::GetExplanationText( int iRow ) const
@@ -713,8 +715,10 @@ void ScreenOptions::AfterChangeValueOrRow( PlayerNumber pn )
 		/* After changing a value, position underlines. Do this for both players,
 		 * since underlines for both players will change with m_bOneChoiceForAllPlayers. */
 		FOREACH_HumanPlayer( p )
+        {
 			m_pRows[r]->PositionUnderlines( p );
-		m_pRows[r]->PositionIcons( pn );
+		}
+        m_pRows[r]->PositionIcons( pn );
 		m_pRows[r]->SetRowHasFocus( pn, GAMESTATE->IsHumanPlayer(pn) && iCurRow == (int)r );
 		m_pRows[r]->UpdateEnabledDisabled();
 	}
@@ -1324,19 +1328,6 @@ void ScreenOptions::MenuUpDown( const InputEventPlus &input, int iDir )
 	}
 }
 
-/*
-void ScreenOptions::SetOptionRowFromName( const RString& nombre )
-	{
-		FOREACH_PlayerNumber( pn )
-		{
-			for( unsigned i=0; i<m_pRows.size(); i++ )
-			{
-				if( m_pRows[i]->GetRowTitle() == nombre) && m_pRows[i]->GetRowDef().IsEnabledForPlayer(p) )
-					MoveRowAbsolute(pn,i)
-			}
-		}
-	}
-*/
 // lua start
 #include "LuaBinding.h"
 

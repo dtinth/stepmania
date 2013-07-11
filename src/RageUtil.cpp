@@ -191,10 +191,14 @@ bool IsAnInt( const RString &s )
 	if( !s.size() )
 		return false;
 
-	for( size_t i=0; i < s.size(); ++i )
-		if( s[i] < '0' || s[i] > '9' )
+    // can't utilize the none_of function: RString can use multiple types.
+    for (auto &letter : s)
+    {
+		if( letter < '0' || letter > '9' )
+        {
 			return false;
-
+        }
+    }
 	return true;
 }
 
@@ -203,10 +207,14 @@ bool IsHexVal( const RString &s )
 	if( !s.size() )
 		return false;
 
-	for( size_t i=0; i < s.size(); ++i )
-		if( !(s[i] >= '0' && s[i] <= '9') && 
-			!(toupper(s[i]) >= 'A' && toupper(s[i]) <= 'F'))
-			return false;
+    for (auto &letter : s)
+    {
+        if (!(letter >= '0' && letter <= '9') &&
+            !(toupper(letter) >= 'A' && toupper(letter) <= 'F'))
+        {
+            return false;
+        }
+    }
 
 	return true;
 }
@@ -1130,21 +1138,21 @@ bool CalcLeastSquares( const vector< pair<float, float> > &vCoordinates,
 	if( vCoordinates.empty() ) 
 		return false;
 	float fSumXX = 0.0f, fSumXY = 0.0f, fSumX = 0.0f, fSumY = 0.0f;
-	for( unsigned i = 0; i < vCoordinates.size(); ++i ) 
+    for (auto &coord : vCoordinates)
 	{
-		fSumXX += vCoordinates[i].first * vCoordinates[i].first;
-		fSumXY += vCoordinates[i].first * vCoordinates[i].second;
-		fSumX += vCoordinates[i].first;
-		fSumY += vCoordinates[i].second;
+		fSumXX += coord.first * coord.first;
+		fSumXY += coord.first * coord.second;
+		fSumX += coord.first;
+		fSumY += coord.second;
 	}
 	const float fDenominator = vCoordinates.size() * fSumXX - fSumX * fSumX;
 	fSlope = (vCoordinates.size() * fSumXY - fSumX * fSumY) / fDenominator;
 	fIntercept = (fSumXX * fSumY - fSumX * fSumXY) / fDenominator;
 
 	fError = 0.0f;
-	for( unsigned i = 0; i < vCoordinates.size(); ++i ) 
+    for (auto &coord : vCoordinates)
 	{
-		const float fOneError = fIntercept + fSlope * vCoordinates[i].first - vCoordinates[i].second;
+		const float fOneError = fIntercept + fSlope * coord.first - coord.second;
 		fError += fOneError * fOneError;
 	}
 	fError /= vCoordinates.size();
@@ -1221,9 +1229,8 @@ bool EndsWith( const RString &sTestThis, const RString &sEnding )
 RString URLEncode( const RString &sStr )
 {
 	RString sOutput;
-	for( unsigned k = 0; k < sStr.size(); k++ )
+    for (auto t : sStr)
 	{
-		char t = sStr[k];
 		if( t >= '!' && t <= 'z' )
 			sOutput += t;
 		else

@@ -816,9 +816,9 @@ int ConfOption::GetEffects() const
 ConfOption *ConfOption::Find( RString name )
 {
 	InitializeConfOptions();
-	for( unsigned i = 0; i < g_ConfOptions.size(); ++i )
+    for (auto & option : g_ConfOptions)
 	{
-		ConfOption *opt = &g_ConfOptions[i];
+		ConfOption *opt = &option;
 		RString match(opt->name);
 		if( match.CompareNoCase(name) )
 			continue;

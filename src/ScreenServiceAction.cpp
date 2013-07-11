@@ -266,9 +266,9 @@ static void SyncFiles( const RString &sFromDir, const RString &sToDir, const RSt
 	vector<RString> vsToDelete;
 	GetAsNotInBs( vsFilesDest, vsFilesSource, vsToDelete );
 
-	for( unsigned i = 0; i < vsToDelete.size(); ++i )
+    for (auto &toDel : vsToDelete)
 	{
-		RString sFile = sToDir + vsToDelete[i];
+		RString sFile = sToDir + toDel;
 		LOG->Trace( "Delete \"%s\"", sFile.c_str() );
 
 		if( FILEMAN->Remove(sFile) )
@@ -277,10 +277,10 @@ static void SyncFiles( const RString &sFromDir, const RString &sToDir, const RSt
 			++iNumFailed;
 	}
 
-	for( unsigned i = 0; i < vsFilesSource.size(); ++i )
+    for (auto &source : vsFilesSource)
 	{
-		RString sFileFrom = sFromDir + vsFilesSource[i];
-		RString sFileTo = sToDir + vsFilesSource[i];
+		RString sFileFrom = sFromDir + source;
+		RString sFileTo = sToDir + source;
 		LOG->Trace( "Copy \"%s\"", sFileFrom.c_str() );
 		bool bOverwrite = DoesFileExist( sFileTo );
 		bool bSuccess = FileCopy( sFileFrom, sFileTo );

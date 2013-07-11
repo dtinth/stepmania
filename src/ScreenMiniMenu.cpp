@@ -80,9 +80,8 @@ void ScreenMiniMenu::LoadMenu( const MenuDef* pDef )
 	s_viLastAnswers.resize( m_vMenuRows.size() );
 	// Convert from m_vMenuRows to vector<OptionRowDefinition>
 	vector<OptionRowHandler*> vHands;
-	for( unsigned r=0; r<m_vMenuRows.size(); r++ )
+    for (auto const &mr : m_vMenuRows)
 	{
-		const MenuRowDef &mr = m_vMenuRows[r];
 		OptionRowHandler *pHand = OptionRowHandlerUtil::MakeSimple( mr );
 		vHands.push_back( pHand );
 	}

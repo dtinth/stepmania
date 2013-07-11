@@ -349,24 +349,41 @@ void BGAnimationLayer::LoadFromAniLayerFile( const RString& sPath )
 	sHint.MakeLower();
 
 	if( sHint.find("cyclecolor") != RString::npos )
-		for( unsigned i=0; i<m_SubActors.size(); i++ )
-			m_SubActors[i]->SetEffectRainbow( 5 );
-
+    {
+        for (auto *actor : m_SubActors)
+        {
+            actor->SetEffectRainbow( 5 );
+        }
+    }
 	if( sHint.find("cyclealpha") != RString::npos )
-		for( unsigned i=0; i<m_SubActors.size(); i++ )
-			m_SubActors[i]->SetEffectDiffuseShift( 2, RageColor(1,1,1,1), RageColor(1,1,1,0) );
-
+	{
+        for (auto *actor : m_SubActors)
+        {
+            actor->SetEffectDiffuseShift( 2, RageColor(1,1,1,1), RageColor(1,1,1,0) );
+        }
+    }
 	if( sHint.find("startonrandomframe") != RString::npos )
-		for( unsigned i=0; i<m_SubActors.size(); i++ )
-			m_SubActors[i]->SetState( RandomInt(m_SubActors[i]->GetNumStates()) );
+	{
+        for (auto *actor : m_SubActors)
+        {
+			actor->SetState( RandomInt(actor->GetNumStates()) );
+        }
+    }
 
 	if( sHint.find("dontanimate") != RString::npos )
-		for( unsigned i=0; i<m_SubActors.size(); i++ )
-			m_SubActors[i]->StopAnimating();
-
+    {
+        for (auto *actor : m_SubActors)
+		{
+            actor->StopAnimating();
+        }
+    }
 	if( sHint.find("add") != RString::npos )
-		for( unsigned i=0; i<m_SubActors.size(); i++ )
-			m_SubActors[i]->SetBlendMode( BLEND_ADD );
+	{
+        for (auto *actor : m_SubActors)
+        {
+			actor->SetBlendMode( BLEND_ADD );
+        }
+    }
 }
 
 void BGAnimationLayer::LoadFromNode( const XNode* pNode )
@@ -534,9 +551,11 @@ void BGAnimationLayer::LoadFromNode( const XNode* pNode )
 	pNode->GetAttrValue( "StartOnRandomFrame", bStartOnRandomFrame );
 	if( bStartOnRandomFrame )
 	{
-		for( unsigned i=0; i<m_SubActors.size(); i++ )
-			m_SubActors[i]->SetState( RandomInt(m_SubActors[i]->GetNumStates()) );
-	}
+        for (auto *actor : m_SubActors)
+		{
+            actor->SetState( RandomInt(actor->GetNumStates()) );
+        }
+    }
 }
 
 void BGAnimationLayer::UpdateInternal( float fDeltaTime )
@@ -550,13 +569,14 @@ void BGAnimationLayer::UpdateInternal( float fDeltaTime )
 	case TYPE_SPRITE:
 		if( m_fTexCoordVelocityX || m_fTexCoordVelocityY )
 		{
-			for( unsigned i=0; i<m_SubActors.size(); i++ )
+            for (auto *actor : m_SubActors)
 			{
 				// XXX: there's no longer any guarantee that this is a Sprite
-				Sprite *pSprite = (Sprite*)m_SubActors[i];
-				pSprite->StretchTexCoords(
-					fDeltaTime*m_fTexCoordVelocityX,
-					fDeltaTime*m_fTexCoordVelocityY );
+                Sprite *sprite = dynamic_cast<Sprite *>(actor);
+                if (sprite != nullptr)
+                {
+                    sprite->StretchTexCoords(fDeltaTime * m_fTexCoordVelocityX, fDeltaTime * m_fTexCoordVelocityY);
+                }
 			}
 		}
 		break;

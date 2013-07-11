@@ -360,10 +360,10 @@ static void InitCharAliases()
 		CharAliases[aliases[n].str] = iCodepoint;
 	}
 
-	for(aliasmap::const_iterator i = CharAliases.begin(); i != CharAliases.end(); ++i)
+    for (auto const &i : CharAliases)
 	{
-		RString from = i->first;
-		RString to = WcharToUTF8(i->second);
+		RString from = i.first;
+		RString to = WcharToUTF8(i.second);
 		from.MakeLower();
 		CharAliasRepl[from] = to;
 	}

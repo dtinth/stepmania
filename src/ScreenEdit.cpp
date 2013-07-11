@@ -5482,12 +5482,12 @@ void ScreenEdit::SetupCourseAttacks()
 		{
 			GAMESTATE->m_pCurCourse->RevertFromDisk();	// Remove this and have a separate reload key?
 
-			for( unsigned e = 0; e < GAMESTATE->m_pCurCourse->m_vEntries.size(); ++e )
+            for (auto &entry : GAMESTATE->m_pCurCourse->m_vEntries)
 			{
-				if( GAMESTATE->m_pCurCourse->m_vEntries[e].songID.ToSong() != m_pSong )
+				if( entry.songID.ToSong() != m_pSong )
 					continue;
 
-				Attacks = GAMESTATE->m_pCurCourse->m_vEntries[e].attacks;
+				Attacks = entry.attacks;
 				break;
 			}
 		}
@@ -5883,10 +5883,8 @@ void ScreenEdit::DoHelp()
 {
 	g_EditHelp.rows.clear();
 
-	for( unsigned i=0; i<ARRAYLEN(g_EditHelpLines); ++i )
+    for (auto const &hl : g_EditHelpLines)
 	{
-		const EditHelpLine &hl = g_EditHelpLines[i];
-
 		if( !IsMapped(hl.veb[0],m_EditMappingsDeviceInput) )
 			continue;
 

@@ -334,9 +334,8 @@ XNode* HighScoreList::CreateNode() const
 	if( HighGrade != Grade_NoData )
 		pNode->AppendChild( "HighGrade", GradeToString(HighGrade) );
 
-	for( unsigned i=0; i<vHighScores.size(); i++ )
+    for (auto const &hs : vHighScores)
 	{
-		const HighScore &hs = vHighScores[i];
 		pNode->AppendChild( hs.CreateNode() );
 	}
 
@@ -386,7 +385,7 @@ void HighScoreList::RemoveAllButOneOfEachName()
     // use iter version
     for (auto i = std::begin(vHighScores); i != std::end(vHighScores); ++i)
 	{
-		for( vector<HighScore>::iterator j = i+1; j != vHighScores.end(); j++ )
+		for( auto j = i+1; j != vHighScores.end(); j++ )
 		{
 			if( i->GetName() == j->GetName() )
 			{
@@ -491,10 +490,11 @@ public:
 	static int GetHighScores( T* p, lua_State *L )
 	{
 		lua_newtable(L);
-		for( int i = 0; i < (int) p->vHighScores.size(); ++i )
+        int i = 0;
+        for (auto &score : p->vHighScores)
 		{
-			p->vHighScores[i].PushSelf(L);
-			lua_rawseti( L, -2, i+1 );
+			score.PushSelf(L);
+			lua_rawseti( L, -2, ++i );
 		}
 
 		return 1;

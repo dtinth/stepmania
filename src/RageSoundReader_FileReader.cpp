@@ -143,7 +143,7 @@ RageSoundReader_FileReader *RageSoundReader_FileReader::OpenFile( RString filena
 		FileTypes.erase( format );
 	}
 
-	for( set<RString>::iterator it = FileTypes.begin(); bKeepTrying && it != FileTypes.end(); ++it )
+	for( auto it = FileTypes.begin(); bKeepTrying && it != FileTypes.end(); ++it )
 	{
 		RageSoundReader_FileReader *NewSample = TryOpenFile( pFile->Copy(), error, *it, bKeepTrying );
 		if( NewSample )

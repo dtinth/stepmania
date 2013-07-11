@@ -115,9 +115,8 @@ int RageSoundReader_Merge::SetPosition( int iFrame )
 	m_iNextSourceFrame = iFrame;
 
 	int iRet = 0;
-	for( int i = 0; i < (int) m_aSounds.size(); ++i )
+    for (auto *pSound : m_aSounds)
 	{
-		RageSoundReader *pSound = m_aSounds[i];
 		int iThisRet = pSound->SetPosition( iFrame );
 		if( iThisRet == -1 )
 			return -1;
@@ -131,9 +130,9 @@ int RageSoundReader_Merge::SetPosition( int iFrame )
 bool RageSoundReader_Merge::SetProperty( const RString &sProperty, float fValue )
 {
 	bool bRet = false;
-	for( unsigned i = 0; i < m_aSounds.size(); ++i )
+	for (auto *sound : m_aSounds)
 	{
-		if( m_aSounds[i]->SetProperty(sProperty, fValue) )
+		if( sound->SetProperty(sProperty, fValue) )
 			bRet = true;
 	}
 
@@ -291,16 +290,19 @@ int RageSoundReader_Merge::Read( float *pBuffer, int iFrames )
 int RageSoundReader_Merge::GetLength() const
 {
 	int iLength = 0;
-	for( unsigned i = 0; i < m_aSounds.size(); ++i )
-		iLength = max( iLength, m_aSounds[i]->GetLength() );
-	return iLength;
+    for (auto *sound : m_aSounds)
+    {
+		iLength = max( iLength, sound->GetLength() );
+	}
+    return iLength;
 }
 
 int RageSoundReader_Merge::GetLength_Fast() const
 {
 	int iLength = 0;
-	for( unsigned i = 0; i < m_aSounds.size(); ++i )
-		iLength = max( iLength, m_aSounds[i]->GetLength_Fast() );
+    for (auto *sound : m_aSounds)
+	{	iLength = max( iLength, sound->GetLength_Fast() );
+    }
 	return iLength;
 }
 

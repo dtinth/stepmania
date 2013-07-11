@@ -94,8 +94,10 @@ void MouseDevice::Open()
 #define ADD(x) if( m.x ) AddElementToQueue( m.x )
 	ADD( x_axis );	ADD( y_axis );	ADD( z_axis );
 #undef ADD
-	for( hash_map<IOHIDElementCookie,DeviceButton>::const_iterator i = m_Mapping.begin(); i != m_Mapping.end(); ++i )
-		AddElementToQueue( i->first );
+	for( auto &i : m_Mapping )
+    {
+		AddElementToQueue( i.first );
+    }
 }
 
 void MouseDevice::GetButtonPresses( vector<DeviceInput>& vPresses, IOHIDElementCookie cookie, int value, const RageTimer& now ) const

@@ -93,10 +93,10 @@ RageLog::~RageLog()
 	const RString AdditionalLog = GetAdditionalLog();
 	vector<RString> AdditionalLogLines;
 	split( AdditionalLog, "\n", AdditionalLogLines );
-	for( unsigned i = 0; i < AdditionalLogLines.size(); ++i )
+    for (auto &line : AdditionalLogLines)
 	{
-		Trim( AdditionalLogLines[i] );
-		this->Info( "%s", AdditionalLogLines[i].c_str() );
+		Trim( line );
+		this->Info( "%s", line.c_str() );
 	}
 
 	Flush();
@@ -253,10 +253,8 @@ void RageLog::Write( int where, const RString &sLine )
 	if( where & WRITE_LOUD )
 		sWarning = "WARNING: ";
 
-	for( unsigned i = 0; i < asLines.size(); ++i )
+    for (auto &sStr : asLines)
 	{
-		RString &sStr = asLines[i];
-
 		if( sWarning.size() )
 			sStr.insert( 0, sWarning );
 

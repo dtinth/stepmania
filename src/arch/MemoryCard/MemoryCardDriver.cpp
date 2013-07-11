@@ -30,12 +30,12 @@ bool MemoryCardDriver::NeedUpdate( bool bMount )
 	if( bMount )
 	{
 		/* Check if any devices need a write test. */
-		for( unsigned i=0; i<m_vDevicesLastSeen.size(); i++ )
-		{
-			const UsbStorageDevice &d = m_vDevicesLastSeen[i];
-			if( d.m_State == UsbStorageDevice::STATE_CHECKING )
-				return true;
-		}
+        if (std::any_of(std::begin(m_vDevicesLastSeen), std::end(m_vDevicesLastSeen), [](UsbStorageDevice const &device) {
+            return device.m_State == UsbStorageDevice::STATE_CHECKING;
+        }))
+        {
+            return true;
+        }
 	}
 
 	return USBStorageDevicesChanged();
@@ -60,14 +60,12 @@ bool MemoryCardDriver::DoOneUpdate( bool bMount, vector<UsbStorageDevice>& vStor
 	/* When we first see a device, regardless of bMount, just return it as CHECKING,
 	 * so the main thread knows about the device.  On the next call where bMount is
 	 * true, check it. */
-	for( unsigned i=0; i<vStorageDevicesOut.size(); i++ )
+    for (auto &d : vStorageDevicesOut)
 	{
-		UsbStorageDevice &d = vStorageDevicesOut[i];
-
 		/* If this device was just connected (it wasn't here last time), set it to
 		 * CHECKING and return it, to let the main thread know about the device before
 		 * we start checking. */
-		vector<UsbStorageDevice>::iterator iter = find( vOld.begin(), vOld.end(), d );
+		auto iter = find( vOld.begin(), vOld.end(), d );
 		if( iter == vOld.end() )    // didn't find
 		{
 			LOG->Trace( "New device entering CHECKING: %s", d.sDevice.c_str() );

@@ -31,6 +31,7 @@
 		2B01A79B16C881E500D5CFD2 /* RageDisplay_OGL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2B01A79416C881E500D5CFD2 /* RageDisplay_OGL.cpp */; };
 		2B01A79C16C881E500D5CFD2 /* RageDisplay_OGL.h in Headers */ = {isa = PBXBuildFile; fileRef = 2B01A79516C881E500D5CFD2 /* RageDisplay_OGL.h */; };
 		2B01A79D16C881E500D5CFD2 /* RageDisplay_OGL.h in Headers */ = {isa = PBXBuildFile; fileRef = 2B01A79516C881E500D5CFD2 /* RageDisplay_OGL.h */; };
+		2B159BC2178B93F2001D4F7E /* ModelTypes.h in Headers */ = {isa = PBXBuildFile; fileRef = AA6EFFC004770FFD005F316C /* ModelTypes.h */; };
 		2B17AB7713980FF6001AE57D /* png.c in Sources */ = {isa = PBXBuildFile; fileRef = 2BC6130D13773C8E00CC8BBD /* png.c */; };
 		2B17AB7813980FF6001AE57D /* png.h in Headers */ = {isa = PBXBuildFile; fileRef = 2BC6130E13773C8E00CC8BBD /* png.h */; };
 		2B17AB7913980FF6001AE57D /* pngconf.h in Headers */ = {isa = PBXBuildFile; fileRef = 2BC6130F13773C8E00CC8BBD /* pngconf.h */; };
@@ -5547,6 +5548,7 @@
 				B773AE6E140AAB1800C68DDD /* SpecialDirs.h in Headers */,
 				2B01A79816C881E500D5CFD2 /* RageDisplay_OGL_Helpers.h in Headers */,
 				2B01A79C16C881E500D5CFD2 /* RageDisplay_OGL.h in Headers */,
+				2B159BC2178B93F2001D4F7E /* ModelTypes.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

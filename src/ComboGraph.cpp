@@ -51,18 +51,20 @@ void ComboGraph::Set( const StageStats &s, const PlayerStageStats &pss )
 
 	// Find the largest combo.
 	int iMaxComboSize = 0;
-	for( unsigned i = 0; i < pss.m_ComboList.size(); ++i )
-		iMaxComboSize = max( iMaxComboSize, pss.m_ComboList[i].GetStageCnt() );
+    for (auto const &combo : pss.m_ComboList)
+    {
+        iMaxComboSize = max( iMaxComboSize, combo.GetStageCnt() );
+    }
 
-	for( unsigned i = 0; i < pss.m_ComboList.size(); ++i )
+    int curCombo = 0;
+    for (auto const &combo : pss.m_ComboList)
 	{
-		const PlayerStageStats::Combo_t &combo = pss.m_ComboList[i];
 		if( combo.GetStageCnt() < MinComboSizeToShow )
 			continue; // too small
 
 		const bool bIsMax = (combo.GetStageCnt() == iMaxComboSize);
 
-		LOG->Trace( "combo %i is %f+%f of %f", i, combo.m_fStartSecond, combo.m_fSizeSeconds, fLastSecond );
+		LOG->Trace( "combo %i is %f+%f of %f", curCombo++, combo.m_fStartSecond, combo.m_fSizeSeconds, fLastSecond );
 		Actor *pSprite = bIsMax? m_pMaxCombo->Copy() : m_pNormalCombo->Copy();
 
 		const float fStart = SCALE( combo.m_fStartSecond, fFirstSecond, fLastSecond, 0.0f, 1.0f );
@@ -76,9 +78,8 @@ void ComboGraph::Set( const StageStats &s, const PlayerStageStats &pss )
 		this->AddChild( pSprite );
 	}
 
-	for( unsigned i = 0; i < pss.m_ComboList.size(); ++i )
+    for (auto const &combo : pss.m_ComboList)
 	{
-		const PlayerStageStats::Combo_t &combo = pss.m_ComboList[i];
 		if( combo.GetStageCnt() < MinComboSizeToShow )
 			continue; // too small
 	

@@ -267,9 +267,10 @@ Player::~Player()
 {
 	SAFE_DELETE( m_pAttackDisplay );
 	SAFE_DELETE( m_pNoteField );
-	for( unsigned i = 0; i < m_vpHoldJudgment.size(); ++i )
-		SAFE_DELETE( m_vpHoldJudgment[i] );
-	SAFE_DELETE( m_pJudgedRows );
+    for (auto *judgment : m_vpHoldJudgment)
+    {
+		SAFE_DELETE( judgment );
+	}SAFE_DELETE( m_pJudgedRows );
 	SAFE_DELETE( m_pIterNeedsTapJudging );
 	SAFE_DELETE( m_pIterNeedsHoldJudging );
 	SAFE_DELETE( m_pIterUncrossedRows );
@@ -1470,9 +1471,8 @@ void Player::UpdateHoldNotes( int iSongRow, float fDeltaTime, vector<TrackRowTap
 
 void Player::ApplyWaitingTransforms()
 {
-	for( unsigned j=0; j<m_pPlayerState->m_ModsToApply.size(); j++ )
+    for (auto const &mod : m_pPlayerState->m_ModsToApply)
 	{
-		const Attack &mod = m_pPlayerState->m_ModsToApply[j];
 		PlayerOptions po;
 		// if re-adding noteskin changes, blank out po.m_sNoteSkin. -aj
 		po.FromString( mod.sModifiers );
@@ -3007,20 +3007,21 @@ void Player::CrossedRows( int iLastRowCrossed, const RageTimer &now )
 	 * TODO: Move this to a separate function. */
 	if( HOLD_CHECKPOINTS && m_pPlayerState->m_PlayerController != PC_AUTOPLAY )
 	{
-		int iCheckpointFrequencyRows = ROWS_PER_BEAT/2;
-		if( CHECKPOINTS_USE_TICKCOUNTS )
-		{
-			int tickCurrent = m_Timing->GetTickcountAtRow( iLastRowCrossed );
-			// There are some charts that don't want tickcounts involved at all.
-			iCheckpointFrequencyRows = (tickCurrent > 0 ? ROWS_PER_BEAT / tickCurrent : 0);
-		}
-		else if( CHECKPOINTS_USE_TIME_SIGNATURES )
-		{
-			TimeSignatureSegment * tSignature = m_Timing->GetTimeSignatureSegmentAtRow( iLastRowCrossed );
-
-			// Most songs are in 4/4 time. The frequency for checking tick counts should reflect that.
-			iCheckpointFrequencyRows = ROWS_PER_BEAT * tSignature->GetDen() / (tSignature->GetNum() * 4);
-		}
+        int const iCheckpointFrequencyRows = [&]() {
+            if (CHECKPOINTS_USE_TICKCOUNTS)
+            {
+                int tickCurrent = m_Timing->GetTickcountAtRow(iLastRowCrossed);
+                // There are some charts that don't want tickcounts involved at all.
+                return tickCurrent > 0 ? ROWS_PER_BEAT / tickCurrent : 0;
+            }
+            if (CHECKPOINTS_USE_TIME_SIGNATURES)
+            {
+                TimeSignatureSegment *sig = m_Timing->GetTimeSignatureSegmentAtRow(iLastRowCrossed);
+                // Most songs are in 4/4 time. The frequency for checking tick counts should reflect that.
+                return ROWS_PER_BEAT * sig->GetDen() / (sig->GetNum() * 4);
+            }
+            return ROWS_PER_BEAT / 2;
+        }();
 
 		if( iCheckpointFrequencyRows > 0 )
 		{

@@ -107,8 +107,10 @@ static vector<RageFileReadAheadThread *> g_apReadAheads;
 void RageFileManagerReadAhead::Init() { }
 void RageFileManagerReadAhead::Shutdown()
 {
-	for( size_t i = 0; i < g_apReadAheads.size(); ++i )
-		delete g_apReadAheads[i];
+    for (auto *readAhead : g_apReadAheads)
+    {
+        delete readAhead;
+    }
 	g_apReadAheads.clear();
 }
 

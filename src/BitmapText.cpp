@@ -181,9 +181,9 @@ void BitmapText::BuildChars()
 	m_size.x = 0;
 
 	m_iLineWidths.clear();
-	for( unsigned l=0; l<m_wTextLines.size(); l++ ) // for each line
+    for (auto const &textLine : m_wTextLines)  // for each line
 	{
-		m_iLineWidths.push_back(m_pFont->GetLineWidthInSourcePixels( m_wTextLines[l] ));
+		m_iLineWidths.push_back(m_pFont->GetLineWidthInSourcePixels( textLine ));
 		m_size.x = max( m_size.x, m_iLineWidths.back() );
 	}
 
@@ -221,10 +221,10 @@ void BitmapText::BuildChars()
 		float fX = SCALE( m_fHorizAlign, 0.0f, 1.0f, -m_size.x/2.0f, +m_size.x/2.0f - iLineWidth );
 		int iX = lrintf( fX );
 
-		for( unsigned j = 0; j < sLine.size(); ++j )
+        for (auto const &letter : sLine)
 		{
 			RageSpriteVertex v[4];
-			const glyph &g = m_pFont->GetGlyph( sLine[j] );
+			const glyph &g = m_pFont->GetGlyph( letter );
 
 			if( m_pFont->IsRightToLeft() )
 				iX -= g.m_iHadvance;
@@ -403,17 +403,16 @@ void BitmapText::SetTextInternal()
 		vector<RString> asLines;
 		split( m_sText, "\n", asLines, false );
 
-		for( unsigned line = 0; line < asLines.size(); ++line )
+        for (auto const &line : asLines)
 		{
 			vector<RString> asWords;
-			split( asLines[line], " ", asWords );
+			split( line, " ", asWords );
 
 			RString sCurLine;
 			int iCurLineWidth = 0;
 
-			for( unsigned i=0; i<asWords.size(); i++ )
+            for (auto const &sWord : asWords)
 			{
-				const RString &sWord = asWords[i];
 				int iWidthWord = m_pFont->GetLineWidthInSourcePixels( RStringToWstring(sWord) );
 
 				if( sCurLine.empty() )
@@ -559,9 +558,11 @@ void BitmapText::DrawPrimitives()
 
 			RageColor c = m_ShadowColor;
 			c.a *= m_pTempState->diffuse[0].a;
-			for( unsigned i=0; i<m_aVertices.size(); i++ )
-				m_aVertices[i].c = c;
-			DrawChars( false );
+            for (auto &vertex : m_aVertices)
+            {
+				vertex.c = c;
+			}
+            DrawChars( false );
 
 			DISPLAY->PopMatrix();
 		}
@@ -571,8 +572,10 @@ void BitmapText::DrawPrimitives()
 		{
 			RageColor c = m_StrokeColor;
 			c.a *= m_pTempState->diffuse[0].a;
-			for( unsigned i=0; i<m_aVertices.size(); i++ )
-				m_aVertices[i].c = c;
+            for (auto &vertex : m_aVertices)
+			{
+                vertex.c = c;
+            }
 			DrawChars( true );
 		}
 

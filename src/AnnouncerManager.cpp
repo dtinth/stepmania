@@ -49,10 +49,9 @@ bool AnnouncerManager::DoesAnnouncerExist( RString sAnnouncerName )
 
 	vector<RString> asAnnouncerNames;
 	GetAnnouncerNames( asAnnouncerNames );
-	for( unsigned i=0; i<asAnnouncerNames.size(); i++ )
-		if( 0==stricmp(sAnnouncerName, asAnnouncerNames[i]) )
-			return true;
-	return false;
+    return std::any_of(std::begin(asAnnouncerNames), std::end(asAnnouncerNames), [sAnnouncerName](RString const &iterName) {
+        return sAnnouncerName.CompareNoCase(iterName) == 0;
+    });
 }
 
 RString AnnouncerManager::GetAnnouncerDirFromName( RString sAnnouncerName )

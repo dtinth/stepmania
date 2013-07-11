@@ -689,16 +689,17 @@ int FindLongestOverlappingHoldNoteForAnyTrack( const NoteData &in, int iRow )
 // For every row in "in" with a tap or hold on any track, enable the specified tracks in "out".
 void LightTransformHelper( const NoteData &in, NoteData &out, const vector<int> &aiTracks )
 {
-	for( unsigned i = 0; i < aiTracks.size(); ++i )
-		ASSERT_M( aiTracks[i] < out.GetNumTracks(), ssprintf("%i, %i", aiTracks[i], out.GetNumTracks()) );
-
+    for (auto &track : aiTracks)
+    {
+		ASSERT_M( track < out.GetNumTracks(), ssprintf("%i, %i", track, out.GetNumTracks()) );
+    }
 	FOREACH_NONEMPTY_ROW_ALL_TRACKS( in, r )
 	{
 		/* If any row starts a hold note, find the end of the hold note, and keep searching
 		 * until we've extended to the end of the latest overlapping hold note. */
 		int iHoldStart = r;
 		int iHoldEnd = -1;
-		while(1)
+		while(true)
 		{
 			int iMaxTailRow = FindLongestOverlappingHoldNoteForAnyTrack( in, r );
 			if( iMaxTailRow == -1 )
@@ -710,9 +711,8 @@ void LightTransformHelper( const NoteData &in, NoteData &out, const vector<int> 
 		if( iHoldEnd != -1 )
 		{
 			// If we found a hold note, add it to all tracks.
-			for( unsigned i = 0; i < aiTracks.size(); ++i )
+            for (auto &t : aiTracks)
 			{
-				int t = aiTracks[i];
 				out.AddHoldNote( t, iHoldStart, iHoldEnd, TAP_ORIGINAL_HOLD_HEAD );
 			}
 			continue;
@@ -722,9 +722,8 @@ void LightTransformHelper( const NoteData &in, NoteData &out, const vector<int> 
 			continue;
 
 		// Enable every track in the output.
-		for( unsigned i = 0; i < aiTracks.size(); ++i )
+        for (auto &t : aiTracks)
 		{
-			int t = aiTracks[i];
 			out.SetTapNote( t, r, TAP_ORIGINAL_TAP );
 		}
 	}
@@ -2239,20 +2238,13 @@ void NoteDataUtil::RemoveStretch( NoteData &inout, StepsType st, int iStartIndex
 		if( inout.GetNumTapNonEmptyTracks(r) < 2 )
 			continue;
 
-		bool bPassedOneMask = false;
-		for( unsigned i=0; i<vpValidRowsToCheck.size(); i++ )
-		{
-			const ValidRow &vr = *vpValidRowsToCheck[i];
-			if( NoteDataUtil::RowPassesValidMask(inout,r,vr.bValidMask) )
-			{
-				bPassedOneMask = true;
-				break;
-			}
-		}
-
-		if( !bPassedOneMask )
-			RemoveAllButOneTap( inout, r );
-	}
+        if (std::any_of(std::begin(vpValidRowsToCheck), std::end(vpValidRowsToCheck), [&](ValidRow const *validRow) {
+            return NoteDataUtil::RowPassesValidMask(inout, r, validRow->bValidMask);
+        }))
+        {
+            RemoveAllButOneTap(inout, r);
+        }
+    }
 }
 
 bool NoteDataUtil::RowPassesValidMask( NoteData &inout, int row, const bool bValidMask[] )
@@ -2383,7 +2375,7 @@ void NoteDataUtil::Scale( NoteData &nd, float fScale )
 	
 	for( int t=0; t<nd.GetNumTracks(); t++ )
 	{
-		for( NoteData::const_iterator iter = nd.begin(t); iter != nd.end(t); ++iter )
+		for( auto iter = nd.begin(t); iter != nd.end(t); ++iter )
 		{
 			TapNote tn = iter->second;
 			int iNewRow      = lrintf( fScale * iter->first );
@@ -2418,7 +2410,7 @@ void NoteDataUtil::ScaleRegion( NoteData &nd, float fScale, int iStartIndex, int
 	
 	for( int t=0; t<nd.GetNumTracks(); t++ )
 	{
-		for( NoteData::const_iterator iter = nd.begin(t); iter != nd.end(t); ++iter )
+		for( auto iter = nd.begin(t); iter != nd.end(t); ++iter )
 		{
 			TapNote tn = iter->second;
 			int iNewRow      = GetScaledRow( fScale, iStartIndex, iEndIndex, iter->first );
@@ -2461,7 +2453,7 @@ void NoteDataUtil::RemoveAllTapsOfType( NoteData& ndInOut, TapNote::Type typeToR
 	 */
 	for( int t=0; t<ndInOut.GetNumTracks(); t++ )
 	{
-		for( NoteData::iterator iter = ndInOut.begin(t); iter != ndInOut.end(t); )
+		for( auto iter = ndInOut.begin(t); iter != ndInOut.end(t); )
 		{
 			if( iter->second.type == typeToRemove )
 				ndInOut.RemoveTapNote( t, iter++ );
@@ -2476,7 +2468,7 @@ void NoteDataUtil::RemoveAllTapsExceptForType( NoteData& ndInOut, TapNote::Type 
 	/* Same as in RemoveAllTapsOfType(). */
 	for( int t=0; t<ndInOut.GetNumTracks(); t++ )
 	{
-		for( NoteData::iterator iter = ndInOut.begin(t); iter != ndInOut.end(t); )
+		for( auto iter = ndInOut.begin(t); iter != ndInOut.end(t); )
 		{
 			if( iter->second.type != typeToKeep )
 				ndInOut.RemoveTapNote( t, iter++ );

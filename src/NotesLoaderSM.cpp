@@ -132,10 +132,10 @@ void SMLoader::ProcessBGChanges( Song &out, const RString &sValueName, const RSt
 		vector<RString> aBGChangeExpressions;
 		split( sParam, ",", aBGChangeExpressions );
 		
-		for( unsigned b=0; b<aBGChangeExpressions.size(); b++ )
+        for (auto const &expression : aBGChangeExpressions)
 		{
 			BackgroundChange change;
-			if( LoadFromBGChangesString( change, aBGChangeExpressions[b] ) )
+			if( LoadFromBGChangesString( change, expression ) )
 				out.AddBackgroundChange( iLayer, change );
 		}
 	}
@@ -143,7 +143,7 @@ void SMLoader::ProcessBGChanges( Song &out, const RString &sValueName, const RSt
 
 void SMLoader::ProcessAttackString( vector<RString> & attacks, MsdFile::value_t params )
 {
-	for( unsigned s=1; s < params.params.size(); ++s )
+    for( unsigned s=1; s < params.params.size(); ++s )
 	{
 		RString tmp = params[s];
 		Trim(tmp);
@@ -215,16 +215,16 @@ void SMLoader::ParseBPMs( vector< pair<float, float> > &out, const RString line,
 	vector<RString> arrayBPMChangeExpressions;
 	split( line, ",", arrayBPMChangeExpressions );
 
-	for( unsigned b=0; b<arrayBPMChangeExpressions.size(); b++ )
+    for (auto const &exprssion : arrayBPMChangeExpressions)
 	{
 		vector<RString> arrayBPMChangeValues;
-		split( arrayBPMChangeExpressions[b], "=", arrayBPMChangeValues );
+		split( exprssion, "=", arrayBPMChangeValues );
 		if( arrayBPMChangeValues.size() != 2 )
 		{
 			LOG->UserLog("Song file",
 				     this->GetSongTitle(),
 				     "has an invalid #BPMs value \"%s\" (must have exactly one '='), ignored.",
-				     arrayBPMChangeExpressions[b].c_str() );
+				     exprssion.c_str() );
 			continue;
 		}
 
@@ -245,16 +245,16 @@ void SMLoader::ParseStops( vector< pair<float, float> > &out, const RString line
 	vector<RString> arrayFreezeExpressions;
 	split( line, ",", arrayFreezeExpressions );
 	
-	for( unsigned f=0; f<arrayFreezeExpressions.size(); f++ )
+    for (auto const &freeze : arrayFreezeExpressions)
 	{
 		vector<RString> arrayFreezeValues;
-		split( arrayFreezeExpressions[f], "=", arrayFreezeValues );
+		split( freeze, "=", arrayFreezeValues );
 		if( arrayFreezeValues.size() != 2 )
 		{
 			LOG->UserLog("Song file",
 				     this->GetSongTitle(),
 				     "has an invalid #STOPS value \"%s\" (must have exactly one '='), ignored.",
-				     arrayFreezeExpressions[f].c_str() );
+				     freeze.c_str() );
 			continue;
 		}
 
@@ -511,16 +511,16 @@ void SMLoader::ProcessDelays( TimingData &out, const RString line, const int row
 	vector<RString> arrayDelayExpressions;
 	split( line, ",", arrayDelayExpressions );
 
-	for( unsigned f=0; f<arrayDelayExpressions.size(); f++ )
-	{
+    for (auto const &delay : arrayDelayExpressions)
+    {
 		vector<RString> arrayDelayValues;
-		split( arrayDelayExpressions[f], "=", arrayDelayValues );
+		split( delay, "=", arrayDelayValues );
 		if( arrayDelayValues.size() != 2 )
 		{
 			LOG->UserLog("Song file",
 				     this->GetSongTitle(),
 				     "has an invalid #DELAYS value \"%s\" (must have exactly one '='), ignored.",
-				     arrayDelayExpressions[f].c_str() );
+				     delay.c_str() );
 			continue;
 		}
 		const float fFreezeBeat = RowToBeat( arrayDelayValues[0], rowsPerBeat );
@@ -597,16 +597,16 @@ void SMLoader::ProcessTickcounts( TimingData &out, const RString line, const int
 	vector<RString> arrayTickcountExpressions;
 	split( line, ",", arrayTickcountExpressions );
 
-	for( unsigned f=0; f<arrayTickcountExpressions.size(); f++ )
+    for (auto const &tick : arrayTickcountExpressions)
 	{
 		vector<RString> arrayTickcountValues;
-		split( arrayTickcountExpressions[f], "=", arrayTickcountValues );
+		split( tick, "=", arrayTickcountValues );
 		if( arrayTickcountValues.size() != 2 )
 		{
 			LOG->UserLog("Song file",
 				     this->GetSongTitle(),
 				     "has an invalid #TICKCOUNTS value \"%s\" (must have exactly one '='), ignored.",
-				     arrayTickcountExpressions[f].c_str() );
+				     tick.c_str() );
 			continue;
 		}
 
@@ -682,16 +682,16 @@ void SMLoader::ProcessFakes( TimingData &out, const RString line, const int rows
 	vector<RString> arrayFakeExpressions;
 	split( line, ",", arrayFakeExpressions );
 
-	for( unsigned b=0; b<arrayFakeExpressions.size(); b++ )
+    for (auto const &fake : arrayFakeExpressions)
 	{
 		vector<RString> arrayFakeValues;
-		split( arrayFakeExpressions[b], "=", arrayFakeValues );
+		split( fake, "=", arrayFakeValues );
 		if( arrayFakeValues.size() != 2 )
 		{
 			LOG->UserLog("Song file",
 				     this->GetSongTitle(),
 				     "has an invalid #FAKES value \"%s\" (must have exactly one '='), ignored.",
-				     arrayFakeExpressions[b].c_str() );
+				     fake.c_str() );
 			continue;
 		}
 
@@ -1053,10 +1053,10 @@ bool SMLoader::LoadFromSimfile( const RString &sPath, Song &out, bool bFromCache
 			vector<RString> aFGChangeExpressions;
 			split( sParams[1], ",", aFGChangeExpressions );
 
-			for( unsigned b=0; b<aFGChangeExpressions.size(); b++ )
+            for (auto const &expression : aFGChangeExpressions)
 			{
 				BackgroundChange change;
-				if( LoadFromBGChangesString( change, aFGChangeExpressions[b] ) )
+				if( LoadFromBGChangesString( change, expression ) )
 					out.AddForegroundChange( change );
 			}
 		}

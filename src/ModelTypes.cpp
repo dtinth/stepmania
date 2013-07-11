@@ -177,11 +177,10 @@ void AnimatedTexture::SetSecondsIntoAnimation( float fSeconds )
 float AnimatedTexture::GetSecondsIntoAnimation() const
 {
 	float fSeconds = 0;
-
-	for( unsigned i=0; i<vFrames.size(); i++ )
+    int index = 0;
+    for (auto const &ats : vFrames)
 	{
-		const AnimatedTextureState& ats = vFrames[i];
-		if( static_cast<int>(i) >= m_iCurState )
+		if( index++ >= m_iCurState )
 			break;
 
 		fSeconds += ats.fDelaySecs;
@@ -192,9 +191,11 @@ float AnimatedTexture::GetSecondsIntoAnimation() const
 
 void AnimatedTexture::Unload()
 {
-	for(unsigned i = 0; i < vFrames.size(); ++i)
-		TEXTUREMAN->UnloadTexture(vFrames[i].pTexture);
-	vFrames.clear();
+    for (auto &ats : vFrames)
+    {
+		TEXTUREMAN->UnloadTexture(ats.pTexture);
+	}
+    vFrames.clear();
 	m_iCurState = 0;
 	m_fSecsIntoFrame = 0;
 }
@@ -246,10 +247,8 @@ bool msAnimation::LoadMilkshapeAsciiBones( RString sAniName, RString sPath )
 
 		Animation.Bones.resize( nNumBones );
 
-		for( int i = 0; i < nNumBones; i++ )
+        for (auto &Bone : Animation.Bones)
 		{
-			msBone& Bone = Animation.Bones[i];
-
 			// name
 			if( f.GetLine( sLine ) <= 0 )
 				THROW;
@@ -337,13 +336,16 @@ bool msAnimation::LoadMilkshapeAsciiBones( RString sAniName, RString sPath )
 
 		// Ignore "Frames:" in file.  Calculate it ourself
 		Animation.nTotalFrames = 0;
-		for( int i = 0; i < (int)Animation.Bones.size(); i++ )
+        for (auto &Bone : Animation.Bones)
 		{
-			msBone& Bone = Animation.Bones[i];
-			for( unsigned j = 0; j < Bone.PositionKeys.size(); ++j )
-				Animation.nTotalFrames = max( Animation.nTotalFrames, (int)Bone.PositionKeys[j].fTime );
-			for( unsigned j = 0; j < Bone.RotationKeys.size(); ++j )
-				Animation.nTotalFrames = max( Animation.nTotalFrames, (int)Bone.RotationKeys[j].fTime );
+            for (auto &key : Bone.PositionKeys)
+			{
+                Animation.nTotalFrames = max( Animation.nTotalFrames, static_cast<int>(key.fTime) );
+            }
+            for (auto &key : Bone.RotationKeys)
+            {
+                Animation.nTotalFrames = max(Animation.nTotalFrames, static_cast<int>(key.fTime));
+            }
 		}
 	}
 

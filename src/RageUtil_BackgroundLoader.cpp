@@ -35,10 +35,10 @@ static void DeleteEmptyDirectories( RString sDir )
 {
 	vector<RString> asNewDirs;
 	GetDirListing( sDir + "/*", asNewDirs, false, true );
-	for( unsigned i = 0; i < asNewDirs.size(); ++i )
+    for (auto &newDir : asNewDirs)
 	{
-		ASSERT_M( IsADirectory(asNewDirs[i]), asNewDirs[i] );
-		DeleteEmptyDirectories( asNewDirs[i] );
+		ASSERT_M( IsADirectory(newDir), newDir );
+		DeleteEmptyDirectories( newDir );
 	}
 
 	FILEMAN->Remove( sDir );
@@ -56,9 +56,10 @@ BackgroundLoader::~BackgroundLoader()
 	m_LoadThread.Wait();
 
 	/* Delete all leftover cached files. */
-	map<RString,int>::iterator it;
-	for( it = m_FinishedRequests.begin(); it != m_FinishedRequests.end(); ++it )
-		FILEMAN->Remove( GetCachePath( it->first ) );
+	for (auto it : m_FinishedRequests)
+    {
+        FILEMAN->Remove(GetCachePath(it.first));
+    }
 
 	/* m_sCachePathPrefix should be filled with several empty directories.  Delete
 	 * them and m_sCachePathPrefix, so we don't leak them. */

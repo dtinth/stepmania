@@ -73,9 +73,10 @@ NoteField::~NoteField()
 
 void NoteField::Unload()
 {
-	for( map<RString, NoteDisplayCols *>::iterator it = m_NoteDisplays.begin();
-		it != m_NoteDisplays.end(); ++it )
-		delete it->second;
+    for (auto &it : m_NoteDisplays)
+	{
+        delete it.second;
+    }
 	m_NoteDisplays.clear();
 	m_pCurDisplay = NULL;
 	memset( m_pDisplays, 0, sizeof(m_pDisplays) );
@@ -132,8 +133,10 @@ void NoteField::CacheAllUsedNoteSkins()
         s.MakeLower();
     });
 
-	for( unsigned i=0; i < asSkinsLower.size(); ++i )
-		CacheNoteSkin( asSkinsLower[i] );
+    for (auto const &skin : asSkinsLower)
+    {
+        CacheNoteSkin(skin);
+    }
 
 	/* If we're changing note skins in the editor, we can have old note skins lying
 	 * around.  Remove them so they don't accumulate. */

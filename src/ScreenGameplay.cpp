@@ -973,9 +973,8 @@ void ScreenGameplay::SetupSong( int iSongIndex )
 		// HACK: Apply NoteSkins from global course options. Do this before
 		// Player::Load, since it needs to know which note skin to load.
 		pi->GetPlayerState()->m_ModsToApply.clear();
-		for( unsigned i=0; i<pi->m_asModifiersQueue[iSongIndex].size(); ++i )
+        for (auto a : pi->m_asModifiersQueue[iSongIndex])
 		{
-			Attack a = pi->m_asModifiersQueue[iSongIndex][i];
 			if( a.fStartSecond != 0 )
 				continue;
 			a.fStartSecond = ATTACK_STARTS_NOW;	// now
@@ -1024,9 +1023,8 @@ void ScreenGameplay::SetupSong( int iSongIndex )
 		// Put course options into effect.  Do this after Player::Load so
 		// that mods aren't double-applied.
 		pi->GetPlayerState()->m_ModsToApply.clear();
-		for( unsigned i=0; i<pi->m_asModifiersQueue[iSongIndex].size(); ++i )
+        for (auto a : pi->m_asModifiersQueue[iSongIndex])
 		{
-			Attack a = pi->m_asModifiersQueue[iSongIndex][i];
 			if( a.fStartSecond == 0 )
 				a.fStartSecond = ATTACK_STARTS_NOW;	// now
 			

@@ -56,10 +56,10 @@ void ScreenMapControllers::Init()
 		/* Map the specified buttons. */
 		vector<RString> asBits;
 		split( sButtons, ",", asBits );
-		for( unsigned i=0; i<asBits.size(); ++i )
+        for (auto &bit : asBits)
 		{
 			KeyToMap k;
-			k.m_GameButton = StringToGameButton( INPUTMAPPER->GetInputScheme(), asBits[i] );
+			k.m_GameButton = StringToGameButton( INPUTMAPPER->GetInputScheme(), bit );
 			m_KeysToMap.push_back( k );
 		}
 	}
@@ -85,15 +85,13 @@ void ScreenMapControllers::Init()
 	}
 
 	// normal rows
-	for( unsigned b=0; b<m_KeysToMap.size(); b++ )
+    for (auto &keyToMap : m_KeysToMap)
 	{
-		KeyToMap *pKey = &m_KeysToMap[b];
-
 		{
 			BitmapText *pName = new BitmapText;
 			pName->SetName( "Primary" );
 			pName->LoadFromFont( THEME->GetPathF(m_sName,"title") );
-			RString sText = GameButtonToLocalizedString( INPUTMAPPER->GetInputScheme(), pKey->m_GameButton );
+			RString sText = GameButtonToLocalizedString( INPUTMAPPER->GetInputScheme(), keyToMap.m_GameButton );
 			pName->SetText( sText );
 			ActorUtil::LoadAllCommands( *pName, m_sName );
 			m_Line[iRow].AddChild( pName );
@@ -102,9 +100,9 @@ void ScreenMapControllers::Init()
 			BitmapText *pSecondary = new BitmapText;
 			pSecondary->SetName( "Secondary" );
 			pSecondary->LoadFromFont( THEME->GetPathF(m_sName,"title") );
-			GameButton mb = INPUTMAPPER->GetInputScheme()->GameButtonToMenuButton( pKey->m_GameButton );
+			GameButton mb = INPUTMAPPER->GetInputScheme()->GameButtonToMenuButton( keyToMap.m_GameButton );
 			RString sText;
-			if( mb != GameButton_Invalid && mb != pKey->m_GameButton )
+			if( mb != GameButton_Invalid && mb != keyToMap.m_GameButton )
 				sText = GameButtonToLocalizedString( INPUTMAPPER->GetInputScheme(), mb );
 			ActorUtil::LoadAllCommands( *pSecondary, m_sName );
 			pSecondary->SetText( sText );
@@ -115,12 +113,12 @@ void ScreenMapControllers::Init()
 		{			
 			for( int s=0; s<NUM_SHOWN_GAME_TO_DEVICE_SLOTS; s++ ) 
 			{
-				pKey->m_textMappedTo[c][s] = new BitmapText;
-				pKey->m_textMappedTo[c][s]->SetName( "MappedTo" );
-				pKey->m_textMappedTo[c][s]->LoadFromFont( THEME->GetPathF(m_sName,"entry") );
-				pKey->m_textMappedTo[c][s]->RunCommands( MAPPED_TO_COMMAND(c,s) );
-				ActorUtil::LoadAllCommands( *pKey->m_textMappedTo[c][s], m_sName );
-				m_Line[iRow].AddChild( pKey->m_textMappedTo[c][s] );
+				keyToMap.m_textMappedTo[c][s] = new BitmapText;
+				keyToMap.m_textMappedTo[c][s]->SetName( "MappedTo" );
+				keyToMap.m_textMappedTo[c][s]->LoadFromFont( THEME->GetPathF(m_sName,"entry") );
+				keyToMap.m_textMappedTo[c][s]->RunCommands( MAPPED_TO_COMMAND(c,s) );
+				ActorUtil::LoadAllCommands( *keyToMap.m_textMappedTo[c][s], m_sName );
+				m_Line[iRow].AddChild( keyToMap.m_textMappedTo[c][s] );
 			}
 		}
 		m_Line[iRow].DeleteChildrenWhenDone();
@@ -217,15 +215,12 @@ static bool IsAxis( const DeviceInput& DeviceI )
 		JOY_Z_UP, JOY_Z_DOWN,
 		JOY_ROT_UP, JOY_ROT_DOWN, JOY_ROT_LEFT, JOY_ROT_RIGHT, JOY_ROT_Z_UP, JOY_ROT_Z_DOWN,
 		JOY_HAT_LEFT, JOY_HAT_RIGHT, JOY_HAT_UP, JOY_HAT_DOWN, 
-		JOY_AUX_1, JOY_AUX_2, JOY_AUX_3, JOY_AUX_4,
-		-1
+		JOY_AUX_1, JOY_AUX_2, JOY_AUX_3, JOY_AUX_4
 	};
 
-	for( int ax = 0; axes[ax] != -1; ++ax )
-		if( DeviceI.button == axes[ax] )
-			return true;
-
-	return false;
+    return std::any_of(std::begin(axes), std::end(axes), [&](int axis) {
+        return DeviceI.button == axis;
+    });
 }
 
 bool ScreenMapControllers::Input( const InputEventPlus &input )
@@ -418,13 +413,12 @@ void ScreenMapControllers::Refresh()
 {
 	FOREACH_ENUM( GameController,  p )
 	{
-		for( unsigned b=0; b<m_KeysToMap.size(); b++ )
+        for (auto const &keyToMap : m_KeysToMap)
 		{
-			const KeyToMap *pKey = &m_KeysToMap[b];
 			for( int s=0; s<NUM_SHOWN_GAME_TO_DEVICE_SLOTS; s++ ) 
 			{
-				BitmapText *pText = pKey->m_textMappedTo[p][s];
-				GameInput cur_gi( p, pKey->m_GameButton );
+				BitmapText *pText = keyToMap.m_textMappedTo[p][s];
+				GameInput cur_gi( p, keyToMap.m_GameButton );
 				DeviceInput di;
 				RString sText = "-----------";
 				if( INPUTMAPPER->GameToDevice( cur_gi, s, di ) )

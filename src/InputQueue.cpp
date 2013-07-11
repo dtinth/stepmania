@@ -116,15 +116,16 @@ bool InputQueueCode::EnteredCode( GameController controller ) const
 
 			// Check that m_aButtonsToHold were being held when the buttons were pressed.
 			bool bAllHeldButtonsOK = true;
+            for (auto &button : Press.m_aButtonsToHold)
 			for( unsigned i=0; i<Press.m_aButtonsToHold.size(); i++ )
 			{
-				GameInput gi( controller, Press.m_aButtonsToHold[i] );
+				GameInput gi( controller, button );
 				if( !INPUTMAPPER->IsBeingPressed(gi, MultiPlayer_Invalid, &pIEP->InputList) )
 					bAllHeldButtonsOK = false;
 			}
-			for( unsigned i=0; i<Press.m_aButtonsToNotHold.size(); i++ )
+            for (auto &button : Press.m_aButtonsToNotHold)
 			{
-				GameInput gi( controller, Press.m_aButtonsToNotHold[i] );
+				GameInput gi( controller, button );
 				if( INPUTMAPPER->IsBeingPressed(gi, MultiPlayer_Invalid, &pIEP->InputList) )
 					bAllHeldButtonsOK = false;
 			}

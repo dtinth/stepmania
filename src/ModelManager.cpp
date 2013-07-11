@@ -14,13 +14,11 @@ ModelManager::ModelManager()
 
 ModelManager::~ModelManager()
 {
-	for( std::map<RString, RageModelGeometry*>::iterator i = m_mapFileToGeometry.begin();
-		i != m_mapFileToGeometry.end(); 
-		++i )
+    for (auto i : m_mapFileToGeometry)
 	{
-		RageModelGeometry* pGeom = i->second;
+		RageModelGeometry* pGeom = i.second;
 		if( pGeom->m_iRefCount )
-			LOG->Trace( "MODELMAN LEAK: '%s', RefCount = %d.", i->first.c_str(), pGeom->m_iRefCount );
+			LOG->Trace( "MODELMAN LEAK: '%s', RefCount = %d.", i.first.c_str(), pGeom->m_iRefCount );
 		SAFE_DELETE( pGeom );
 	}
 }
@@ -51,7 +49,7 @@ void ModelManager::UnloadModel( RageModelGeometry *m )
 	if( m->m_iRefCount )
 		return; /* Can't unload models that are still referenced. */
 
-	for( std::map<RString, RageModelGeometry*>::iterator i = m_mapFileToGeometry.begin();
+	for( auto i = m_mapFileToGeometry.begin();
 		i != m_mapFileToGeometry.end(); 
 		++i )
 	{

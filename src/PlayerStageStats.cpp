@@ -103,18 +103,15 @@ void PlayerStageStats::AddStats( const PlayerStageStats& other )
 	const float fOtherLastSecond = other.m_fLastSecond + m_fLastSecond;
 	m_fLastSecond = fOtherLastSecond;
 
-	map<float,float>::const_iterator it;
-	for( it = other.m_fLifeRecord.begin(); it != other.m_fLifeRecord.end(); ++it )
-	{
-		const float pos = it->first;
-		const float life = it->second;
+    for (auto const &it : m_fLifeRecord)
+    {
+        const float pos = it.first;
+		const float life = it.second;
 		m_fLifeRecord[fOtherFirstSecond+pos] = life;
-	}
+    }
 
-	for( unsigned i=0; i<other.m_ComboList.size(); ++i )
+    for (auto const &combo : other.m_ComboList)
 	{
-		const Combo_t &combo = other.m_ComboList[i];
-
 		Combo_t newcombo(combo);
 		newcombo.m_fStartSecond += fOtherFirstSecond;
 		m_ComboList.push_back( newcombo );

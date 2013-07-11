@@ -73,16 +73,15 @@ bool CourseWriterCRS::Write( const Course &course, RageFileBasic &f, bool bSavin
 	{
 		f.PutLine( "// cache tags:" );
 
-		Course::RadarCache_t::const_iterator it;
-		for( it = course.m_RadarCache.begin(); it != course.m_RadarCache.end(); ++it )
+        for (auto const &it : course.m_RadarCache)
 		{
 			// #RADAR:type:difficulty:value,value,value...;
-			const Course::CacheEntry &entry = it->first;
+			const Course::CacheEntry &entry = it.first;
 			StepsType st = entry.first;
 			CourseDifficulty cd = entry.second;
 
 			vector<RString> asRadarValues;
-			const RadarValues &rv = it->second;
+			const RadarValues &rv = it.second;
 			for( int r=0; r < NUM_RadarCategory; r++ )
 				asRadarValues.push_back( ssprintf("%.3f", rv[r]) );
 			RString sLine = ssprintf( "#RADAR:%i:%i:", st, cd );
@@ -92,10 +91,8 @@ bool CourseWriterCRS::Write( const Course &course, RageFileBasic &f, bool bSavin
 		f.PutLine( "// end cache tags" );
 	}
 
-	for( unsigned i=0; i<course.m_vEntries.size(); i++ )
+    for (auto const &entry : course.m_vEntries)
 	{
-		const CourseEntry& entry = course.m_vEntries[i];
-
 		for( unsigned j = 0; j < entry.attacks.size(); ++j )
 		{
 			if( j == 0 )
