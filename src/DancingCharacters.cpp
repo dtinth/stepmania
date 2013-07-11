@@ -188,7 +188,7 @@ void DancingCharacters::Update( float fDelta )
 	{
 		// make the characters move
 		float fBPM = GAMESTATE->m_Position.m_fCurBPS*60;
-		float fUpdateScale = Rage::Scale( fBPM, 60.f, 300.f, 0.75f, 1.5f );
+		float fUpdateScale = SCALE( fBPM, 60.f, 300.f, 0.75f, 1.5f );
 		CLAMP( fUpdateScale, 0.75f, 1.5f );
 
 		/* It's OK for the animation to go slower than natural when we're
@@ -312,15 +312,15 @@ void DancingCharacters::DrawPrimitives()
 {
 	DISPLAY->CameraPushMatrix();
 
-    float const fPercentIntoSweep = [&]() {
-        if (m_fThisCameraStartBeat == m_fThisCameraEndBeat)
-        {
-            return 0.f;
-        }
-        return Rage::Scale(GAMESTATE->m_Position.m_fSongBeat, m_fThisCameraStartBeat, m_fThisCameraEndBeat, 0.f, 1.f);
-    }();
-	float fCameraPanY = Rage::Scale( fPercentIntoSweep, 0.f, 1.f, m_CameraPanYStart, m_CameraPanYEnd );
-	float fCameraHeight = Rage::Scale( fPercentIntoSweep, 0.f, 1.f, m_fCameraHeightStart, m_fCameraHeightEnd );
+	float const fPercentIntoSweep = [&]() {
+		if(m_fThisCameraStartBeat == m_fThisCameraEndBeat)
+		{
+			return 0.f;
+		} 
+		return SCALE(GAMESTATE->m_Position.m_fSongBeat, m_fThisCameraStartBeat, m_fThisCameraEndBeat, 0.f, 1.f );
+	}();
+	float fCameraPanY = SCALE( fPercentIntoSweep, 0.f, 1.f, m_CameraPanYStart, m_CameraPanYEnd );
+	float fCameraHeight = SCALE( fPercentIntoSweep, 0.f, 1.f, m_fCameraHeightStart, m_fCameraHeightEnd );
 
 	Rage::Vector3 m_CameraPoint( 0, fCameraHeight, -m_CameraDistance );
 	Rage::Matrix CameraRot;

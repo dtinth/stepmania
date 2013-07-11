@@ -634,8 +634,8 @@ void ScreenTextEntryVisual::BeginScreen()
 		for( int x=0; x<KEYS_PER_ROW; ++x )
 		{
 			BitmapText &bt = *m_ptextKeys[r][x];
-			float fX = roundf( Rage::Scale( x + 0.f, 0.f, KEYS_PER_ROW-1.f, ROW_START_X.GetValue(), ROW_END_X.GetValue() ) );
-			float fY = roundf( Rage::Scale( r + 0.f, 0.f, NUM_KeyboardRow-1.f, ROW_START_Y.GetValue(), ROW_END_Y.GetValue() ) );
+			float fX = roundf( SCALE( x, 0, KEYS_PER_ROW-1, ROW_START_X, ROW_END_X ) );
+			float fY = roundf( SCALE( r, 0, NUM_KeyboardRow-1, ROW_START_Y, ROW_END_Y ) );
 			bt.SetXY( fX, fY );
 		}
 	}

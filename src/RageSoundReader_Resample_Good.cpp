@@ -646,8 +646,7 @@ RageSoundReader_Resample_Good::~RageSoundReader_Resample_Good()
 int RageSoundReader_Resample_Good::SetPosition( int iFrame )
 {
 	Reset();
-    // the sample rate vars used to have an int64_t cast. Seemed unneeded.
-	iFrame = (int) Rage::Scale( iFrame, 0, m_iSampleRate, 0, m_pSource->GetSampleRate() );
+	iFrame = (int) SCALE( iFrame, 0, (int64_t) m_iSampleRate, 0, (int64_t) m_pSource->GetSampleRate() );
 	return m_pSource->SetPosition( iFrame );
 }
 

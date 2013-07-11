@@ -118,7 +118,7 @@ void MouseDevice::GetButtonPresses( vector<DeviceInput>& vPresses, IOHIDElementC
 	}
 	else if( m.z_axis == cookie )
 	{
-		float level = Rage::Scale( value * 1.f, m.z_min * 1.f, m.z_max * 1.f, -1.0f, 1.0f );
+		float level = SCALE( value, m.z_min, m.z_max, -1.0f, 1.0f );
 		INPUTFILTER->ButtonPressed( DeviceInput(DEVICE_MOUSE, MOUSE_WHEELUP, max(-level,0), now) );
 		INPUTFILTER->ButtonPressed( DeviceInput(DEVICE_MOUSE, MOUSE_WHEELDOWN, max(+level,0), now) );
 	}

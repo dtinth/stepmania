@@ -45,7 +45,7 @@ void ScreenBookkeeping::Init()
 		m_textData[i].LoadFromFont( THEME->GetPathF(m_sName,"data") );
 		m_textData[i].SetName( "Data" );
 		LOAD_ALL_COMMANDS_AND_SET_XY( m_textData[i] );
-		float fX = Rage::Scale( i + 0.f, 0.f, NUM_BOOKKEEPING_COLS-1.f, SCREEN_LEFT+50.f, SCREEN_RIGHT-160.f );
+		float fX = SCALE( i, 0.f, NUM_BOOKKEEPING_COLS-1, SCREEN_LEFT+50, SCREEN_RIGHT-160 );
 		m_textData[i].SetX( fX );
 		this->AddChild( &m_textData[i] );
 	}

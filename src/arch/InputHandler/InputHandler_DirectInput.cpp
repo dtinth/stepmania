@@ -367,7 +367,7 @@ void InputHandler_DInput::UpdatePolled( DIDevice &device, const RageTimer &tm )
 						}
 						if( neg != DeviceButton_Invalid )
 						{
-							float l = Rage::Scale( static_cast<float>(val), 0.0f, 100.0f, 0.0f, 1.0f );
+							float l = SCALE( int(val), 0.0f, 100.0f, 0.0f, 1.0f );
 							ButtonPressed( DeviceInput(dev, neg, max(-l,0), tm) );
 							ButtonPressed( DeviceInput(dev, pos, max(+l,0), tm) );
 						}
@@ -562,6 +562,7 @@ void InputHandler_DInput::UpdateBuffered( DIDevice &device, const RageTimer &tm 
 								{
 									up = MOUSE_WHEELUP; down = MOUSE_WHEELDOWN;
 									float fWheelDelta = l;
+									//l = SCALE( int(evtbuf[i].dwData), -WHEEL_DELTA, WHEEL_DELTA, 1.0f, -1.0f );
 									if( l > 0 )
 									{
 										DeviceInput diUp = DeviceInput(dev, up, 1.0f, tm);
@@ -619,7 +620,7 @@ void InputHandler_DInput::UpdateBuffered( DIDevice &device, const RageTimer &tm 
 										 device.m_sName.c_str(), in.ofs );
 								continue;
 						}
-						float l = Rage::Scale( static_cast<float>(evtbuf[i].dwData), 0.0f, 100.0f, 0.0f, 1.0f );
+						float l = SCALE( int(evtbuf[i].dwData), 0.0f, 100.0f, 0.0f, 1.0f );
 						ButtonPressed( DeviceInput(dev, up, max(-l,0), tm) );
 						ButtonPressed( DeviceInput(dev, down, max(+l,0), tm) );
 					}

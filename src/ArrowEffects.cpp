@@ -164,15 +164,15 @@ void ArrowEffects::Update()
 			}
 
 			// mirror
-            int const newColSide = [&]() {
-                if (iFirstColOnSide == iLastColOnSide)
-                {
-                    return 0;
-                }
-                return Rage::Scale(iColOnSide, iFirstColOnSide, iLastColOnSide, iLastColOnSide, iFirstColOnSide);
-            }();
-            
-			const int iNewCol = iSideIndex*iNumColsPerSide + newColSide;
+			int const iNewColOnSide = [&]() {
+				if (iFirstColOnSide == iLastColOnSide)
+				{
+					return 0;
+				}
+				return SCALE(iColOnSide, iFirstColOnSide, iLastColOnSide, iLastColOnSide, iFirstColOnSide);
+			}();
+			
+			const int iNewCol = iSideIndex*iNumColsPerSide + iNewColOnSide;
 
 			const float fOldPixelOffset = pCols[iColNum].fXOffset;
 			const float fNewPixelOffset = pCols[iNewCol].fXOffset;
@@ -200,10 +200,10 @@ void ArrowEffects::Update()
 
 			if( fBeat < fAccelTime )
 			{
-				data.m_fBeatFactor = Rage::Scale( fBeat, 0.0f, fAccelTime, 0.0f, 1.0f);
+				data.m_fBeatFactor = SCALE( fBeat, 0.0f, fAccelTime, 0.0f, 1.0f);
 				data.m_fBeatFactor *= data.m_fBeatFactor;
 			} else /* fBeat < fTotalTime */ {
-				data.m_fBeatFactor = Rage::Scale( fBeat, fAccelTime, fTotalTime, 1.0f, 0.0f);
+				data.m_fBeatFactor = SCALE( fBeat, fAccelTime, fTotalTime, 1.0f, 0.0f);
 				data.m_fBeatFactor = 1 - (1-data.m_fBeatFactor) * (1-data.m_fBeatFactor);
 			}
 
@@ -307,7 +307,7 @@ float ArrowEffects::GetYOffset( const PlayerState* pPlayerState, int iCol, float
 	if( fAccels[PlayerOptions::ACCEL_BRAKE] != 0 )
 	{
 		float fEffectHeight = GetNoteFieldHeight(pPlayerState);
-		float fScale = Rage::Scale( fYOffset, 0.f, fEffectHeight, 0.f, 1.f );
+		float fScale = SCALE( fYOffset, 0.f, fEffectHeight, 0, 1.f );
 		float fNewYOffset = fYOffset * fScale; 
 		float fBrakeYAdjust = fAccels[PlayerOptions::ACCEL_BRAKE] * (fNewYOffset - fYOffset);
 		// TRICKY: Clamp this value the same way as BOOST so that in BOOST+BRAKE, BRAKE doesn't overpower BOOST
@@ -343,8 +343,10 @@ float ArrowEffects::GetYOffset( const PlayerState* pPlayerState, int iCol, float
 
 		/* Random speed always increases speed: a random speed of 10 indicates
 		 * [1,11]. This keeps it consistent with other mods: 0 means no effect. */
-		fScrollSpeed *= Rage::Scale(fRandom, 0.0f, 1.0f, 1.0f,
-                                    pPlayerState->m_PlayerOptions.GetCurrent().m_fRandomSpeed + 1.0f );
+		fScrollSpeed *=
+				SCALE( fRandom,
+						0.0f, 1.0f,
+						1.0f, pPlayerState->m_PlayerOptions.GetCurrent().m_fRandomSpeed + 1.0f );
 	}
 
 	if( fAccels[PlayerOptions::ACCEL_EXPAND] != 0 )
@@ -352,12 +354,12 @@ float ArrowEffects::GetYOffset( const PlayerState* pPlayerState, int iCol, float
 		// TODO: Don't index by PlayerNumber.
 		PerPlayerData &data = g_EffectData[pPlayerState->m_PlayerNumber];
 	
-		float fExpandMultiplier = Rage::Scale( RageFastCos(data.m_fExpandSeconds*EXPAND_MULTIPLIER_FREQUENCY),
-						EXPAND_MULTIPLIER_SCALE_FROM_LOW.GetValue(), EXPAND_MULTIPLIER_SCALE_FROM_HIGH.GetValue(),
-						EXPAND_MULTIPLIER_SCALE_TO_LOW.GetValue(), EXPAND_MULTIPLIER_SCALE_TO_HIGH.GetValue() );
-		fScrollSpeed *=	Rage::Scale( fAccels[PlayerOptions::ACCEL_EXPAND],
-				      EXPAND_SPEED_SCALE_FROM_LOW.GetValue(), EXPAND_SPEED_SCALE_FROM_HIGH.GetValue(),
-				      EXPAND_SPEED_SCALE_TO_LOW.GetValue(), fExpandMultiplier );
+		float fExpandMultiplier = SCALE( RageFastCos(data.m_fExpandSeconds*EXPAND_MULTIPLIER_FREQUENCY), 
+						EXPAND_MULTIPLIER_SCALE_FROM_LOW, EXPAND_MULTIPLIER_SCALE_FROM_HIGH,
+						EXPAND_MULTIPLIER_SCALE_TO_LOW, EXPAND_MULTIPLIER_SCALE_TO_HIGH );
+		fScrollSpeed *=	SCALE( fAccels[PlayerOptions::ACCEL_EXPAND], 
+				      EXPAND_SPEED_SCALE_FROM_LOW, EXPAND_SPEED_SCALE_FROM_HIGH,
+				      EXPAND_SPEED_SCALE_TO_LOW, fExpandMultiplier );
 	}
 
 	fYOffset *= fScrollSpeed;
@@ -377,11 +379,11 @@ static void ArrowGetReverseShiftAndScale( const PlayerState* pPlayerState, int i
 		fZoom = 0.01f;
 
 	float fPercentReverse = pPlayerState->m_PlayerOptions.GetCurrent().GetReversePercentForColumn(iCol);
-	fShiftOut = Rage::Scale( fPercentReverse, 0.f, 1.f, -fYReverseOffsetPixels/fZoom/2, fYReverseOffsetPixels/fZoom/2 );
+	fShiftOut = SCALE( fPercentReverse, 0.f, 1.f, -fYReverseOffsetPixels/fZoom/2, fYReverseOffsetPixels/fZoom/2 );
 	float fPercentCentered = pPlayerState->m_PlayerOptions.GetCurrent().m_fScrolls[PlayerOptions::SCROLL_CENTERED];
-	fShiftOut = Rage::Scale( fPercentCentered, 0.f, 1.f, fShiftOut, 0.0f );
+	fShiftOut = SCALE( fPercentCentered, 0.f, 1.f, fShiftOut, 0.0f );
 
-	fScaleOut = Rage::Scale( fPercentReverse, 0.f, 1.f, 1.f, -1.f );
+	fScaleOut = SCALE( fPercentReverse, 0.f, 1.f, 1.f, -1.f );
 }
 
 float ArrowEffects::GetYPos( const PlayerState* pPlayerState, int iCol, float fYOffset, float fYReverseOffsetPixels, bool WithReverse )
@@ -445,12 +447,12 @@ float ArrowEffects::GetXPos( const PlayerState* pPlayerState, int iColNum, float
 	if( fEffects[PlayerOptions::EFFECT_TORNADO] != 0 )
 	{
 		const float fRealPixelOffset = pCols[iColNum].fXOffset;
-		const float fPositionBetween = Rage::Scale( fRealPixelOffset, data.m_fMinTornadoX[iColNum], data.m_fMaxTornadoX[iColNum],
-						     TORNADO_POSITION_SCALE_TO_LOW.GetValue(), TORNADO_POSITION_SCALE_TO_HIGH.GetValue() );
+		const float fPositionBetween = SCALE( fRealPixelOffset, data.m_fMinTornadoX[iColNum], data.m_fMaxTornadoX[iColNum], 
+						     TORNADO_POSITION_SCALE_TO_LOW, TORNADO_POSITION_SCALE_TO_HIGH );
 		float fRads = acosf( fPositionBetween );
 		fRads += fYOffset * TORNADO_OFFSET_FREQUENCY / SCREEN_HEIGHT;
 
-		const float fAdjustedPixelOffset = Rage::Scale( RageFastCos(fRads), TORNADO_OFFSET_SCALE_FROM_LOW.GetValue(), TORNADO_OFFSET_SCALE_FROM_HIGH.GetValue(),
+		const float fAdjustedPixelOffset = SCALE( RageFastCos(fRads), TORNADO_OFFSET_SCALE_FROM_LOW, TORNADO_OFFSET_SCALE_FROM_HIGH, 
 							 data.m_fMinTornadoX[iColNum], data.m_fMaxTornadoX[iColNum] );
 
 		fPixelOffsetFromCenter += (fAdjustedPixelOffset - fRealPixelOffset) * fEffects[PlayerOptions::EFFECT_TORNADO];
@@ -464,7 +466,7 @@ float ArrowEffects::GetXPos( const PlayerState* pPlayerState, int iColNum, float
 	{
 		const int iFirstCol = 0;
 		const int iLastCol = pStyle->m_iColsPerPlayer-1;
-		const int iNewCol = Rage::Scale( iColNum, iFirstCol, iLastCol, iLastCol, iFirstCol );
+		const int iNewCol = SCALE( iColNum, iFirstCol, iLastCol, iLastCol, iFirstCol );
 		const float fOldPixelOffset = pCols[iColNum].fXOffset;
 		const float fNewPixelOffset = pCols[iNewCol].fXOffset;
 		const float fDistance = fNewPixelOffset - fOldPixelOffset;
@@ -616,28 +618,28 @@ static float GetHiddenSudden( const PlayerState* pPlayerState )
 static float GetHiddenEndLine( const PlayerState* pPlayerState )
 {
 	return GetCenterLine( pPlayerState ) + 
-    FADE_DIST_Y * Rage::Scale( GetHiddenSudden(pPlayerState), 0.f, 1.f, -1.0f, -1.25f ) +
+		FADE_DIST_Y * SCALE( GetHiddenSudden(pPlayerState), 0.f, 1.f, -1.0f, -1.25f ) + 
 		GetCenterLine( pPlayerState ) * pPlayerState->m_PlayerOptions.GetCurrent().m_fAppearances[PlayerOptions::APPEARANCE_HIDDEN_OFFSET];
 }
 
 static float GetHiddenStartLine( const PlayerState* pPlayerState )
 {
 	return GetCenterLine( pPlayerState ) + 
-    FADE_DIST_Y * Rage::Scale( GetHiddenSudden(pPlayerState), 0.f, 1.f, +0.0f, -0.25f ) +
+		FADE_DIST_Y * SCALE( GetHiddenSudden(pPlayerState), 0.f, 1.f, +0.0f, -0.25f ) + 
 		GetCenterLine( pPlayerState ) * pPlayerState->m_PlayerOptions.GetCurrent().m_fAppearances[PlayerOptions::APPEARANCE_HIDDEN_OFFSET];
 }
 
 static float GetSuddenEndLine( const PlayerState* pPlayerState )
 {
 	return GetCenterLine( pPlayerState ) + 
-    FADE_DIST_Y * Rage::Scale( GetHiddenSudden(pPlayerState), 0.f, 1.f, -0.0f, +0.25f ) +
+		FADE_DIST_Y * SCALE( GetHiddenSudden(pPlayerState), 0.f, 1.f, -0.0f, +0.25f ) + 
 		GetCenterLine( pPlayerState ) * pPlayerState->m_PlayerOptions.GetCurrent().m_fAppearances[PlayerOptions::APPEARANCE_SUDDEN_OFFSET];
 }
 
 static float GetSuddenStartLine( const PlayerState* pPlayerState )
 {
 	return GetCenterLine( pPlayerState ) + 
-    FADE_DIST_Y * Rage::Scale( GetHiddenSudden(pPlayerState), 0.f, 1.f, +1.0f, +1.25f ) +
+		FADE_DIST_Y * SCALE( GetHiddenSudden(pPlayerState), 0.f, 1.f, +1.0f, +1.25f ) + 
 		GetCenterLine( pPlayerState ) * pPlayerState->m_PlayerOptions.GetCurrent().m_fAppearances[PlayerOptions::APPEARANCE_SUDDEN_OFFSET];
 }
 
@@ -655,13 +657,13 @@ float ArrowGetPercentVisible( const PlayerState* pPlayerState, float fYPosWithou
 
 	if( fAppearances[PlayerOptions::APPEARANCE_HIDDEN] != 0 )
 	{
-		float fHiddenVisibleAdjust = Rage::Scale( fYPosWithoutReverse, GetHiddenStartLine(pPlayerState), GetHiddenEndLine(pPlayerState), 0.f, -1.f );
+		float fHiddenVisibleAdjust = SCALE( fYPosWithoutReverse, GetHiddenStartLine(pPlayerState), GetHiddenEndLine(pPlayerState), 0, -1 );
 		CLAMP( fHiddenVisibleAdjust, -1, 0 );
 		fVisibleAdjust += fAppearances[PlayerOptions::APPEARANCE_HIDDEN] * fHiddenVisibleAdjust;
 	}
 	if( fAppearances[PlayerOptions::APPEARANCE_SUDDEN] != 0 )
 	{
-		float fSuddenVisibleAdjust = Rage::Scale( fYPosWithoutReverse, GetSuddenStartLine(pPlayerState), GetSuddenEndLine(pPlayerState), -1.f, 0.f );
+		float fSuddenVisibleAdjust = SCALE( fYPosWithoutReverse, GetSuddenStartLine(pPlayerState), GetSuddenEndLine(pPlayerState), -1, 0 );
 		CLAMP( fSuddenVisibleAdjust, -1, 0 );
 		fVisibleAdjust += fAppearances[PlayerOptions::APPEARANCE_SUDDEN] * fSuddenVisibleAdjust;
 	}
@@ -672,12 +674,12 @@ float ArrowGetPercentVisible( const PlayerState* pPlayerState, float fYPosWithou
 	{
 		float f = RageFastSin(RageTimer::GetTimeSinceStartFast()*10);
 		f = Quantize( f, BLINK_MOD_FREQUENCY );
-		fVisibleAdjust += Rage::Scale( f, 0.f, 1.f, -1.f, 0.f );
+		fVisibleAdjust += SCALE( f, 0, 1, -1, 0 );
 	}
 	if( fAppearances[PlayerOptions::APPEARANCE_RANDOMVANISH] != 0 )
 	{
 		const float fRealFadeDist = 80;
-		fVisibleAdjust += Rage::Scale( fabsf(fDistFromCenterLine), fRealFadeDist, 2*fRealFadeDist, -1.f, 0.f )
+		fVisibleAdjust += SCALE( fabsf(fDistFromCenterLine), fRealFadeDist, 2*fRealFadeDist, -1, 0 )
 			* fAppearances[PlayerOptions::APPEARANCE_RANDOMVANISH];
 	}
 
@@ -698,7 +700,7 @@ float ArrowEffects::GetAlpha( const PlayerState* pPlayerState, int iCol, float f
 	float fFullAlphaY = fDrawDistanceBeforeTargetsPixels*(1-fFadeInPercentOfDrawFar);
 	if( fYPosWithoutReverse > fFullAlphaY )
 	{
-		float f = Rage::Scale( fYPosWithoutReverse, fFullAlphaY, fDrawDistanceBeforeTargetsPixels, 1.0f, 0.0f );
+		float f = SCALE( fYPosWithoutReverse, fFullAlphaY, fDrawDistanceBeforeTargetsPixels, 1.0f, 0.0f );
 		return f;
 	}
 
@@ -717,7 +719,7 @@ float ArrowEffects::GetGlow( const PlayerState* pPlayerState, int iCol, float fY
 		fPercentVisible = 1 - fPercentFadeToFail;
 
 	const float fDistFromHalf = fabsf( fPercentVisible - 0.5f );
-	return Rage::Scale( fDistFromHalf, 0.f, 0.5f, 1.3f, 0.f );
+	return SCALE( fDistFromHalf, 0, 0.5f, 1.3f, 0 );
 }
 
 float ArrowEffects::GetBrightness( const PlayerState* pPlayerState, float fNoteBeat )
@@ -728,7 +730,7 @@ float ArrowEffects::GetBrightness( const PlayerState* pPlayerState, float fNoteB
 	float fSongBeat = pPlayerState->m_Position.m_fSongBeatVisible;
 	float fBeatsUntilStep = fNoteBeat - fSongBeat;
 
-	float fBrightness = Rage::Scale( fBeatsUntilStep, 0.f, -1.f, 1.f, 0.f );
+	float fBrightness = SCALE( fBeatsUntilStep, 0, -1, 1.f, 0.f );
 	CLAMP( fBrightness, 0, 1 );
 	return fBrightness;
 }
@@ -793,15 +795,15 @@ float ArrowEffects::GetFrameWidthScale( const PlayerState* pPlayerState, float f
 		float fFromEndOfOverlapped = fOverlappedTime - fSecond;
 		float fTrailingPixels = FRAME_WIDTH_LOCK_EFFECTS_TWEEN_PIXELS;
 		float fTrailingSeconds = fTrailingPixels / fPixelsPerSecond;
-		float fScaleEffect = Rage::Scale( fFromEndOfOverlapped, 0.0f, fTrailingSeconds, 0.0f, 1.0f );
+		float fScaleEffect = SCALE( fFromEndOfOverlapped, 0.0f, fTrailingSeconds, 0.0f, 1.0f );
 		CLAMP( fScaleEffect, 0.0f, 1.0f );
 		fWidthEffect *= fScaleEffect;
 	}
 
 	if( fWidthEffect > 0 )
-		fFrameWidthMultiplier *= Rage::Scale( fWidthEffect, 0.0f, 1.0f, 1.0f, FRAME_WIDTH_EFFECTS_MAX_MULTIPLIER.GetValue() );
+		fFrameWidthMultiplier *= SCALE( fWidthEffect, 0.0f, 1.0f, 1.0f, FRAME_WIDTH_EFFECTS_MAX_MULTIPLIER );
 	else if( fWidthEffect < 0 )
-		fFrameWidthMultiplier *= Rage::Scale( fWidthEffect, 0.0f, -1.0f, 1.0f, FRAME_WIDTH_EFFECTS_MIN_MULTIPLIER.GetValue() );
+		fFrameWidthMultiplier *= SCALE( fWidthEffect, 0.0f, -1.0f, 1.0f, FRAME_WIDTH_EFFECTS_MIN_MULTIPLIER );
 
 	return fFrameWidthMultiplier;
 }

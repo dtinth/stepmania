@@ -49,7 +49,7 @@ void ScreenStatsOverlay::Init()
 			m_textSkips[i].LoadFromFont( THEME->GetPathF("Common","normal") );
 			m_textSkips[i].SetX( SKIP_X );
 			m_textSkips[i].SetY( 
-                                Rage::Scale( i + 0.f, 0.f, NUM_SKIPS_TO_SHOW-1.f, rectSkips.top + 10, rectSkips.bottom - 10 )
+				SCALE( i, 0, NUM_SKIPS_TO_SHOW-1, rectSkips.top + 10, rectSkips.bottom - 10 ) 
 				);
 			m_textSkips[i].SetDiffuse( RageColor(1,1,1,0) );
 			m_textSkips[i].SetShadowLength( 0 );

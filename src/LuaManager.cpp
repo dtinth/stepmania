@@ -969,7 +969,7 @@ LuaFunction( VersionTime, (RString) version_time );
 
 static float scale( float x, float l1, float h1, float l2, float h2 )
 {
-	return Rage::Scale( x, l1, h1, l2, h2 );
+	return SCALE( x, l1, h1, l2, h2 );
 }
 LuaFunction( scale, scale(FArg(1), FArg(2), FArg(3), FArg(4), FArg(5)) );
 

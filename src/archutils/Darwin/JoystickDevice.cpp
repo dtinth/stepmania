@@ -154,12 +154,11 @@ bool JoystickDevice::InitDevice( int vid, int pid )
 
 void JoystickDevice::GetButtonPresses( vector<DeviceInput>& vPresses, IOHIDElementCookie cookie, int value, const RageTimer& now ) const
 {
-    float const valFloat = static_cast<float>(value);
     for (auto const &js : m_vSticks)
 	{
 		if( js.x_axis == cookie )
 		{
-			float level = Rage::Scale( valFloat, js.x_min * 1.f, js.x_max * 1.f, -1.0f, 1.0f );
+			float level = SCALE( value, js.x_min, js.x_max, -1.0f, 1.0f );
 
 			vPresses.push_back( DeviceInput(js.id, JOY_LEFT, max(-level, 0.0f), now) );
 			vPresses.push_back( DeviceInput(js.id, JOY_RIGHT, max(level, 0.0f), now) );
@@ -167,7 +166,7 @@ void JoystickDevice::GetButtonPresses( vector<DeviceInput>& vPresses, IOHIDEleme
 		}
 		else if( js.y_axis == cookie )
 		{
-			float level = Rage::Scale( valFloat, js.y_min * 1.f, js.y_max * 1.f, -1.0f, 1.0f );
+			float level = SCALE( value, js.y_min, js.y_max, -1.0f, 1.0f );
 
 			vPresses.push_back( DeviceInput(js.id, JOY_UP, max(-level, 0.0f), now) );
 			vPresses.push_back( DeviceInput(js.id, JOY_DOWN, max(level, 0.0f), now) );
@@ -175,7 +174,7 @@ void JoystickDevice::GetButtonPresses( vector<DeviceInput>& vPresses, IOHIDEleme
 		}
 		else if( js.z_axis == cookie )
 		{
-			float level = Rage::Scale( valFloat, js.z_min * 1.f, js.z_max * 1.f, -1.0f, 1.0f );
+			float level = SCALE( value, js.z_min, js.z_max, -1.0f, 1.0f );
 
 			vPresses.push_back( DeviceInput(js.id, JOY_Z_UP, max(-level, 0.0f), now) );
 			vPresses.push_back( DeviceInput(js.id, JOY_Z_DOWN, max(level, 0.0f), now) );
@@ -183,7 +182,7 @@ void JoystickDevice::GetButtonPresses( vector<DeviceInput>& vPresses, IOHIDEleme
 		}
 		else if( js.x_rot == cookie )
 		{
-			float level = Rage::Scale( valFloat, js.rx_min * 1.f, js.rx_max * 1.f, -1.0f, 1.0f );
+			float level = SCALE( value, js.rx_min, js.rx_max, -1.0f, 1.0f );
 
 			vPresses.push_back( DeviceInput(js.id, JOY_ROT_LEFT, max(-level, 0.0f), now) );
 			vPresses.push_back( DeviceInput(js.id, JOY_ROT_RIGHT, max(level, 0.0f), now) );
@@ -191,7 +190,7 @@ void JoystickDevice::GetButtonPresses( vector<DeviceInput>& vPresses, IOHIDEleme
 		}
 		else if( js.y_rot == cookie )
 		{
-			float level = Rage::Scale( valFloat, js.ry_min * 1.f, js.ry_max * 1.f, -1.0f, 1.0f );
+			float level = SCALE( value, js.ry_min, js.ry_max, -1.0f, 1.0f );
 
 			vPresses.push_back( DeviceInput(js.id, JOY_ROT_UP, max(-level, 0.0f), now) );
 			vPresses.push_back( DeviceInput(js.id, JOY_ROT_DOWN, max(level, 0.0f), now) );
@@ -199,7 +198,7 @@ void JoystickDevice::GetButtonPresses( vector<DeviceInput>& vPresses, IOHIDEleme
 		}
 		else if( js.z_rot == cookie )
 		{
-			float level = Rage::Scale( valFloat, js.rz_min * 1.f, js.rz_max * 1.f, -1.0f, 1.0f );
+			float level = SCALE( value, js.rz_min, js.rz_max, -1.0f, 1.0f );
 
 			vPresses.push_back( DeviceInput(js.id, JOY_ROT_Z_UP, max(-level, 0.0f), now) );
 			vPresses.push_back( DeviceInput(js.id, JOY_ROT_Z_DOWN, max(level, 0.0f), now) );

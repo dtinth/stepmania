@@ -74,13 +74,11 @@ void SoundEffectControl::Update( float fDeltaTime )
 	float fPropertyCenter = PROPERTY_CENTER;
 	float fPropertyMax = PROPERTY_MAX;
 
-	float const fCurrent = [&]() {
-        if (m_fSample < 0)
-        {
-            return Rage::Scale( m_fSample, 0.0f, -1.0f, fPropertyCenter, fPropertyMin );
-        }
-        return Rage::Scale( m_fSample, 0.0f, +1.0f, fPropertyCenter, fPropertyMax );
-    }();
+	float fCurrent;
+	if( m_fSample < 0 )
+		fCurrent = SCALE( m_fSample, 0.0f, -1.0f, fPropertyCenter, fPropertyMin );
+	else
+		fCurrent = SCALE( m_fSample, 0.0f, +1.0f, fPropertyCenter, fPropertyMax );
 
 	if( m_pSoundReader )
 		m_pSoundReader->SetProperty( SOUND_PROPERTY, fCurrent );

@@ -316,27 +316,25 @@ void Actor::BeginDraw()		// set the world matrix and calculate actor properties
 		ASSERT( fTotalPeriod > 0 );
 		const float fTimeIntoEffect = fmodfp( m_fSecsIntoEffect+m_fEffectOffset, fTotalPeriod );
 
-        float const fPercentThroughEffect = [&](float const time) {
-            if (time < m_fEffectRampUp) {
-                return Rage::Scale(time, 0.f, m_fEffectRampUp, 0.f, 0.5f);
-            }
-            float const upHalf = m_fEffectRampUp + m_fEffectHoldAtHalf;
-            if (time < upHalf)
-            {
-                return 0.5f;
-            }
-            float const upHalfDown = upHalf + m_fEffectRampDown;
-            if (time < upHalfDown)
-            {
-                return Rage::Scale(time, upHalf, upHalfDown, 0.5f, 1.0f);
-            }
-            else
-            {
-                return 0.f;
-            }
-        }(fTimeIntoEffect);
-        
-		ASSERT_M( fPercentThroughEffect >= 0 && fPercentThroughEffect <= 1,
+		float const fPercentThroughEffect = [&](float const time) {
+			if( time < m_fEffectRampUp )
+			{
+				return SCALE(time, 0.f, m_fEffectRampUp, 0.f, 0.5f);
+			}
+			float const upHalf = m_fEffectRampUp + m_fEffectHoldAtHalf;
+			if( time < upHalf )
+			{
+				return 0.5f;
+			}
+			float const upHalfDown = upHalf + m_fEffectRampDown;
+			if( time < upHalfDown )
+			{
+				return SCALE(time, upHalf, upHalfDown, 0.5f, 1.0f);
+			}
+			return 0.f;
+		}(fTimeIntoEffect);
+		
+		ASSERT_M( fPercentThroughEffect >= 0 && fPercentThroughEffect <= 1, 
 			ssprintf("PercentThroughEffect: %f", fPercentThroughEffect) );
 
 		bool bBlinkOn = fPercentThroughEffect > 0.5f;
@@ -424,15 +422,14 @@ void Actor::BeginDraw()		// set the world matrix and calculate actor properties
 			break;
 		case pulse:
 			{
-				float const fMinZoom = m_vEffectMagnitude.x;
-				float const fMaxZoom = m_vEffectMagnitude.y;
-				float const fPercentOffset = RageFastSin( fPercentThroughEffect*PI );
-				float const fZoom = Rage::Scale( fPercentOffset, 0.f, 1.f, fMinZoom, fMaxZoom );
+				float fMinZoom = m_vEffectMagnitude.x;
+				float fMaxZoom = m_vEffectMagnitude.y;
+				float fPercentOffset = RageFastSin( fPercentThroughEffect*PI ); 
+				float fZoom = SCALE( fPercentOffset, 0.f, 1.f, fMinZoom, fMaxZoom );
 				tempState.scale *= fZoom;
 
-                // Use the color as a Vector3 to scale the effect for added control
-                // do things manually for now instead of figuring out the Scale override.
-				RageColor c = (m_effectColor2 - m_effectColor1) * (fPercentOffset / 1.f) + m_effectColor1;
+				// Use the color as a Vector3 to scale the effect for added control
+				RageColor c = SCALE( fPercentOffset, 0.f, 1.f, m_effectColor1, m_effectColor2 );
 				tempState.scale.x *= c.r;
 				tempState.scale.y *= c.g;
 				tempState.scale.z *= c.b;
@@ -523,8 +520,8 @@ void Actor::BeginDraw()		// set the world matrix and calculate actor properties
 	// handle alignment; most actors have default alignment.
 	if( unlikely(m_fHorizAlign != 0.5f || m_fVertAlign != 0.5f) )
 	{
-		float fX = Rage::Scale( m_fHorizAlign, 0.0f, 1.0f, +m_size.x/2.0f, -m_size.x/2.0f );
-		float fY = Rage::Scale( m_fVertAlign, 0.0f, 1.0f, +m_size.y/2.0f, -m_size.y/2.0f );
+		float fX = SCALE( m_fHorizAlign, 0.0f, 1.0f, +m_size.x/2.0f, -m_size.x/2.0f );
+		float fY = SCALE( m_fVertAlign, 0.0f, 1.0f, +m_size.y/2.0f, -m_size.y/2.0f );
 		Rage::Matrix m;
 		RageMatrixTranslate( 
 			&m, 

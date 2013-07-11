@@ -75,11 +75,11 @@ void ScreenNameEntry::ScrollingText::DrawPrimitives()
 		float fAlpha = 1.f;
 
 		if( iCharIndex == iClosestIndex )
-			fZoom = Rage::Scale( fabs(fClosestYOffset), 0.f, 0.5f, g_fCharsZoomLarge, g_fCharsZoomSmall );
+			fZoom = SCALE( fabs(fClosestYOffset), 0, 0.5f, g_fCharsZoomLarge, g_fCharsZoomSmall );
 		if( i == 0 )
-			fAlpha *= Rage::Scale( fClosestYOffset, -0.5f, 0.f, 0.f, 1.f );
+			fAlpha *= SCALE( fClosestYOffset, -0.5f, 0.f, 0.f, 1.f );
 		if( i == g_iNumCharsToDrawTotal-1 )
-			fAlpha *= Rage::Scale( fClosestYOffset, 0.f, 0.5f, 1.f, 0.f );
+			fAlpha *= SCALE( fClosestYOffset, 0.f, 0.5f, 1.f, 0.f );
 
 		m_Stamp.SetZoom( fZoom );
 		m_Stamp.SetDiffuseAlpha( fAlpha );

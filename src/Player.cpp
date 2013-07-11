@@ -871,7 +871,8 @@ void Player::Update( float fDeltaTime )
 			for( int c=0; c<GAMESTATE->GetCurrentStyle()->m_iColsPerPlayer; c++ )
 			{
 				float fPercentReverse = m_pPlayerState->m_PlayerOptions.GetCurrent().GetReversePercentForColumn(c);
-				float fHoldJudgeYPos = Rage::Scale( fPercentReverse, 0.f, 1.f, HOLD_JUDGMENT_Y_STANDARD.GetValue(), HOLD_JUDGMENT_Y_REVERSE.GetValue() );
+				float fHoldJudgeYPos = SCALE( fPercentReverse, 0.f, 1.f, HOLD_JUDGMENT_Y_STANDARD, HOLD_JUDGMENT_Y_REVERSE );
+				//float fGrayYPos = SCALE( fPercentReverse, 0.f, 1.f, GRAY_ARROWS_Y_STANDARD, GRAY_ARROWS_Y_REVERSE );
 
 				float fX = ArrowEffects::GetXPos( m_pPlayerState, c, 0 );
 				const float fZ = ArrowEffects::GetZPos( m_pPlayerState, c, 0 );
@@ -1527,27 +1528,25 @@ void Player::DrawPrimitives()
 
 	float fCenterY = this->GetY()+(GRAY_ARROWS_Y_STANDARD+GRAY_ARROWS_Y_REVERSE)/2;
 
-	DISPLAY->LoadMenuPerspective( 45, SCREEN_WIDTH, SCREEN_HEIGHT, Rage::Scale(fSkew,0.f,1.f,this->GetX(),SCREEN_CENTER_X), fCenterY );
+	DISPLAY->LoadMenuPerspective( 45, SCREEN_WIDTH, SCREEN_HEIGHT, SCALE(fSkew,0.f,1.f,this->GetX(),SCREEN_CENTER_X), fCenterY );
 
 	if( m_pNoteField && !IsOniDead() )
 	{
 		float fOriginalY = 	m_pNoteField->GetY();
 
-		float fTiltDegrees = Rage::Scale(fTilt,-1.f,+1.f,+30.f,-30.f) * (bReverse?-1:1);
+		float fTiltDegrees = SCALE(fTilt,-1.f,+1.f,+30,-30) * (bReverse?-1:1);
 
-		float fZoom = Rage::Scale( m_pPlayerState->m_PlayerOptions.GetCurrent().m_fEffects[PlayerOptions::EFFECT_MINI], 0.f, 1.f, 1.f, 0.5f );
+		float fZoom = SCALE( m_pPlayerState->m_PlayerOptions.GetCurrent().m_fEffects[PlayerOptions::EFFECT_MINI], 0.f, 1.f, 1.f, 0.5f );
 		if( fTilt > 0 )
-			fZoom *= Rage::Scale( fTilt, 0.f, 1.f, 1.f, 0.9f );
+			fZoom *= SCALE( fTilt, 0.f, 1.f, 1.f, 0.9f );
 		else
-			fZoom *= Rage::Scale( fTilt, 0.f, -1.f, 1.f, 0.9f );
+			fZoom *= SCALE( fTilt, 0.f, -1.f, 1.f, 0.9f );
 
-		float const fYOffset = [&](float const tilt) {
-            if ((tilt) > 0)
-            {
-                return Rage::Scale( fTilt, 0.f, 1.f, 0.f, -45.f ) * (bReverse?-1:1);
-            }
-            return Rage::Scale( fTilt, 0.f, -1.f, 0.f, -20.f ) * (bReverse?-1:1);
-        }(fTilt);
+		float fYOffset;
+		if( fTilt > 0 )
+			fYOffset = SCALE( fTilt, 0.f, 1.f, 0.f, -45.f ) * (bReverse?-1:1);
+		else
+			fYOffset = SCALE( fTilt, 0.f, -1.f, 0.f, -20.f ) * (bReverse?-1:1);
 
 		m_pNoteField->SetY( fOriginalY + fYOffset );
 		m_pNoteField->SetZoom( fZoom );
@@ -2139,9 +2138,9 @@ void Player::StepStrumHopo( int col, int row, const RageTimer &tm, bool bHeld, b
 			// fall through
 		default:
 			{
-				float fCalsFor100Lbs = Rage::Scale( iNumTracksHeld * 1.f, 1.f, 2.f, 0.023f, 0.077f );
-				float fCalsFor200Lbs = Rage::Scale( iNumTracksHeld * 1.f, 1.f, 2.f, 0.041f, 0.133f );
-				fCals = Rage::Scale( pProfile->GetCalculatedWeightPounds() * 1.f, 100.f, 200.f, fCalsFor100Lbs, fCalsFor200Lbs );
+				float fCalsFor100Lbs = SCALE( iNumTracksHeld, 1, 2, 0.023f, 0.077f );
+				float fCalsFor200Lbs = SCALE( iNumTracksHeld, 1, 2, 0.041f, 0.133f );
+				fCals = SCALE( pProfile->GetCalculatedWeightPounds(), 100.f, 200.f, fCalsFor100Lbs, fCalsFor200Lbs );
 			}
 			break;
 		}

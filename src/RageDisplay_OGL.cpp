@@ -1641,7 +1641,6 @@ void RageDisplay_Legacy::SetTextureMode( TextureUnit tu, TextureMode tm )
 		glTexEnvi(GL_TEXTURE_ENV, GLenum(GL_OPERAND1_ALPHA_EXT), GL_SRC_ALPHA);
 		glTexEnvi(GL_TEXTURE_ENV, GLenum(GL_SOURCE1_ALPHA_EXT), GL_TEXTURE);
 		break;
-    default: break;
 	}
 }
 
@@ -1694,7 +1693,6 @@ void RageDisplay_Legacy::SetEffectMode( EffectMode effect )
 	case EffectMode_Overlay:	hShader = g_hOverlayShader; break;
 	case EffectMode_Screen:	hShader = g_hScreenShader; break;
 	case EffectMode_YUYV422:	hShader = g_hYUYV422Shader; break;
-    default: FAIL_M("Unknown EffectMode found.");
 	}
 
 	DebugFlushGLErrors();
@@ -1730,8 +1728,9 @@ bool RageDisplay_Legacy::IsEffectModeSupported( EffectMode effect )
 	case EffectMode_Overlay:		return g_hOverlayShader != 0;
 	case EffectMode_Screen:		return g_hScreenShader != 0;
 	case EffectMode_YUYV422:	return g_hYUYV422Shader != 0;
-    default: return false;
 	}
+
+	return false;
 }
 
 void RageDisplay_Legacy::SetBlendMode( BlendMode mode )
@@ -1830,8 +1829,8 @@ void RageDisplay_Legacy::SetZWrite( bool b )
 
 void RageDisplay_Legacy::SetZBias( float f )
 {
-	float fNear = Rage::Scale( f, 0.0f, 1.0f, 0.05f, 0.0f );
-	float fFar = Rage::Scale( f, 0.0f, 1.0f, 1.0f, 0.95f );
+	float fNear = SCALE( f, 0.0f, 1.0f, 0.05f, 0.0f );
+	float fFar = SCALE( f, 0.0f, 1.0f, 1.0f, 0.95f );
 
 	glDepthRange( fNear, fFar );
 }
@@ -2049,17 +2048,13 @@ void SetPixelMapForSurface( int glImageFormat, int glTexFormat, const RageSurfac
 
 	GLushort buf[4][256];
 	memset( buf, 0, sizeof(buf) );
-    
-    GLushort glZero = static_cast<GLushort>(0);
-    GLushort glByte = static_cast<GLushort>(255);
-    GLushort glShort = static_cast<GLushort>(65535);
-    
+
 	for( int i = 0; i < palette->ncolors; ++i )
 	{
-		buf[0][i] = Rage::Scale( static_cast<GLushort>(palette->colors[i].r), glZero, glByte, glZero, glShort );
-		buf[1][i] = Rage::Scale( static_cast<GLushort>(palette->colors[i].g), glZero, glByte, glZero, glShort );
-		buf[2][i] = Rage::Scale( static_cast<GLushort>(palette->colors[i].b), glZero, glByte, glZero, glShort );
-		buf[3][i] = Rage::Scale( static_cast<GLushort>(palette->colors[i].a), glZero, glByte, glZero, glShort );
+		buf[0][i] = SCALE( palette->colors[i].r, 0, 255, 0, 65535 );
+		buf[1][i] = SCALE( palette->colors[i].g, 0, 255, 0, 65535 );
+		buf[2][i] = SCALE( palette->colors[i].b, 0, 255, 0, 65535 );
+		buf[3][i] = SCALE( palette->colors[i].a, 0, 255, 0, 65535 );
 	}
 
 	DebugFlushGLErrors();

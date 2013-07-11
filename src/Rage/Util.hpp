@@ -13,7 +13,7 @@ namespace Rage
      * One such example: Scale(x, 0, 1, L, H); interpolate between L and H.
      */
     template <class T>
-    constexpr T Scale(T x, T l1, T h1, T l2, T h2)
+    constexpr inline T Scale(T x, T l1, T h1, T l2, T h2)
     {
         return ((x - l1) * (h2 - l2) / (h1 - l1) + l2);
     }

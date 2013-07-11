@@ -194,7 +194,7 @@ void LifeMeterBar::ChangeLife( float fDeltaLife )
 {
 	bool bUseMercifulDrain = m_bMercifulBeginnerInEffect || PREFSMAN->m_bMercifulDrain;
 	if( bUseMercifulDrain  &&  fDeltaLife < 0 )
-		fDeltaLife *= Rage::Scale( m_fLifePercentage, 0.f, 1.f, 0.5f, 1.f);
+		fDeltaLife *= SCALE( m_fLifePercentage, 0.f, 1.f, 0.5f, 1.f);
 
 	// handle progressiveness and ComboToRegainLife here
 	if( fDeltaLife >= 0 )

@@ -186,7 +186,7 @@ void GraphDisplay::Set( const StageStats &ss, const PlayerStageStats &pss )
 
 		Actor *p = m_sprSongBoundary->Copy();
 		m_vpSongBoundaries.push_back( p );
-		float fX = Rage::Scale( fSec, 0.f, fTotalStepSeconds, m_quadVertices.left, m_quadVertices.right );
+		float fX = SCALE( fSec, 0, fTotalStepSeconds, m_quadVertices.left, m_quadVertices.right );
 		p->SetX( fX );
 		this->AddChild( p );
 	}
@@ -209,7 +209,7 @@ void GraphDisplay::Set( const StageStats &ss, const PlayerStageStats &pss )
 
 		if( fMinLifeSoFar > 0.0f  &&  fMinLifeSoFar < 0.1f )
 		{
-			float fX = Rage::Scale( float(iMinLifeSoFarAt), 0.0f, float(VALUE_RESOLUTION-1), m_quadVertices.left, m_quadVertices.right );
+			float fX = SCALE( float(iMinLifeSoFarAt), 0.0f, float(VALUE_RESOLUTION-1), m_quadVertices.left, m_quadVertices.right );
 			m_sprBarely->SetX( fX );
 		}
 		else
@@ -253,16 +253,16 @@ void GraphDisplay::UpdateVerts()
 	RageSpriteVertex LineStrip[VALUE_RESOLUTION];
 	for( int i = 0; i < VALUE_RESOLUTION; ++i )
 	{
-		const float fX = Rage::Scale( float(i), 0.0f, float(VALUE_RESOLUTION-1), m_quadVertices.left, m_quadVertices.right );
-		const float fY = Rage::Scale( m_Values[i], 0.0f, 1.0f, m_quadVertices.bottom, m_quadVertices.top );
+		const float fX = SCALE( float(i), 0.0f, float(VALUE_RESOLUTION-1), m_quadVertices.left, m_quadVertices.right );
+		const float fY = SCALE( m_Values[i], 0.0f, 1.0f, m_quadVertices.bottom, m_quadVertices.top );
 
 		m_pGraphBody->m_Slices[i*2+0].p = Rage::Vector3( fX, fY, 0 );
 		m_pGraphBody->m_Slices[i*2+1].p = Rage::Vector3( fX, m_quadVertices.bottom, 0 );
 
 		const RectF *pRect = m_pGraphBody->m_pTexture->GetTextureCoordRect( 0 );
 
-		const float fU = Rage::Scale( fX, m_quadVertices.left, m_quadVertices.right, pRect->left, pRect->right );
-		const float fV = Rage::Scale( fY, m_quadVertices.top, m_quadVertices.bottom, pRect->top, pRect->bottom );
+		const float fU = SCALE( fX, m_quadVertices.left, m_quadVertices.right, pRect->left, pRect->right );
+		const float fV = SCALE( fY, m_quadVertices.top, m_quadVertices.bottom, pRect->top, pRect->bottom );
 		m_pGraphBody->m_Slices[i*2+0].t = Rage::Vector2( fU, fV );
 		m_pGraphBody->m_Slices[i*2+1].t = Rage::Vector2( fU, pRect->bottom );
 

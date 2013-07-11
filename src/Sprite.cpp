@@ -184,13 +184,13 @@ void Sprite::LoadFromNode( const XNode* pNode )
 					float fX = 1.0f, fY = 1.0f;
 					pPoints[0]->GetAttrValue( "x", fX );
 					pPoints[0]->GetAttrValue( "y", fY );
-					newState.rect.left = Rage::Scale( fX, 0.0f, 1.0f, r.left, r.right );
-					newState.rect.top = Rage::Scale( fY, 0.0f, 1.0f, r.top, r.bottom );
+					newState.rect.left = SCALE( fX, 0.0f, 1.0f, r.left, r.right );
+					newState.rect.top = SCALE( fY, 0.0f, 1.0f, r.top, r.bottom );
 
 					pPoints[1]->GetAttrValue( "x", fX );
 					pPoints[1]->GetAttrValue( "y", fY );
-					newState.rect.right = Rage::Scale( fX, 0.0f, 1.0f, r.left, r.right );
-					newState.rect.bottom = Rage::Scale( fY, 0.0f, 1.0f, r.top, r.bottom );
+					newState.rect.right = SCALE( fX, 0.0f, 1.0f, r.left, r.right );
+					newState.rect.bottom = SCALE( fY, 0.0f, 1.0f, r.top, r.bottom );
 				}
 
 				aStates.push_back( newState );
@@ -463,8 +463,8 @@ void Sprite::DrawTexture( const TweenState *state )
 #define IF_CROP_POS(side,opp_side) \
 	if(state->crop.side!=0) \
 		croppedQuadVerticies.side = \
-			Rage::Scale( crop.side, 0.f, 1.f, quadVerticies.side, quadVerticies.opp_side )
-	IF_CROP_POS( left, right );
+			SCALE( crop.side, 0.f, 1.f, quadVerticies.side, quadVerticies.opp_side )
+	IF_CROP_POS( left, right ); 
 	IF_CROP_POS( top, bottom ); 
 	IF_CROP_POS( right, left ); 
 	IF_CROP_POS( bottom, top ); 
@@ -501,13 +501,13 @@ void Sprite::DrawTexture( const TweenState *state )
 			{
 				RageSpriteVertex *pVert = &v[i];
 
-				float fTopX = Rage::Scale( pVert->p.x, quadVerticies.left, quadVerticies.right, texCoords[0].x, texCoords[3].x );
-				float fBottomX = Rage::Scale( pVert->p.x, quadVerticies.left, quadVerticies.right, texCoords[1].x, texCoords[2].x );
-				pVert->t.x = Rage::Scale( pVert->p.y, quadVerticies.top, quadVerticies.bottom, fTopX, fBottomX );
+				float fTopX = SCALE( pVert->p.x, quadVerticies.left, quadVerticies.right, texCoords[0].x, texCoords[3].x );
+				float fBottomX = SCALE( pVert->p.x, quadVerticies.left, quadVerticies.right, texCoords[1].x, texCoords[2].x );
+				pVert->t.x = SCALE( pVert->p.y, quadVerticies.top, quadVerticies.bottom, fTopX, fBottomX );
 
-				float fLeftY = Rage::Scale( pVert->p.y, quadVerticies.top, quadVerticies.bottom, texCoords[0].y, texCoords[1].y );
-				float fRightY = Rage::Scale( pVert->p.y, quadVerticies.top, quadVerticies.bottom, texCoords[3].y, texCoords[2].y );
-				pVert->t.y = Rage::Scale( pVert->p.x, quadVerticies.left, quadVerticies.right, fLeftY, fRightY );
+				float fLeftY = SCALE( pVert->p.y, quadVerticies.top, quadVerticies.bottom, texCoords[0].y, texCoords[1].y );
+				float fRightY = SCALE( pVert->p.y, quadVerticies.top, quadVerticies.bottom, texCoords[3].y, texCoords[2].y );
+				pVert->t.y = SCALE( pVert->p.x, quadVerticies.left, quadVerticies.right, fLeftY, fRightY );
 			}
 		}
 		else
@@ -601,10 +601,10 @@ void Sprite::DrawPrimitives()
 		}
 
 		// Alpha value of the un-faded side of each fade rect:
-		const float RightAlpha  = Rage::Scale( FadeSize.right,  FadeDist.right,  0.f, 1.f, 0.f );
-		const float LeftAlpha   = Rage::Scale( FadeSize.left,   FadeDist.left,   0.f, 1.f, 0.f );
-		const float TopAlpha    = Rage::Scale( FadeSize.top,    FadeDist.top,    0.f, 1.f, 0.f );
-		const float BottomAlpha = Rage::Scale( FadeSize.bottom, FadeDist.bottom, 0.f, 1.f, 0.f );
+		const float RightAlpha  = SCALE( FadeSize.right,  FadeDist.right,  0, 1, 0 );
+		const float LeftAlpha   = SCALE( FadeSize.left,   FadeDist.left,   0, 1, 0 );
+		const float TopAlpha    = SCALE( FadeSize.top,    FadeDist.top,    0, 1, 0 );
+		const float BottomAlpha = SCALE( FadeSize.bottom, FadeDist.bottom, 0, 1, 0 );
 
 		// Draw the inside:
 		TweenState ts = *m_pTempState;
