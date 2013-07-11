@@ -39,14 +39,14 @@ struct my_jpeg_error_mgr
   char errorbuf[JMSG_LENGTH_MAX];
 };
 
-
+void my_output_message(j_common_ptr);
 void my_output_message( j_common_ptr cinfo )
 {
 	my_jpeg_error_mgr *myerr = (my_jpeg_error_mgr *) cinfo->err;
 	(*cinfo->err->format_message)( cinfo, myerr->errorbuf );
 }
 
-
+void my_error_exit(j_common_ptr);
 void my_error_exit( j_common_ptr cinfo )
 {
 	my_jpeg_error_mgr *myerr = (my_jpeg_error_mgr *) cinfo->err;
@@ -64,6 +64,7 @@ struct RageFile_source_mgr
 	bool start_of_file;	/* have we gotten any data yet? */
 };
 
+void RageFile_JPEG_init_source(j_decompress_ptr);
 void RageFile_JPEG_init_source( j_decompress_ptr cinfo )
 {
 	RageFile_source_mgr *src = (RageFile_source_mgr *) cinfo->src;
@@ -72,6 +73,7 @@ void RageFile_JPEG_init_source( j_decompress_ptr cinfo )
 	src->pub.bytes_in_buffer = 0;
 }
 
+boolean RageFile_JPEG_fill_input_buffer(j_decompress_ptr);
 boolean RageFile_JPEG_fill_input_buffer( j_decompress_ptr cinfo )
 {
 	RageFile_source_mgr *src = (RageFile_source_mgr *) cinfo->src;
@@ -97,6 +99,7 @@ boolean RageFile_JPEG_fill_input_buffer( j_decompress_ptr cinfo )
 	return TRUE;
 }
 
+void RageFile_JPEG_skip_input_data(j_decompress_ptr, long);
 void RageFile_JPEG_skip_input_data( j_decompress_ptr cinfo, long num_bytes )
 {
 	RageFile_source_mgr *src = (RageFile_source_mgr *) cinfo->src;
@@ -110,6 +113,7 @@ void RageFile_JPEG_skip_input_data( j_decompress_ptr cinfo, long num_bytes )
 		src->file->Seek( src->file->Tell() + num_bytes );
 }
 
+void RageFile_JPEG_term_source(j_decompress_ptr);
 void RageFile_JPEG_term_source( j_decompress_ptr cinfo )
 {
 }

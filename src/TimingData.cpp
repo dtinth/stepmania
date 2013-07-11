@@ -394,6 +394,8 @@ void TimingData::AddSegment( const TimingSegment *seg )
 
 			break;
 		}
+        default:
+            FAIL_M("Invalid segment type found.");
 	}
 
 	// the segment at or before this row is equal to the new one; ignore it

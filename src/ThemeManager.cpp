@@ -671,6 +671,8 @@ bool ThemeManager::GetPathInfoToRaw( PathInfo &out, const RString &sThemeName_, 
 			return GetPathInfoToRaw( out, sThemeName_, category, sMetricsGroup_, sElement_ );
 		case Dialog::ignore:
 			break;
+        default:
+            FAIL_M("Impossible dialog choice detected.");
 		}
 	}
 
@@ -714,6 +716,8 @@ bool ThemeManager::GetPathInfoToRaw( PathInfo &out, const RString &sThemeName_, 
 	case Dialog::ignore:
 		GetPathInfo( out, category, "", "_missing" );
 		return true;
+    default:
+        FAIL_M("Impossible dialog choice detected.");
 	}
 
 	RageException::Throw( "%s", sMessage.c_str() ); 

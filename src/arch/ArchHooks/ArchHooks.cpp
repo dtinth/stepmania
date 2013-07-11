@@ -82,6 +82,7 @@ LUA_REGISTER_CLASS( ArchHooks );
 /* XXX: ArchHooks is instantiated before Lua, so we encounter a dependency problem when
  * trying to register HOOKS. Work around it by registering HOOKS in a static function,
  * which LuaManager will call when it is instantiated. */
+void LuaFunc_Register_Hooks(lua_State *);
 void LuaFunc_Register_Hooks( lua_State *L )
 {
 	lua_pushstring( L, "HOOKS" );

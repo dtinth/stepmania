@@ -21,8 +21,8 @@ void ForceToAscii( RString &str )
 
 bool RageMovieTexture::GetFourCC( RString fn, RString &handler, RString &type )
 {
-	RString ignore, ext;
-	splitpath( fn, ignore, ignore, ext);
+	RString ignoredString, ext;
+	splitpath( fn, ignoredString, ignoredString, ext);
 	if( !ext.CompareNoCase(".mpg") ||
 		!ext.CompareNoCase(".mpeg") ||
 		!ext.CompareNoCase(".mpv") ||

@@ -4,16 +4,19 @@
 #include <mach/mach_error.h>
 #include "Backtrace.h"
 
+bool SuspendThread(uint64_t);
 bool SuspendThread( uint64_t threadHandle )
 {
 	return !thread_suspend( thread_act_t(threadHandle) );
 }
 
+bool ResumeThread(uint64_t);
 bool ResumeThread( uint64_t threadHandle )
 {
 	return !thread_resume( thread_act_t(threadHandle) );
 }
 
+uint64_t GetCurrentThreadId();
 uint64_t GetCurrentThreadId()
 {
 	return mach_thread_self();
@@ -51,6 +54,7 @@ bool GetThreadBacktraceContext( uint64_t iID, BacktraceContext *ctx )
 #endif
 }
 
+RString SetThreadPrecedence(float);
 RString SetThreadPrecedence( float prec )
 {
 	// Real values are between 0 and 63.

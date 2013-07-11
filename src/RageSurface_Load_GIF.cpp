@@ -390,7 +390,7 @@ int LWZState::ReadByte( RageFile &f )
 
 static RageSurface *ReadImage( RageFile &f, int len, int height,
 		const RageSurfaceColor localColorMap[MAXCOLORMAPSIZE],
-		int interlace, int ignore )
+		int interlace, int ignoreValue )
 {
 	int xpos = 0, ypos = 0, pass = 0;
 
@@ -402,7 +402,7 @@ static RageSurface *ReadImage( RageFile &f, int len, int height,
 		return NULL;
 	}
 	/* If this is an "uninteresting picture" ignore it. */
-	if( ignore )
+	if( ignoreValue )
 	{
 		while( state.ReadByte(f) >= 0 )
 			;
