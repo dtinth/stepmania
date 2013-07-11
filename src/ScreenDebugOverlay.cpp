@@ -279,9 +279,8 @@ void ScreenDebugOverlay::Init()
 		this->AddChild( p );
 	}
 
-    for (auto const *dummy : *g_pvpSubscribers)
-	{
-		{
+    std::for_each(std::begin(*g_pvpSubscribers), std::end(*g_pvpSubscribers), [&](IDebugLine const *) {
+        {
 			BitmapText *bt = new BitmapText;
 			bt->SetName( "ButtonText" );
 			bt->LoadFromFont( THEME->GetPathF("ScreenDebugOverlay", "line") );
@@ -301,7 +300,7 @@ void ScreenDebugOverlay::Init()
 			m_vptextFunction.push_back( bt );
 			this->AddChild( bt );
 		}
-	}
+    });
 
 	this->SetVisible( false );
 }

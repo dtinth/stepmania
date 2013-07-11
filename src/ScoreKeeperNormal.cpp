@@ -22,6 +22,7 @@
 #include "NoteDataWithScoring.h"
 
 
+void PercentScoreWeightInit(size_t /*ScoreEvent*/ , RString &, int &);
 void PercentScoreWeightInit( size_t /*ScoreEvent*/ i, RString &sNameOut, int &defaultValueOut )
 {
 	sNameOut = "PercentScoreWeight" + ScoreEventToString( (ScoreEvent)i );
@@ -43,6 +44,7 @@ void PercentScoreWeightInit( size_t /*ScoreEvent*/ i, RString &sNameOut, int &de
 	}
 }
 
+void GradeWeightInit(size_t /*ScoreEvent*/ , RString &, int &);
 void GradeWeightInit( size_t /*ScoreEvent*/ i, RString &sNameOut, int &defaultValueOut )
 {
 	sNameOut = "GradeWeight" + ScoreEventToString( (ScoreEvent)i );
