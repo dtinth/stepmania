@@ -187,6 +187,7 @@ static const char *TextGlowModeNames[] =
 XToString( TextGlowMode );
 LuaXType( TextGlowMode );
 
+int LuaFunc_color(lua_State *);
 int LuaFunc_color( lua_State *L )
 {
 	RString sColor = SArg(1);
@@ -195,6 +196,8 @@ int LuaFunc_color( lua_State *L )
 	c.PushTable( L );
 	return 1;
 }
+
+void LuaFunc_Register_color(lua_State *);
 void LuaFunc_Register_color( lua_State *L ) { lua_register( L, "color", LuaFunc_color ); }
 REGISTER_WITH_LUA_FUNCTION( LuaFunc_Register_color );
 

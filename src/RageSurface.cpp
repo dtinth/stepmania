@@ -179,7 +179,7 @@ static int GetBitsFromMask( uint32_t mask )
 	return iBits;
 }
 
-
+void SetupFormat(RageSurfaceFormat &, int, int, int, uint32_t, uint32_t, uint32_t, uint32_t);
 void SetupFormat( RageSurfaceFormat &fmt,
 						 int width, int height, int BitsPerPixel, uint32_t Rmask, uint32_t Gmask, uint32_t Bmask, uint32_t Amask )
 {

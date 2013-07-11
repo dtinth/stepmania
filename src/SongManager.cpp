@@ -1682,9 +1682,7 @@ void SongManager::RefreshCourseGroupInfo()
 	}
 
 	// TODO: Search for course group banners
-    for (auto const &dummy : m_mapCourseGroupToInfo)
-	{
-	}
+    // for (auto const &dummy : m_mapCourseGroupToInfo) {}
 }
 
 void SongManager::LoadStepEditsFromProfileDir( const RString &sProfileDir, ProfileSlot slot )

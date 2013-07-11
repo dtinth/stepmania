@@ -404,7 +404,8 @@ namespace PolyphaseFilterCache
 	typedef map<pair<int,float>, PolyphaseFilter *> FilterMap;
 	static RageMutex PolyphaseFiltersLock("PolyphaseFiltersLock");
 	static FilterMap g_mapPolyphaseFilters;
-		
+    
+    PolyphaseFilter const *MakePolyphaseFilter(int, float);
 	const PolyphaseFilter *MakePolyphaseFilter( int iUpFactor, float fCutoffFrequency )
 	{
 		PolyphaseFiltersLock.Lock();
@@ -433,6 +434,7 @@ namespace PolyphaseFilterCache
 		return pPolyphase;
 	}
 
+    PolyphaseFilter const *FindNearestPolyphaseFilter(int, float);
 	const PolyphaseFilter *FindNearestPolyphaseFilter( int iUpFactor, float fCutoffFrequency )
 	{
 		/* Find a cached filter with the same iUpFactor and a nearby cutoff frequency.

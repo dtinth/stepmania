@@ -11,6 +11,7 @@
 #include <mach/mach_error.h>
 #include <vector>
 #include <utility>
+// TODO: Figure out how to replace this with either unordered_map or unordered_set.
 #include <ext/hash_map>
 
 #include "RageLog.h"

@@ -118,6 +118,7 @@ static void StripCvsAndSvn( vector<RString> &vsPathsToStrip, vector<RString> &vs
 	}
 }
 
+int CompareBackgroundChanges(BackgroundChange const &, BackgroundChange const &);
 int CompareBackgroundChanges(const BackgroundChange &seg1, const BackgroundChange &seg2)
 {
 	return seg1.m_fStartBeat < seg2.m_fStartBeat;

@@ -421,8 +421,8 @@ RString vssprintf( const char *szFormat, va_list argList )
 		/* Some systems return the actual size required when snprintf
 		 * doesn't have enough space.  This lets us avoid wasting time
 		 * iterating, and wasting memory. */
-		char ignore;
-		bExactSizeSupported = ( snprintf( &ignore, 0, "Hello World" ) == 11 );
+		char ignoreChar;
+		bExactSizeSupported = ( snprintf( &ignoreChar, 0, "Hello World" ) == 11 );
 		bInitialized = true;
 	}
 
@@ -430,8 +430,8 @@ RString vssprintf( const char *szFormat, va_list argList )
 	{
 		va_list tmp;
 		va_copy( tmp, argList );
-		char ignore;
-		int iNeeded = vsnprintf( &ignore, 0, szFormat, tmp );
+		char ignoreChar;
+		int iNeeded = vsnprintf( &ignoreChar, 0, szFormat, tmp );
 		va_end(tmp);
 
 		char *buf = sStr.GetBuffer( iNeeded+1 );
