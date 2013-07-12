@@ -1709,6 +1709,7 @@
 		B773AE6E140AAB1800C68DDD /* SpecialDirs.h in Headers */ = {isa = PBXBuildFile; fileRef = B773AE6C140AAB1800C68DDD /* SpecialDirs.h */; };
 		B7845BC3154051B6000DFDA8 /* ScreenEdit.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B7845BC2154051B6000DFDA8 /* ScreenEdit.cpp */; };
 		B7845BC5154052CB000DFDA8 /* RageUtil.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B7845BC4154052CB000DFDA8 /* RageUtil.cpp */; };
+		B7E0B3D5178FC4A5002247A5 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B7E0B3D4178FC4A5002247A5 /* main.cpp */; };
 		EE4FD2B014A8F066002B5758 /* ansi2knr.c in Sources */ = {isa = PBXBuildFile; fileRef = EE4FD26814A8F066002B5758 /* ansi2knr.c */; };
 		EE4FD2B114A8F066002B5758 /* cdjpeg.c in Sources */ = {isa = PBXBuildFile; fileRef = EE4FD26914A8F066002B5758 /* cdjpeg.c */; };
 		EE4FD2B214A8F066002B5758 /* cjpeg.c in Sources */ = {isa = PBXBuildFile; fileRef = EE4FD26A14A8F066002B5758 /* cjpeg.c */; };
@@ -1938,6 +1939,15 @@
 			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B7E0B3D0178FC4A5002247A5 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
 		};
 /* End PBXCopyFilesBuildPhase section */
 
@@ -3231,6 +3241,8 @@
 		B773AE6C140AAB1800C68DDD /* SpecialDirs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SpecialDirs.h; path = archutils/Darwin/SpecialDirs.h; sourceTree = "<group>"; };
 		B7845BC2154051B6000DFDA8 /* ScreenEdit.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ScreenEdit.cpp; path = ../src/ScreenEdit.cpp; sourceTree = "<group>"; };
 		B7845BC4154052CB000DFDA8 /* RageUtil.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = RageUtil.cpp; path = ../src/RageUtil.cpp; sourceTree = "<group>"; };
+		B7E0B3D2178FC4A5002247A5 /* tests */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = tests; sourceTree = BUILT_PRODUCTS_DIR; };
+		B7E0B3D4178FC4A5002247A5 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		EE4FD26014A8EFE1002B5758 /* libjpeg-sm5.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libjpeg-sm5.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		EE4FD26814A8F066002B5758 /* ansi2knr.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ansi2knr.c; path = ../extern/libjpeg/ansi2knr.c; sourceTree = SOURCE_ROOT; };
 		EE4FD26914A8F066002B5758 /* cdjpeg.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = cdjpeg.c; path = ../extern/libjpeg/cdjpeg.c; sourceTree = SOURCE_ROOT; };
@@ -3443,6 +3455,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		B7E0B3CF178FC4A5002247A5 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		EE4FD25E14A8EFE1002B5758 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -3497,6 +3516,7 @@
 				2B85696213DFAE2F005037D2 /* StepMania (Debug).app */,
 				EE4FD26014A8EFE1002B5758 /* libjpeg-sm5.a */,
 				2B75ED5E17809D6E007CC664 /* libRage.a */,
+				B7E0B3D2178FC4A5002247A5 /* tests */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -3528,6 +3548,7 @@
 				AA52E9BD04DBBCF400D02EE9 /* ver.cpp */,
 				AA29CE570558741A00961A51 /* Info-StepMania.plist */,
 				AAA3741C09099ADA00141131 /* Libraries */,
+				B7E0B3D3178FC4A5002247A5 /* Tests */,
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
 				19C28FACFE9D520D11CA2CBB /* Products */,
 				29B97317FDCFA39411CA2CEA /* Resources */,
@@ -5370,6 +5391,15 @@
 			path = "../extern/lua-5.1";
 			sourceTree = "<group>";
 		};
+		B7E0B3D3178FC4A5002247A5 /* Tests */ = {
+			isa = PBXGroup;
+			children = (
+				B7E0B3D4178FC4A5002247A5 /* main.cpp */,
+			);
+			name = Tests;
+			path = ../Tests;
+			sourceTree = "<group>";
+		};
 		EE4FD26614A8F004002B5758 /* jpeg */ = {
 			isa = PBXGroup;
 			children = (
@@ -6312,6 +6342,23 @@
 			productReference = AAE7817E0AC7E37B00AEFC64 /* liblua-5.1-sm5.a */;
 			productType = "com.apple.product-type.library.static";
 		};
+		B7E0B3D1178FC4A5002247A5 /* tests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B7E0B3DB178FC4A5002247A5 /* Build configuration list for PBXNativeTarget "tests" */;
+			buildPhases = (
+				B7E0B3CE178FC4A5002247A5 /* Sources */,
+				B7E0B3CF178FC4A5002247A5 /* Frameworks */,
+				B7E0B3D0178FC4A5002247A5 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = tests;
+			productName = TestPRODUCT_ID_BARE;
+			productReference = B7E0B3D2178FC4A5002247A5 /* tests */;
+			productType = "com.apple.product-type.tool";
+		};
 		EE4FD25F14A8EFE1002B5758 /* jpeg */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = EE4FD26714A8F004002B5758 /* Build configuration list for PBXNativeTarget "jpeg" */;
@@ -6374,6 +6421,7 @@
 				2BD6E10B13D78B36008443DB /* zlib */,
 				EE4FD25F14A8EFE1002B5758 /* jpeg */,
 				2B75ED5D17809D6E007CC664 /* Rage */,
+				B7E0B3D1178FC4A5002247A5 /* tests */,
 			);
 		};
 /* End PBXProject section */
@@ -7727,6 +7775,14 @@
 				2BDB891B137201F700E6FD3A /* lvm.c in Sources */,
 				2BDB891D137201F700E6FD3A /* lzio.c in Sources */,
 				2BDB891F137201F700E6FD3A /* print.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B7E0B3CE178FC4A5002247A5 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B7E0B3D5178FC4A5002247A5 /* main.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -9491,6 +9547,94 @@
 			};
 			name = Debug;
 		};
+		B7E0B3D8178FC4A5002247A5 /* Native */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_CPP_EXCEPTIONS = YES;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/../extern/igloo.1.0.0";
+				MACOSX_DEPLOYMENT_TARGET = 10.8;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+			};
+			name = Native;
+		};
+		B7E0B3D9178FC4A5002247A5 /* PerformanceDebug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_ENABLE_CPP_EXCEPTIONS = YES;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/../extern/igloo.1.0.0";
+				MACOSX_DEPLOYMENT_TARGET = 10.8;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+			};
+			name = PerformanceDebug;
+		};
+		B7E0B3DA178FC4A5002247A5 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_CPP_EXCEPTIONS = YES;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/../extern/igloo.1.0.0";
+				MACOSX_DEPLOYMENT_TARGET = 10.8;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
 		EE4FD26114A8EFE1002B5758 /* Native */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -9776,6 +9920,16 @@
 				AAE781800AC7E3BF00AEFC64 /* Native */,
 				AABF4DBE0CD37960005A3060 /* PerformanceDebug */,
 				AAE781820AC7E3BF00AEFC64 /* Debug */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Native;
+		};
+		B7E0B3DB178FC4A5002247A5 /* Build configuration list for PBXNativeTarget "tests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B7E0B3D8178FC4A5002247A5 /* Native */,
+				B7E0B3D9178FC4A5002247A5 /* PerformanceDebug */,
+				B7E0B3DA178FC4A5002247A5 /* Debug */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Native;
