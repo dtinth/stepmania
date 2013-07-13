@@ -2,7 +2,8 @@
 #include <mach/thread_act.h>
 #include <mach/mach_init.h>
 #include <mach/mach_error.h>
-#include "Backtrace.h"
+#include "global.h"
+#include "archutils/Unix/Backtrace.h"
 
 bool SuspendThread(uint64_t);
 bool SuspendThread( uint64_t threadHandle )
