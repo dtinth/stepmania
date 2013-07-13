@@ -3584,7 +3584,7 @@
 				AA52E9BD04DBBCF400D02EE9 /* ver.cpp */,
 				AA29CE570558741A00961A51 /* Info-StepMania.plist */,
 				AAA3741C09099ADA00141131 /* Libraries */,
-				B7E0B3D3178FC4A5002247A5 /* Tests */,
+				B7E0B3D3178FC4A5002247A5 /* Test */,
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
 				19C28FACFE9D520D11CA2CBB /* Products */,
 				29B97317FDCFA39411CA2CEA /* Resources */,
@@ -5427,13 +5427,13 @@
 			path = "../extern/lua-5.1";
 			sourceTree = "<group>";
 		};
-		B7E0B3D3178FC4A5002247A5 /* Tests */ = {
+		B7E0B3D3178FC4A5002247A5 /* Test */ = {
 			isa = PBXGroup;
 			children = (
 				B7E0B3D4178FC4A5002247A5 /* main.cpp */,
 			);
-			name = Tests;
-			path = ../Tests;
+			name = Test;
+			path = ../test;
 			sourceTree = "<group>";
 		};
 		EE4FD26614A8F004002B5758 /* jpeg */ = {
@@ -6378,9 +6378,9 @@
 			productReference = AAE7817E0AC7E37B00AEFC64 /* liblua-5.1-sm5.a */;
 			productType = "com.apple.product-type.library.static";
 		};
-		B7E0B3D1178FC4A5002247A5 /* tests */ = {
+		B7E0B3D1178FC4A5002247A5 /* test */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = B7E0B3DB178FC4A5002247A5 /* Build configuration list for PBXNativeTarget "tests" */;
+			buildConfigurationList = B7E0B3DB178FC4A5002247A5 /* Build configuration list for PBXNativeTarget "test" */;
 			buildPhases = (
 				B7E0B3CE178FC4A5002247A5 /* Sources */,
 				B7E0B3CF178FC4A5002247A5 /* Frameworks */,
@@ -6391,7 +6391,7 @@
 			dependencies = (
 				B73BCDE51790005B00354A44 /* PBXTargetDependency */,
 			);
-			name = tests;
+			name = test;
 			productName = TestPRODUCT_ID_BARE;
 			productReference = B7E0B3D2178FC4A5002247A5 /* tests */;
 			productType = "com.apple.product-type.tool";
@@ -6458,7 +6458,7 @@
 				2BD6E10B13D78B36008443DB /* zlib */,
 				EE4FD25F14A8EFE1002B5758 /* jpeg */,
 				2B75ED5D17809D6E007CC664 /* Rage */,
-				B7E0B3D1178FC4A5002247A5 /* tests */,
+				B7E0B3D1178FC4A5002247A5 /* test */,
 			);
 		};
 /* End PBXProject section */
@@ -10008,7 +10008,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Native;
 		};
-		B7E0B3DB178FC4A5002247A5 /* Build configuration list for PBXNativeTarget "tests" */ = {
+		B7E0B3DB178FC4A5002247A5 /* Build configuration list for PBXNativeTarget "test" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				B7E0B3D8178FC4A5002247A5 /* Native */,

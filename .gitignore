@@ -57,3 +57,4 @@ Xcode/build/stepmania_xcode.build
 *.xcworkspacedata
 Xcode/stepmania_xcode.xcodeproj/xcuserdata
 ver.cpp
+.DS_Store
